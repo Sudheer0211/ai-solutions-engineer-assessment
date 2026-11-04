@@ -119,7 +119,6 @@ def test_wire_internal_error_is_sanitized_and_preserves_id(mode):
 
 
 @pytest.mark.sdk_limitation
-@pytest.mark.xfail(strict=True, reason="MCP 2.3.0 STDIO drops malformed transport exceptions (B3)")
 @pytest.mark.parametrize("mode", ["legacy", "modern"])
 @pytest.mark.parametrize(
     "raw,code,request_id",
