@@ -487,3 +487,95 @@ E011 remains the actual 300-pass/Ruff execution evidence; this is Git inspection
 - No architecture changes in this checkpoint; ADR-011/012 now ACCEPTED. One
   descriptive milestone commit is authorized, identified by Git history and the
   session report. No push or T2-004 implementation is authorized.
+
+## E013 — 2026-11-04: FastAPI HTTP/ASGI integration (T2-004)
+
+Baseline 0b2e0b7; isolated task2/.venv, Python 3.12.16. No actual socket server was
+started, no T2-005 work, no Task 1 test rerun, no commit/push. Prior evidence intact.
+
+| Actual command/check | Actual result |
+| --- | --- |
+| Read AGENTS/ledger/accepted modules/contracts; `git status --short --untracked-files=all`, `git log -2 --oneline`; Python stdin SHA256 baseline | Clean at 0b2e0b7; captured all 48 tracked file hashes |
+| `.\.tools\bin\uv.exe sync --project task2 --extra dev --extra serve --python 3.12.16 --index-url https://pypi.org/simple` from root with isolated cache/runtime settings | Exit 0; approved isolated network install; resolved 27 packages, installed 13 including rebuilt project; no root environment/config changes |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` from task2, first | Exit 0; 2 new files reformatted, 11 unchanged |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` from task2, first | Exit 1; four new-test issues: two unused imports and two overlong byte literals. Corrected without changing test assertions |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short` from task2, first | Exit 0; **397 passed in 2.60s**, no failures/skips/warnings/xfails |
+| Ruff lint and `format --check src tests` at first passing suite | Exit 0 each; all checks passed, 13 files already formatted |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` after extending distinct-client/ASGI disconnect/reader-failure coverage | Exit 0; 1 new test file reformatted, 12 unchanged |
+| Ruff lint after coverage extensions | Exit 0; all checks passed |
+| Final `.\.venv\Scripts\python.exe -m pytest -q --tb=short` | Exit 0; **400 passed in 1.88s**; **0 failures, 0 skips, 0 warnings**, no xfails |
+| Final `.\.venv\Scripts\python.exe -m ruff check src tests` | Exit 0; all checks passed |
+| Final `.\.venv\Scripts\python.exe -m ruff format --check src tests` | Exit 0; 13 files already formatted |
+| `.\.tools\bin\uv.exe sync --project task2 --locked --extra dev --extra serve --python 3.12.16 --offline` from root with isolated cache/runtime | Exit 0; resolved/checked 27 packages |
+| `.\.tools\bin\uv.exe pip check --python task2\.venv\Scripts\python.exe` from root | Exit 0; all 27 installed packages compatible |
+| Python stdin sys.version/importlib.metadata probe | Python 3.12.16, FastAPI 0.162.0, Starlette 1.10.0, HTTPX 0.28.1, asgi-lifespan 2.1.0, Uvicorn 0.54.0, Pydantic 2.14.2, pytest 9.2.0, Ruff 0.17.3 |
+
+New test_app.py adds 100 cases to the unchanged original 300. Tests run actual
+FastAPI/Starlette ASGI handling via HTTPX ASGITransport and explicit ASGI lifespan
+events via LifespanManager, through the existing guards and adapter into an
+instrumented MockTransport. They are ASGI integration, not socket/wire evidence.
+
+Zero-upstream evidence: every local rejection test asserts recorder.requests is
+empty: bad/ambiguous credentials, encoded protected names, duplicate JSON keys,
+forged role claims, malformed RPC/batches/notifications, methods/paths, media and
+encoding failures, framing/length errors, declared/streamed oversize, body deadline,
+disconnect and unexpected body-read failure. No body reads occur on bad auth or
+declared oversize. Exact-bound chunked requests pass unchanged; crossing the bound
+never creates a permit/request. Decimal range failure remains 400/-32700/null.
+
+Concurrent evidence: two ASGI clients with different default credentials send 24
+concurrent requests sharing ID=1; 4 viewer admin_ calls return 403 and never reach
+upstream, exactly 20 approved calls reach upstream, each returned owner matches its
+caller. Accepted error/result bodies and unfiltered discovery retain exact bytes;
+inbound cookies/auth/header claims do not replace separate upstream credentials.
+
+Upstream failure tests intentionally record one authorized attempt, controlled
+502/504 and -32603/caller ID, no retry or exception/credential disclosure. Unexpected
+upstream exceptions produce generic 500/-32603; captured logs/stdout/stderr contain
+no secrets. Lifecycle checks show no client before startup, one client across
+requests, closure on exceptional exit, startup failure on missing configuration,
+and 503 without a running lifespan. All standard service helper exits also verify
+transport closure. HTTP contract/limits: task2/CONTRACT.md; decision ADR-013.
+
+No pytest test failed during T2-004. Initial lint failures above are retained as
+actual evidence and resolved. The optional Uvicorn local-run command is documented
+from official settings; it was not executed to begin socket testing. Independent
+engineering review remains PENDING.
+
+Final read-only preservation checks: `git diff --check` exited 0; Git status/diff/
+index inventory inspected. Python stdin SHA256/tomllib inspection confirmed exactly
+10 intended tracked modifications and two new app/test files, with 38 baseline
+files byte-identical. Task 1 source/tests/root pins, all original Task 2 modules/
+tests and original locked package versions retained. Historical decision/build/
+evidence prefixes and Task 1/3/4 registry rows unchanged; new files have no whitespace
+errors or targeted private-key/token-pattern matches. HEAD 0b2e0b7 and empty index
+unchanged. No code/test edits after the final 400-pass run; final changes are docs
+only. No commit/push or T2-005 work.
+
+## E014 — 2026-11-04: T2-004 independent acceptance and Git checkpoint
+
+Independent evidence reported by the user: engineering review approved T2-004,
+the reviewed suite passed 400 tests, and additional security probes confirmed
+zero upstream calls for rejected requests. Probe commands/counts/timings were not
+provided; these are reported results, not local executions in this checkpoint.
+E013 retains the actual local pytest/Ruff record. No tests or Ruff rerun here.
+
+- Read governance/ledger and inspected complete tracked diffs plus new app.py/
+  test_app.py. Executed Git status/index inventory/log/ahead-behind checks: initial
+  HEAD 0b2e0b7, empty index, 10 modified tracked files, two new app/test files and
+  task2_t2004_review.zip; ahead 2/behind 0 versus the existing origin/main ref.
+- Added local-only .git/info/exclude entry for task2_t2004_review.zip; archive
+  retained. `git check-ignore` confirms virtual environments, caches, .egg-info,
+  .env paths, review ZIPs and credential-history reports are excluded.
+- Explicit-path staging contains exactly 12 approved implementation/dependency/
+  documentation files. `git diff --cached --check` passes; inspected staged stat,
+  name/status and protected-path inventory. No unexpected paths/whitespace errors.
+- Python stdin allowlist/content/SHA256/tomllib inspection passed: staged content
+  matches worktree with Git EOL normalization; accepted code/tests/dependencies and
+  review ZIP unchanged since session start; Task 1 and all earlier Task 2 modules/
+  tests preserved; original dependency pins and historical record prefixes intact.
+  Targeted staged private-key/token/credential-URL scan found no secret candidates.
+  No environment, cache, egg-info, credential or review archive is staged.
+- Governance changes record acceptance only; ADR-013/HTTP policies and accepted
+  implementation are unchanged. One descriptive T2-004 commit is authorized;
+  its identity is recorded in Git history and the session report. No push or T2-005.

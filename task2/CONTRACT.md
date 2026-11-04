@@ -193,3 +193,107 @@ Primary APIs: [HTTPX AsyncClient/send](https://www.python-httpx.org/api/),
 [transports/retries](https://www.python-httpx.org/advanced/transports/),
 [timeouts](https://www.python-httpx.org/advanced/timeouts/),
 [CookiePolicy](https://docs.python.org/3.12/library/http.cookiejar.html#http.cookiejar.CookiePolicy.set_ok).
+
+## T2-004 — FastAPI HTTP integration (2026-11-04)
+
+Authorized scope: app.py factory/lifespan/POST /mcp and injected ASGI integration;
+accepted modules/settings/guards/adapter and all original tests remain unchanged.
+The earlier no-endpoint restriction is superseded for this checkpoint only. No
+T2-005 sockets, SSE, OAuth/JWT issuance, Tasks 3/4, commit or push.
+
+### Startup and request flow
+
+- `create_app(security_settings=None, upstream_settings=None, *,
+  upstream_transport=None, body_timeout=10.0)` returns FastAPI without reading
+  credentials or constructing HTTPX resources. Injected settings/transport are
+  trusted application/test setup, never request data. Configuration loads through
+  existing load_settings/load_upstream_settings during lifespan startup; invalid
+  configuration aborts startup. A single existing UpstreamAdapter owns the client
+  for each app/event-loop lifespan and closes on normal/exceptional exit. The ASGI
+  server must drain/cancel active requests before lifespan shutdown.
+- Only POST /mcp exists. No trailing-slash redirects, Swagger/ReDoc/OpenAPI routes,
+  CORS middleware, cookies/session authentication or query-token fallback.
+- Order: routing/method -> HTTP metadata/framing -> existing authenticate ->
+  bounded stream read -> existing guard_request -> existing adapter.forward.
+  No automatic framework JSON body/model parsing. The guard deliberately rechecks
+  the same credentials after the body read before issuing its proof-bound permit;
+  authentication/inspection/authorization logic is not reimplemented in app.py.
+- Require one application/json Content-Type, optionally a single UTF-8 charset
+  parameter (quoted/unquoted, case-insensitive). Require absent/identity content
+  encoding; never decompress. Duplicate Content-Type/Content-Encoding/Content-Length/
+  Transfer-Encoding headers fail closed. Authentication header ambiguity remains
+  the accepted Bearer guard's 401 policy.
+- Accept absent length or one ASCII unsigned Content-Length; reject malformed,
+  duplicate or conflicting length/transfer framing. Transfer-Encoding, if exposed
+  by the ASGI server, must be exactly chunked and have no Content-Length. Compare
+  declared length to the existing upstream max_request_bytes before reading;
+  independently count every received body chunk before retaining it, then verify
+  declared/actual length at EOF. No permit or outbound request until the full body
+  passes. The same limit applies to chunked/lengthless streams (default 1 MiB).
+  A positive finite body_timeout (default 10 seconds) bounds async body reads.
+
+### HTTP response contract
+
+Pre-RPC rejections use only a generic HTTP `{"detail": ...}` body, with no partial
+ID recovery. After guard inspection, use RpcError.to_response for the accepted
+codes/IDs; local serialization uses ASCII escaping to retain all accepted string
+IDs, including surrogate escapes. Recognized notifications always have empty bodies.
+
+| Condition | HTTP status | Body |
+| --- | --- | --- |
+| Unknown path (including /mcp/) | 404 | Generic HTTP detail; no redirect |
+| Non-POST /mcp | 405 | Generic HTTP detail; Allow: POST |
+| Ambiguous HTTP metadata/framing, invalid/mismatched length, incomplete body | 400 | Generic HTTP detail |
+| Unsupported/missing Content-Type or nonidentity Content-Encoding | 415 | Generic HTTP detail |
+| Missing/malformed/duplicate/invalid Bearer credentials | 401 | Invalid Bearer credentials; WWW-Authenticate: Bearer realm="mcp" |
+| Body over limit | 413 | Generic HTTP detail; no JSON parsing/ID recovery |
+| Body read deadline | 408 | Generic HTTP detail |
+| JSON parse error (including Decimal range failure) | 400 | -32700 / Parse error; id=null |
+| Invalid envelope/batch/duplicate JSON keys | 400 | -32600 / Invalid Request; reliable ID or null |
+| Invalid/missing parameters | 400 | -32602 / Invalid params; applicable ID |
+| Viewer protected tool call | 403 | -32001 / Unauthorized Tool Call; applicable ID |
+| Recognized unsupported notification | 400, or 403 for protected viewer call | Empty body; no permit or RPC reply |
+| Valid upstream result/error | Original nonredirect status | Exact upstream bytes, no discovery filtering |
+| Upstream timeout | 504 | -32603 / Upstream timeout; caller ID |
+| Upstream transport/redirect/malformed/ID mismatch/response-size failure | 502 | -32603 / Upstream request failed; caller ID |
+| Closed upstream after inspection | 503 | -32603 / Upstream unavailable; caller ID |
+| Adapter request-size rejection (defense in depth) | 413 | -32603 / Request body too large; caller ID |
+| Request before startup/after shutdown | 503 | Service unavailable HTTP detail; no parsing |
+| Unexpected failure after permit | 500 | -32603 / Internal error; caller ID |
+| Unexpected failure before permit | 500 | Internal Server Error HTTP detail |
+
+All local responses have no-store/nosniff headers. Successful relay uses the existing
+adapter's safe metadata plus nosniff; Starlette computes framing for returned bytes.
+No raw client/upstream authentication headers/cookies are reflected or forwarded.
+The service does not log request material, exception text or tracebacks; debug is
+disabled. Unknown local exception details are suppressed; caller cancellation is
+not converted to a success/error response. Legitimate upstream JSON-RPC bodies are
+intentionally unchanged: the trusted upstream must keep its payloads free of secrets.
+
+### Evidence and remaining boundary
+
+E013: 400 passing Task 2 cases, no failures/skips/warnings; both Ruff checks pass.
+ASGITransport + LifespanManager exercise actual app/guard/adapter composition with
+MockTransport upstream; the 100 new cases assert zero outbound calls on local
+rejection. One concurrent test sends 24 requests through two clients with different
+default credentials and repeated IDs: 4 viewer denials and exactly 20 upstream calls,
+with owner-specific responses preserved. Upstream failure tests intentionally
+observe one permitted attempt, not zero; no retries. Lifecycle tests verify no
+client before startup, one pooled client during requests and closure on exit.
+
+No HTTP listener or real upstream connection was started for validation. ASGI
+tests do not prove HTTP parser/smuggling
+behavior, real chunked-wire decoding, keepalive/draining, DNS/TLS, access-log behavior
+or deployment limits; these are T2-005/operational boundaries, not passing wire claims.
+An ASGI-provided chunk is already allocated before app limits apply. Deployment
+must bound headers/connections and protect transport; the supplied local-run command
+binds loopback and disables access logs. Full MCP Streamable HTTP/session/SSE and
+OAuth remain excluded. Independent engineering approval of T2-004 was confirmed
+by the user on 2026-11-04, including a reviewed 400-test pass and additional
+zero-upstream rejection probes. One approved milestone commit is now authorized,
+superseding only this checkpoint's no-commit restriction. No implementation change,
+push or T2-005 work is authorized. E014 distinguishes reported from local evidence.
+
+Primary references: [FastAPI lifespan](https://fastapi.tiangolo.com/advanced/events/),
+[ASGI tests](https://fastapi.tiangolo.com/advanced/async-tests/),
+[Starlette request streaming](https://starlette.dev/requests/).

@@ -249,3 +249,34 @@
   and explicit response envelope/numeric limits; no real DNS/TLS/wire claim from
   mock tests. Endpoint error mapping and real upstream validation remain later work.
 - Affected: upstream.py, test_upstream.py, Task 2 contract/README; evidence E011.
+
+## ADR-013 — Thin FastAPI composition and explicit HTTP policy
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T2-004; status: ACCEPTED after
+  independent engineering review, confirmed by the user. Baseline 0b2e0b7 components
+  and the reviewed T2-004 implementation remain unchanged.
+- Decision: create_app factory, exact POST /mcp and lifespan-owned existing adapter.
+  Load trusted settings during startup, one client per app/event loop, cleanup in
+  finally/async context. No import-time config/client, automatic docs or slash redirects.
+- Order: HTTP metadata/framing -> existing authenticate -> bounded stream read ->
+  existing guard_request -> existing adapter.forward. Deliberate second auth check
+  inside the accepted guard avoids redesigning permit issuance; no parsing/role-rule
+  duplication. request.stream plus byte count/EOF length check and total read deadline
+  handle chunked/lengthless bodies. No framework JSON models/body deserialization.
+- HTTP policy: 401 generic/challenge; 403 exact protected-call RPC denial; 400 existing
+  RPC parse/envelope/parameter errors; 415 unsupported media/encoding; 413 size;
+  408 body deadline. Recognized notifications get empty 400/403. Upstream failures
+  use 502/503/504 plus -32603/caller ID; valid upstream bytes/statuses pass unchanged.
+  Unexpected exceptions are sanitized without logging request/exception material;
+  ASCII local RPC serialization preserves all existing string ID values.
+- Alternatives: FastAPI HTTPBearer/body models (different duplicate-header/JSON
+  coercion behavior); per-request client (loses pool); refactor accepted guards
+  (unnecessary baseline risk); accept compressed/SSE bodies (outside contract).
+- Tradeoffs: JSON-only service, repeated constant-time token comparisons, bounded
+  buffering and generic diagnostics. ASGI server owns wire framing/draining/TLS and
+  graceful request draining before shutdown. Trusted upstream payloads are unfiltered
+  and must themselves avoid exposing secrets. Full HTTP contract: task2/CONTRACT.md.
+- Dependencies: FastAPI 0.162.0 runtime; asgi-lifespan 2.1.0 dev; Uvicorn 0.54.0
+  optional serve extra. Only Task 2 environment/lock changes; no sockets started.
+- Evidence: E013, 400 passes and both Ruff checks; all prior 300 cases/modules retained.
+  Affected: app.py/test_app.py, Task 2 config/lock/docs and governance records.

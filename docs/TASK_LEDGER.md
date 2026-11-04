@@ -16,11 +16,12 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T1-006 | Reproducibility, lint, README and final evidence | P1 | DONE | Setup/lock and README verified; final lint/format/evidence E007 | Maintain evidence on future changes |
 | T1-007 | Read-only STDIO blocker remediation investigation | P0 | DONE | R1-R5 verified; investigation report; E006 | Proposed candidate implemented and verified under T1-008 |
 | T1-008 | Controlled Approach C implementation and adoption | P0 | DONE | C1-C7 verified; E007; ADR-006/007 | Adopt; rerun boundary contract tests before any SDK upgrade |
-| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | T2-003 HTTPX adapter only; FastAPI endpoint deferred to T2-004 |
+| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | T2-004 FastAPI/ASGI only; T2-005 sockets deferred |
 | T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Preserve committed baseline e828729b |
 | T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Preserve accepted behavior; original tests unchanged in T2-003 |
-| T2-003 | HTTPX upstream adapter | P0 | DONE | U1-U8/E011; 300 tests/Ruff; independently accepted, user confirmation 2026-11-04 | One milestone commit authorized; no push or T2-004 work |
-| T2-004 | FastAPI HTTP endpoint | P0 | NOT_STARTED | Requires separate authorization and HTTP contract | Do not implement in T2-003 |
+| T2-003 | HTTPX upstream adapter | P0 | DONE | U1-U8/E011; 300 tests/Ruff; independently accepted, user confirmation 2026-11-04 | Preserve committed baseline 0b2e0b7 |
+| T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted, user confirmation 2026-11-04; reported 400 passes/zero-upstream probes | One approved milestone commit; no T2-005 or push |
+| T2-005 | Socket-level interoperability | P0 | NOT_STARTED | Separate authorization required | Do not begin during T2-004 |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 | TASK-4 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 
@@ -259,3 +260,60 @@ separately authorized HTTP contract/endpoint work. Stop for review.
   the existing origin/main ref. Exclude the archive locally; preserve all artifacts.
 - Next: inspect/stage the exact 13-file allowlist, commit and verify status. Then
   stop; TASK-2 remains IN_PROGRESS and T2-004 remains NOT_STARTED/unapproved.
+
+## T2-004 acceptance baseline (2026-11-04)
+
+Authorized: FastAPI factory/app.py, POST /mcp, lifespan, HTTP policies and injected
+ASGI/HTTPX integration tests only. Preserve 0b2e0b7/e828729b and Task 1. No T2-005,
+SSE, OAuth/JWT issuance, Tasks 3/4, commit or push.
+
+- [x] H1: Factory and lifespan initialize/close one existing pooled adapter per app;
+  missing/invalid trusted configuration fails startup, with no import-time secrets.
+- [x] H2: POST-only /mcp; metadata/framing/media/encoding/size policies before RPC;
+  bounded streaming body reads (including chunked), early auth and body timeout.
+- [x] H3: Reuse accepted guards and adapter; denied/malformed/unsupported input
+  reaches zero upstream requests; no duplicate auth/JSON parsing implementation.
+- [x] H4: Admin protected calls, both roles' ordinary calls and transparent discovery;
+  request/response bytes and applicable IDs preserved, including error paths.
+- [x] H5: Explicit HTTP mappings, fail-closed batches/notifications, generic failures
+  and no tokens/internal exception details in service responses/logs.
+- [x] H6: ASGI/mock tests for credentials, bypasses, headers, chunk limits, failures,
+  zero-upstream rejection, concurrency/context isolation and lifecycle cleanup.
+- [x] H7: All original 300 tests and new integration tests pass; both Ruff checks pass.
+- [x] H8: Exact evidence, decisions, build/ledger/restart docs and preservation checks;
+  stop for independent engineering review, without T2-005 work or commit/push.
+
+Outcome: T2-004 DONE for implementation, independent engineering review PENDING.
+E013: 400 passed in 1.88s; zero failures/skips/warnings; Ruff lint and format pass
+(13 files). All original 300 tests and accepted settings/security/rpc/upstream
+modules are byte-identical; Task 1 implementation/tests/root pins unchanged.
+Only Task 2 isolated dependencies added; previously locked versions retained.
+
+HTTP contract: task2/CONTRACT.md; architecture: ADR-013. Rejected local inputs
+produce zero upstream calls; the 24-request/two-client test has 4 viewer denials
+and exactly 20 correlated upstream calls. No socket/T2-005 completion claim.
+Remaining limitations: stateless JSON-only upstream, server-owned wire framing,
+TLS/access logs/graceful draining/deployment limits and real interoperability.
+
+Recovery: HEAD 0b2e0b7 unchanged, index empty; 10 intended tracked modifications
+and new app.py/test_app.py. No T2-004 implementation blocker. Stop for independent
+review; T2-005 and any commit/push require separate authorization. TASK-2 remains
+IN_PROGRESS; Task 1 remains DONE with 149 historical passes (not rerun).
+
+## T2-004 independent acceptance and Git checkpoint (2026-11-04)
+
+- User confirms independent engineering approval of T2-004, a reviewed 400-test
+  pass and additional probes confirming zero upstream calls for rejected input.
+  These additional results are independently reported, not new local executions;
+  probe commands/counts were not supplied. T2-004 is DONE and ACCEPTED, resolving
+  the historical review gate above. Local execution evidence remains E013.
+- Authorized: one descriptive commit of approved app.py/test_app.py, Task 2
+  dependency/lock updates and relevant governance documentation. Do not alter
+  accepted implementation, push, or start T2-005. No tests rerun for this checkpoint.
+- Initial Git state: HEAD 0b2e0b7; index empty; 10 tracked modifications, two new
+  app/test files and task2_t2004_review.zip; ahead 2/behind 0 versus local origin/main.
+  Exclude environments/caches/egg-info/credentials/review ZIPs, preserving artifacts.
+- Task 1 and all accepted Task 2 components/tests remain unchanged. ADR-013 is
+  ACCEPTED with its existing HTTP contract/limits; no architecture redesign.
+- Next: stage/inspect the exact 12-file allowlist, create the approved commit and
+  verify Git status/ahead-behind. Stop; TASK-2 IN_PROGRESS, T2-005 NOT_STARTED.

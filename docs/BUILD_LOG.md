@@ -358,3 +358,64 @@ investigations and material changes; Git remains the line-level code history.
   errors or secret candidates, no ignored artifacts; reviewed source/tests/lock
   unchanged during this session. Task 1 and original foundation tests/rpc/settings
   preserved. Proceed with the one authorized milestone commit; no test rerun needed.
+
+## 2026-11-04 — M020: T2-004 HTTP integration baseline
+
+- Read governance, accepted guards/adapter and contracts. Clean at 0b2e0b7;
+  captured SHA256 hashes for all 48 tracked files. Task 1 remains protected.
+- User authorizes FastAPI HTTP factory/POST /mcp/lifespan and injected ASGI tests;
+  no socket testing (T2-005), SSE, OAuth/JWT, Tasks 3/4, commit or push.
+- Recorded H1-H8 before implementation. Plan HTTP metadata checks, authentication
+  before bounded body reading/RPC, then existing guard_request and adapter.forward.
+  Existing components/tests will remain unchanged; HTTP error/status mapping is new.
+- Next: pin isolated framework dependencies, implement/test factory/lifespan and
+  the documented HTTP contract, record actual results and stop for review.
+
+## 2026-11-04 — M021: T2-004 implemented and ASGI-verified
+
+- Added app.py factory/lifespan/POST /mcp, bounded HTTP metadata/body handling and
+  explicit error/status mapping around existing authentication/guard/adapter calls.
+  Accepted components and original 300 tests are unchanged. No alternate RPC parser,
+  role policy, permit issuer or outbound client implementation was introduced.
+- Added 100 ASGI/mock tests, including zero-upstream rejection assertions, exact
+  bytes/IDs/discovery, two concurrent credential contexts, body limits/deadlines,
+  failure sanitization and actual lifespan startup/cleanup. Four of 24 concurrent
+  requests are denied with exactly 20 upstream calls; no context/result mixing.
+- Isolated dependency pins: FastAPI 0.162.0, asgi-lifespan 2.1.0 dev, optional
+  Uvicorn 0.54.0 serve extra; HTTPX 0.28.1 retained. Locked offline setup and
+  dependency check pass (27 packages). No Task 1 environment/pin changes.
+- First Ruff found four test-file issues (unused imports/long literals); fixed.
+  First tests 397 passed; final expanded coverage **400 passed in 1.88s**, zero
+  failures/skips/warnings. Final lint and format pass (13 files); evidence E013.
+- ADR-013 and contract/README record HTTP status/header/notification policies,
+  repeat auth at the accepted guard, ASCII local ID serialization, lifespan ownership
+  and ASGI-vs-socket limits. No raw secrets or exception details are logged/reflected.
+- Affected: new app.py/test_app.py; Task 2 config/lock/docs and governance only.
+  Task 1 remains DONE, prior 149 passes historical. No T2-005, SSE, OAuth/JWT,
+  Tasks 3/4, commit or push. Independent review PENDING.
+- Next: final preservation/diff checks and ledger outcome, then stop for review.
+- Preservation/diff checks passed: 10 intended tracked modifications plus two new
+  files, 38 baseline files byte-identical. Task 1 and all accepted Task 2 modules/
+  tests retained; original lock versions and historical record prefixes preserved.
+  HEAD 0b2e0b7 unchanged, index empty. H1-H8 verified; T2-004 DONE for implementation,
+  review PENDING. No source/test edits after the 400-pass run; stop for review.
+
+## 2026-11-04 — M022: T2-004 independent acceptance and Git checkpoint
+
+- User confirms independent engineering acceptance, reviewed 400-test pass and
+  additional zero-upstream rejection probes. These are reported review results,
+  not new local commands; E013 remains the actual local execution record.
+- Updated ledger/restart instructions, ADR-013, contract/README and authorization
+  record to ACCEPTED. No implementation, test or dependency changes in this session.
+- Inspected complete tracked diff and new app.py/test_app.py. Initial index empty;
+  HEAD 0b2e0b7, 10 tracked modifications, two new app/test files and temporary
+  task2_t2004_review.zip; main ahead 2/behind 0 against local origin/main.
+- Scope: exact 12-file implementation/dependency/governance allowlist. Exclude
+  environments/caches/egg-info/credentials/review ZIPs without deleting artifacts.
+  Preserve Task 1 and all accepted Task 2 behavior; no tests rerun.
+- Next: inspect staging, create one approved T2-004 commit and verify status/counts.
+  No push, T2-005 implementation, or other assessment work is authorized.
+- Staged checks complete (E014): exact 12-file allowlist, clean whitespace/content
+  checks and no targeted secret candidates. Environments/caches/egg-info/credentials/
+  ZIPs excluded; accepted source/tests/dependencies byte-identical. Proceed with
+  the one authorized commit, then verify its tree/status and stop.

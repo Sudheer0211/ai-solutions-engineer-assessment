@@ -76,3 +76,34 @@ The user confirms independent engineering approval of T2-003 and authorizes one
 descriptive milestone commit containing only its approved implementation, tests,
 dependency updates and related governance records. This supersedes the preceding
 no-commit restriction only. No push or T2-004 implementation is authorized.
+
+## Subsequent T2-004 authorization (2026-11-04)
+
+User authorizes FastAPI HTTP integration against accepted e828729b/0b2e0b7:
+
+- app.py application factory, documented POST /mcp, and pooled adapter lifespan.
+- Reuse existing settings/security/rpc/upstream components without duplicating
+  their functionality or unnecessarily redesigning accepted behavior.
+- Apply method/media/encoding/size policies before RPC; bound streamed/chunked
+  bodies; authenticate Bearer credentials before application-level RPC processing.
+- Inspect/authorize tools/call before any outbound request; forward only existing
+  permits through the adapter, preserving request/response bytes and IDs.
+- Document HTTP statuses for authentication/authorization/malformed/upstream
+  failures; preserve applicable local-error IDs and fail-closed batches/notifications.
+- Do not disclose tokens, internal exceptions or upstream credentials in responses
+  or logs. Test missing/malformed/duplicate/invalid credentials, roles, zero denied
+  upstream delivery, transparent discovery, encoded names/duplicate keys, malformed/
+  oversized/compressed bodies, concurrency, failures and startup/shutdown.
+- Inject ASGI/HTTPX transports for integration. Actual sockets belong to T2-005.
+- Run full Task 2 pytest and both Ruff checks; record actual evidence and update
+  governance. Stop for independent review; no Task 1 changes, SSE, OAuth/JWT, Tasks
+  3/4, T2-005, commit or push. Prior no-endpoint restrictions are historical.
+
+## T2-004 independent acceptance and commit authorization (2026-11-04)
+
+The user confirms independent approval of T2-004, a reviewed 400-test pass and
+additional security probes confirming zero upstream calls on rejection. Authorize
+one descriptive commit of approved T2-004 source/tests/dependencies and relevant
+documentation only. Exclude environments, caches, egg-info, credentials and ZIP
+review artifacts. Do not alter the accepted implementation, push or begin T2-005.
+This supersedes only the preceding no-commit restriction for this Git checkpoint.
