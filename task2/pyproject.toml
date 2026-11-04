@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "assessment-task2-proxy"
 version = "0.1.0"
-description = "T2-001/T2-002: isolated security and JSON-RPC guards"
+description = "Task 2 security guards and asynchronous HTTPX upstream adapter"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = ["httpx==0.28.1"]
 
 [project.optional-dependencies]
 dev = ["pytest==9.2.0", "ruff==0.17.3"]
@@ -20,7 +20,7 @@ include = ["task2_proxy*"]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
 cache_dir = ".cache/pytest"
-markers = ["task2: T2-001/T2-002 guard checkpoint"]
+markers = ["task2: Task 2 guards and upstream adapter"]
 
 [tool.ruff]
 target-version = "py312"

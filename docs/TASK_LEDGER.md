@@ -16,10 +16,11 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T1-006 | Reproducibility, lint, README and final evidence | P1 | DONE | Setup/lock and README verified; final lint/format/evidence E007 | Maintain evidence on future changes |
 | T1-007 | Read-only STDIO blocker remediation investigation | P0 | DONE | R1-R5 verified; investigation report; E006 | Proposed candidate implemented and verified under T1-008 |
 | T1-008 | Controlled Approach C implementation and adoption | P0 | DONE | C1-C7 verified; E007; ADR-006/007 | Adopt; rerun boundary contract tests before any SDK upgrade |
-| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | Only T2-001/T2-002 authorized; HTTP forwarding remains deferred |
-| T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Foundation commit authorized; no push or T2-003 implementation |
-| T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Foundation commit authorized; no push or T2-003 implementation |
-| T2-003 | HTTP endpoint and upstream-adapter integration | P0 | NOT_STARTED | Pending contract decisions and explicit implementation authorization | Do not begin; await user authorization |
+| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | T2-003 HTTPX adapter only; FastAPI endpoint deferred to T2-004 |
+| T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Preserve committed baseline e828729b |
+| T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Preserve accepted behavior; original tests unchanged in T2-003 |
+| T2-003 | HTTPX upstream adapter | P0 | DONE | U1-U8/E011; 300 tests/Ruff; independently accepted, user confirmation 2026-11-04 | One milestone commit authorized; no push or T2-004 work |
+| T2-004 | FastAPI HTTP endpoint | P0 | NOT_STARTED | Requires separate authorization and HTTP contract | Do not implement in T2-003 |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 | TASK-4 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 
@@ -208,3 +209,53 @@ previous evidence have been changed. No commit/push authorized.
   tests, dependencies and lockfile. Whole TASK-2 remains IN_PROGRESS.
 - T2-003 is NOT_STARTED/pending: review approval is complete, but HTTP contract
   decisions and explicit implementation authorization remain outstanding.
+
+## T2-003 adapter acceptance (2026-11-04)
+
+User authorizes only an asynchronous HTTPX adapter, preserving baseline e828729b.
+No FastAPI endpoint, SSE, OAuth, Tasks 3/4, Task 1 changes, commit or push.
+
+- [x] U1: Minimal typed upstream.py API; pooled AsyncClient; explicit finite timeouts.
+- [x] U2: Fixed validated destination and separately configured upstream credentials;
+  no client URL/header/cookie/authentication pass-through, redirects or retries.
+- [x] U3: Only guard-issued authorization permits reach transport; forged/uninspected/
+  denied requests cannot be sent. Existing guard semantics remain passing.
+- [x] U4: Original request bytes preserved, including IDs, arguments and extensions.
+- [x] U5: Valid correlated JSON-RPC results/errors preserved byte-for-byte, with no
+  discovery filtering; explicit response ID/envelope and safe-header policy.
+- [x] U6: Documented connection/timeout/redirect/malformed/ID-mismatch failure handling;
+  bounded response resources, cancellation/close behavior and no sensitive diagnostics.
+- [x] U7: MockTransport integration verifies credential isolation, errors, redirects,
+  cancellation and concurrent request/response isolation; no real-server claim.
+- [x] U8: Full Task 2 tests and Ruff pass; exact evidence/docs and recovery state updated.
+
+Outcome: T2-003 DONE for implementation, independent engineering review PENDING.
+E011: 300 passed in 0.55s, Ruff lint passes and 11 files already formatted;
+locked offline setup/dependency checks pass. Prior 186 cases and Task 1 unchanged.
+ADRs 011/012 and task2/CONTRACT.md record API, limits, failure/header policies and
+process-local proof-bound permits. No endpoint or full MCP HTTP completion claim.
+
+Recovery: HEAD e828729b unchanged; index empty; 11 intended tracked modifications
+and two new files (upstream.py/test_upstream.py). Task 1's 149-pass evidence is
+historical and was not rerun. No commit/push. No T2-003 implementation blocker;
+remaining gates are independent review, real upstream validation and T2-004's
+separately authorized HTTP contract/endpoint work. Stop for review.
+
+## T2-003 independent acceptance and Git checkpoint (2026-11-04)
+
+- The user confirms independent engineering approval of the HTTPX adapter. T2-003
+  is DONE and independently ACCEPTED; this resolves the historical review gate
+  above. ADR-011/012 and the contract retain their documented limits.
+- One descriptive T2-003 commit is authorized. Include only approved adapter code,
+  tests, Task 2 dependency/lock updates and relevant governance documentation.
+  No push, T2-004 implementation or Tasks 3/4 work is authorized.
+- E011 remains the latest execution evidence: 300 passed in 0.55s, Ruff lint and
+  format pass. No tests rerun for this Git checkpoint; no unexpected code changes.
+- Preserve Task 1 and the accepted e828729b foundation. No changes to Task 1,
+  original Task 2 tests, rpc.py or settings.py. The approved security.py permit
+  issuance addition is part of T2-003, with existing guard behavior preserved.
+- Initial tree: 11 modified tracked files, new upstream.py/test_upstream.py,
+  untracked task2_t2003_review.zip; index empty; main ahead 1/behind 0 relative to
+  the existing origin/main ref. Exclude the archive locally; preserve all artifacts.
+- Next: inspect/stage the exact 13-file allowlist, commit and verify status. Then
+  stop; TASK-2 remains IN_PROGRESS and T2-004 remains NOT_STARTED/unapproved.

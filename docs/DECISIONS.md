@@ -201,3 +201,51 @@
   strict IDs, duplicate-key checks, decoded tool names and raw bytes are unchanged.
 - Affected: task2/src/task2_proxy/rpc.py, task2/tests/test_rpc.py, task2/CONTRACT.md.
   Verification: E009, 186 passing tests and both Ruff checks. No HTTP/Task 1 changes.
+
+## ADR-011 — Own the fixed upstream client and validate authorization issuance
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T2-003; status: ACCEPTED after
+  independent engineering review, confirmed by the user. Baseline e828729b and
+  existing guard behavior retained.
+- Decision: add upstream.py with frozen trusted settings, fixed HTTPS/literal-loopback
+  HTTP URL, separate optional Bearer credential and one owned HTTPX 0.28.1 AsyncClient.
+  Use explicit public Request/send APIs, finite phase/deadline timeouts, connection
+  limits, TLS verification, trust_env=False, retries=0 and follow_redirects=False.
+  A public CookieJar rejection policy prevents shared upstream cookie state.
+- Authorization: the prior public dataclass was not proof of guard issuance. Add a
+  private process-local HMAC proof bound to role/body, verified/reinspected before
+  sending. Existing guard tests remain unchanged; no inbound credential retention.
+- Alternatives: accept raw bytes or any constructed role dataclass (bypasses guard);
+  inject externally configured AsyncClient (shared mutable auth/cookie/env settings);
+  new client per request (loses pooling); pass inbound headers (credential leakage).
+- Rationale: fixed ownership and no client-header interface minimize credential
+  confusion; local per-call bodies/IDs isolate concurrent work without a global ID map.
+- Tradeoffs: asyncio/process-local permits; no hostile-Python sandbox or replay
+  protection; injected transports are trusted test infrastructure. Trusted operators
+  still own destination/DNS/egress configuration; private HTTPS endpoints are allowed.
+- Affected: security.py, upstream.py, Task 2 dependency/lock, test_upstream.py.
+  HTTPX public API/source and CookiePolicy documentation inspected; references in
+  task2/CONTRACT.md. E011 records actual tests and preservation checks.
+
+## ADR-012 — Bounded raw JSON responses and transport-neutral failures
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T2-003; status: ACCEPTED after
+  independent engineering review, confirmed by the user.
+- Decision: forward original authorized bytes. Buffer at most 2 MiB of raw identity
+  response data; validate one unambiguous JSON-RPC response and exact ID type/value;
+  return unchanged body and nonredirect status. Preserve result/error extensions,
+  including opaque exponent tokens, without business schemas or discovery filtering.
+  Reject compressed/SSE/batch/malformed/mismatched responses and all 3xx.
+- Headers: discard all upstream headers; synthesize JSON Content-Type and no-store.
+  Do not propagate cookies, challenges, hop-by-hop/nominated fields, MCP sessions,
+  CORS, redirects or upstream lengths. T2-004 owns final HTTP framing/status mapping.
+- Failures: typed generic UpstreamError kinds for timeout/transport/redirect/invalid
+  response/ID mismatch/size/closed; no fabricated JSON-RPC code. Propagate caller
+  cancellation and close acquired responses. No automatic retry of mutating calls.
+- Alternatives: blindly relay responses/headers (misrouting, credential/framing
+  hazards); deserialize/reserialize business payloads (changes precision/extensions);
+  implement Streamable HTTP/session/SSE behavior now (out of authorized scope).
+- Consequences: JSON-only/stateless upstream interoperability, bounded buffering
+  and explicit response envelope/numeric limits; no real DNS/TLS/wire claim from
+  mock tests. Endpoint error mapping and real upstream validation remain later work.
+- Affected: upstream.py, test_upstream.py, Task 2 contract/README; evidence E011.

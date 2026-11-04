@@ -297,3 +297,64 @@ investigations and material changes; Git remains the line-level code history.
   tests and lockfile remain byte-identical; Task 1 preserved. Local-only Git
   exclusions keep review exports and credential reports out of staging, alongside
   existing environment/cache exclusions. Proceed with the one authorized commit.
+
+## 2026-11-04 — M017: T2-003 adapter baseline and policies
+
+- Read governance/contract and accepted guard code. Clean tree at e828729b;
+  captured SHA256 hashes for all 46 tracked files. Task 1 is protected.
+- User authorizes HTTPX adapter only; endpoint is T2-004 and remains NOT_STARTED.
+  Recorded U1-U8 before implementation; no commit/push authorized.
+- Inspection found publicly constructible permit dataclass; add guard issuance
+  validation so merely constructing the dataclass does not authorize transport.
+- Plan: own a pooled client, fixed validated URL, separate upstream Bearer token,
+  no inbound headers, explicit timeouts/limits, redirects/retries disabled;
+  byte-preserving JSON-only responses with strict correlation and safe headers.
+- Outstanding: dependency installation, implementation and tests not yet executed.
+  Next: implement adapter/permit check, mock integration and actual validation.
+
+## 2026-11-04 — M018: T2-003 implemented and mock-verified
+
+- Implemented typed upstream settings, owned pooled AsyncClient, process-bound
+  permit validation, exact byte forwarding/correlation, safe metadata and typed
+  generic failures. Added 114 mock/stream integration cases; original 186 retained.
+- HTTPX 0.28.1 pinned in the isolated Task 2 project/lock. Initial offline install
+  failed because uncached; approved isolated network install succeeded. Locked
+  offline sync and 15-package dependency consistency check now pass.
+- Initial Ruff found three test-fixture loop captures; fixed. First full tests:
+  295 passed/1 failed (predecoded gzip fixture); corrected to a raw async stream.
+  Subsequent 299 passed; final config-overflow regression brings **300 passed in
+  0.55s**. Final lint passes; format check reports 11 already formatted. E011.
+- ADR-011: fixed client/destination/credentials, explicit timeouts/no retries or
+  redirects and proof-bound permits. ADR-012: bounded raw JSON response validation,
+  exact IDs, stripped upstream headers, generic failure kinds and cancellation.
+- Affected: new upstream.py/test_upstream.py; additive security.py issuance check;
+  Task 2 config/lock/contract/README; AGENTS/requirements/governance records.
+- Independent review remains PENDING; real upstream/HTTP wire evidence, HTTP error
+  mapping and inbound body/lifecycle handling remain T2-004 work. No FastAPI, SSE,
+  OAuth, Tasks 3/4, Task 1 source/test/pin changes, commit or push.
+- Next: preservation/diff checks, final ledger handoff, then stop for review.
+- Final preservation/diff checks passed: 35 baseline files unchanged; Task 1 and
+  all original Task 2 tests/rpc/settings retained; historical documentation prefixes
+  and Task 1/3/4 registry rows unchanged. 11 intended tracked modifications and two
+  new files; HEAD e828729b unchanged, nothing staged. Updated U1-U8 to verified;
+  T2-003 DONE for implementation, independent review PENDING. No further code edits
+  after the 300-pass run. Stop; T2-004 is not authorized.
+
+## 2026-11-04 — M019: T2-003 independent acceptance and Git checkpoint
+
+- User confirms independent engineering approval. Updated ledger/current restart
+  instructions, ADR-011/012, contract/README and authorization record to ACCEPTED.
+  No architecture or reviewed code changes; Task 1 and foundation remain preserved.
+- Initial inspection: complete tracked diff plus both new adapter/test files;
+  11 modified tracked files, two new implementation/test files and one temporary
+  task2_t2003_review.zip; index empty, HEAD e828729b, ahead 1/behind 0 origin/main.
+- No unexpected source/test/dependency changes; no tests rerun. E011 remains the
+  actual 300-pass/Ruff evidence. One descriptive T2-003 commit is authorized.
+- Scope: exact 13-file adapter/dependency/governance allowlist. Exclude environments,
+  caches, credentials and review archives; retain local artifacts without deletion.
+- Next: staged content/preservation checks, authorized commit and final Git
+  verification, then stop. No push or T2-004 implementation is authorized.
+- Staged inspection complete (E012): exactly 13 approved paths, no whitespace
+  errors or secret candidates, no ignored artifacts; reviewed source/tests/lock
+  unchanged during this session. Task 1 and original foundation tests/rpc/settings
+  preserved. Proceed with the one authorized milestone commit; no test rerun needed.

@@ -1,9 +1,10 @@
 """T2-002: pure authentication/authorization; no endpoint or forwarding side effects."""
 
+import hmac
 import re
 import secrets
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from task2_proxy.rpc import (
     INVALID_PARAMS,
@@ -16,6 +17,7 @@ from task2_proxy.rpc import (
 from task2_proxy.settings import Role, SecuritySettings
 
 _BEARER = re.compile(r"(?i:Bearer) +([A-Za-z0-9._~+/-]+=*)")
+_PERMIT_KEY = secrets.token_bytes(32)
 
 
 class AuthenticationError(Exception):
@@ -27,6 +29,29 @@ class AuthenticationError(Exception):
 class AuthorizedRequest:
     role: Role
     request: InspectedRequest
+    _proof: bytes = field(default=b"", init=False, repr=False, compare=False)
+
+
+def _permit_proof(role: Role, request: InspectedRequest) -> bytes:
+    return hmac.digest(_PERMIT_KEY, role.value.encode() + b"\0" + request.raw_body, "sha256")
+
+
+def require_authorized_request(permit: AuthorizedRequest) -> InspectedRequest:
+    """Validate guard issuance/body binding; this is not a sandbox for hostile Python."""
+    if (
+        type(permit) is not AuthorizedRequest
+        or type(permit.role) is not Role
+        or type(permit.request) is not InspectedRequest
+        or type(permit.request.raw_body) is not bytes
+        or type(permit._proof) is not bytes
+        or not secrets.compare_digest(permit._proof, _permit_proof(permit.role, permit.request))
+    ):
+        raise AuthenticationError()
+    inspected = inspect_request(permit.request.raw_body)
+    if inspected != permit.request or inspected.is_notification:
+        raise AuthenticationError()
+    authorize(permit.role, inspected)
+    return inspected
 
 
 def authenticate(header_values: Sequence[str], settings: SecuritySettings) -> Role:
@@ -78,4 +103,6 @@ def guard_request(
     authorize(role, request)
     if request.is_notification:
         raise RpcError(INVALID_REQUEST, "Notifications are not supported", respond=False)
-    return AuthorizedRequest(role, request)
+    permit = AuthorizedRequest(role, request)
+    object.__setattr__(permit, "_proof", _permit_proof(role, request))
+    return permit

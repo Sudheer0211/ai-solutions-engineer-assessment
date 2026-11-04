@@ -403,3 +403,87 @@ evidence remains E009: 186 passing cases and both Ruff checks passing.
   Task 1 source/tests/root pins and prior evidence prefixes remain unchanged.
 - Commit is authorized; no push or T2-003 implementation is authorized. The
   resulting foundation commit is identified by Git history and the session report.
+
+## E011 — 2026-11-04: HTTPX upstream adapter (T2-003)
+
+Baseline e828729b; existing Task 2 Python 3.12.16 environment. Scope is adapter
+plus mock-transport integration; no endpoint, real upstream, Task 1 tests or commit.
+Prior E001-E010 entries remain historical. No credentials or raw sensitive data
+were used; fixtures generate ephemeral synthetic tokens.
+
+| Actual command/check | Actual result |
+| --- | --- |
+| Read AGENTS/ledger/contract/accepted guards and inspect `git status --short`, `git log -1 --oneline`; Python stdin SHA256 baseline | Clean at e828729b; captured all 46 tracked file hashes |
+| Python stdin importlib.metadata probes | HTTPX absent from Task 2; a separate read-only root metadata probe also failed with PackageNotFoundError; no root installation/change |
+| `.\.tools\bin\uv.exe sync --project task2 --extra dev --python 3.12.16 --index-url https://pypi.org/simple --offline` from root, task2 UV cache | Exit 1: HTTPX not cached; no satisfiable offline resolution |
+| Same sync without --offline, approved escalated network with process-local HTTP/HTTPS/ALL proxy variables cleared | Exit 0; resolved 15 packages; installed HTTPX/transitive dependencies only into task2/.venv; updated only Task 2 lock |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` from task2, initial | Exit 0; 2 files reformatted, 9 unchanged |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` from task2, initial | Exit 1; three B023 loop-variable captures in new test fixtures; fixed using bound default arguments |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short` from task2, first | Exit 1; **295 passed, 1 failed in 0.71s**; unsupported gzip fixture was decompressed during HTTPX Response construction before adapter validation |
+| Ruff lint/format after loop-variable fixes | Exit 0 each; all checks passed, 11 files formatted |
+| Python stdin inspect.signature/getsource probes of installed HTTPX public AsyncClient.send and Cookies constructor | Verified send-as-is behavior, timeout setup and CookieJar policy retention; no library code changed |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` after fixture/concurrency extensions | Exit 0; 1 reformatted, 10 unchanged |
+| Full pytest after raw-stream gzip fixture correction and additional proof/concurrency tests | Exit 0; **299 passed in 0.73s**; no warnings/skips/xfails |
+| Ruff lint/format at the 299-pass checkpoint | Exit 0 each; all checks passed, 11 files already formatted |
+| Locked offline uv sync: `.\.tools\bin\uv.exe sync --project task2 --locked --extra dev --python 3.12.16 --offline` with isolated cache | Exit 0; resolved/checked 15 packages |
+| `.\.tools\bin\uv.exe pip check --python task2\.venv\Scripts\python.exe` from root | Exit 0; all 15 installed packages compatible |
+| Final `.\.venv\Scripts\python.exe -m pytest -q --tb=short` after timeout-overflow config regression | Exit 0; **300 passed in 0.55s**, no failures/warnings/skips/xfails |
+| Final `.\.venv\Scripts\python.exe -m ruff check src tests` | Exit 0; all checks passed |
+| Final `.\.venv\Scripts\python.exe -m ruff format --check src tests` | Exit 0; 11 files already formatted |
+
+Installed metadata: Python 3.12.16; HTTPX 0.28.1, httpcore 1.0.9, AnyIO 4.16.0,
+certifi 2026.10.23, h11 0.16.0, idna 3.20, pytest 9.2.0, Ruff 0.17.3;
+transitive versions are recorded in task2/uv.lock. Original 186 guard cases remain
+unchanged and passing; test_upstream.py adds 114 cases.
+
+New coverage: URL/credential/finite-limit configuration, exact request and result/
+error bytes/IDs, unfiltered discovery, no inbound header/token leakage, upstream
+cookie rejection and safe output headers, all 3xx without follow-up, no application
+retry, phase-timeout metadata/failure handling, bounded raw streams, total deadline,
+cancellation/close, size limits, malformed/duplicate/error envelopes, strict ID type
+matching, fabricated/tampered permits, fixed URLs despite body claims, and concurrent
+calls with distinct or repeated IDs across roles and separate upstream credentials.
+
+The one failed test was a fixture-path mismatch: changed the gzip fixture to an
+AsyncByteStream so the real adapter sees headers before body handling. No assertions
+were weakened or existing guard tests edited. Adapter code additionally validates
+extreme timeout configuration without leaking OverflowError. Policy/limits are
+documented in ADR-011/012 and task2/CONTRACT.md. These mock checks do not verify
+real DNS/TLS/OS socket pooling or real network timeout enforcement; no HTTP endpoint
+or full MCP Streamable HTTP compatibility is claimed. Independent review pending.
+
+Final read-only integrity inspection: `git diff --check` exited 0; inspected
+`git status --short --untracked-files=all`, diff/stat and index inventory. Python
+stdin SHA256 comparison against the 46-file baseline confirms 11 intended tracked
+modifications, 35 byte-identical baseline files, and exactly two new adapter/test
+files. All Task 1 source/tests/root pins, Task 2's original tests/rpc/settings,
+Task 1/3/4 registry rows and historical decision/build/evidence prefixes preserved.
+HEAD remains e828729b; nothing staged. No code changed after the 300-pass run;
+final edits only document verified outcomes. No commit/push.
+
+## E012 — 2026-11-04: Independently accepted T2-003 Git checkpoint
+
+The user confirms independent engineering approval of T2-003. No tests or Ruff
+commands were rerun: reviewed code/tests/dependencies have no unexpected changes.
+E011 remains the actual 300-pass/Ruff execution evidence; this is Git inspection.
+
+- Executed Git status, complete tracked diffs, new upstream.py/test_upstream.py
+  inspection, index inventory, log and `git rev-list --left-right --count
+  origin/main...HEAD`. Initial HEAD e828729b; ahead 1/behind 0; index empty;
+  11 modified tracked files, two new code/test files and temporary review ZIP.
+- Locally excluded /task2_t2003_review.zip in .git/info/exclude; preserved the
+  archive. `git check-ignore` confirms environments, caches, .env paths, both
+  review ZIP names and credential-history reports are excluded.
+- Staged only the explicit 13-file T2-003 implementation/dependency/governance
+  allowlist. Inspected `git diff --cached --stat`, `--name-status`, `--check` and
+  protected Task 1 paths. No unexpected paths or whitespace errors; index matches
+  worktree with Git EOL normalization. No environments/caches/archives staged.
+- Python stdin index-content/allowlist/SHA256/AST inspection passed: reviewed
+  source/tests/config/lock/archive byte-identical to session start; no Task 1 or
+  original guard-test/rpc/settings changes; authenticate/authorize function bodies
+  unchanged; historical governance prefixes preserved. Targeted private-key/token/
+  credential-URL scan found no secret candidates, recognizing only the intentional
+  invalid user:password URL on the reserved .test domain in a negative test.
+- No architecture changes in this checkpoint; ADR-011/012 now ACCEPTED. One
+  descriptive milestone commit is authorized, identified by Git history and the
+  session report. No push or T2-004 implementation is authorized.

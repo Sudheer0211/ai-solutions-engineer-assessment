@@ -27,13 +27,16 @@ duplicate line-level diffs in Markdown. Do not rewrite existing history.
 
 ## Task 2 checkpoint restart gate
 
-Read `docs/TASK2_REQUIREMENTS.md`, `task2/CONTRACT.md`, ADR-008/009/010 and E008/E009.
+Read `docs/TASK2_REQUIREMENTS.md`, `task2/CONTRACT.md`, ADR-008 through ADR-012,
+and E008/E009/E011/E012.
 T2-001/T2-002, including the Decimal correction, were independently reviewed and
 accepted as confirmed by the user on 2026-11-04. Task 2 remains IN_PROGRESS.
-T2-003 is pending explicit authorization; approval of the foundation does not
-authorize HTTP implementation. One foundation commit is authorized; no push.
-FastAPI + HTTPX is the approved later architecture; current task2/ contains only
-isolated standard-library guards. Preserve Task 1 implementation/tests/root pins.
+Foundation baseline: e828729b. T2-003's HTTPX adapter was independently accepted
+as confirmed by the user on 2026-11-04. One T2-003 milestone commit is authorized;
+no push. T2-004's FastAPI endpoint remains unauthorized.
+Preserve the accepted guard behavior and Task 1 implementation/tests/root pins.
+T2-003 is verified in E011 (300 Task 2 passes and Ruff); E012 records acceptance
+and commit inspection. Do not infer permission to start T2-004.
 Do not start HTTP forwarding or Tasks 3/4, commit or push without authorization.
 
 ## Task 1 engineering standards

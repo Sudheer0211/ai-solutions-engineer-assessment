@@ -1,15 +1,15 @@
-# Task 2 guard checkpoint
+# Task 2 guards and upstream adapter
 
-This project implements T2-001/T2-002 only: configuration and pure security/
-JSON-RPC guards. There is no HTTP endpoint, application launcher or forwarding.
-FastAPI + HTTPX integration belongs to the next authorized checkpoint.
+This project implements accepted T2-001/T2-002 guards and the T2-003 HTTPX upstream
+adapter. There is no FastAPI endpoint or application launcher; that is T2-004.
 See [CONTRACT.md](CONTRACT.md) for exact requirements, choices and deferred work.
 
-Checkpoint verification (2026-11-04): 186 unit cases passed; Ruff lint and format
-checks passed. See root docs/TEST_EVIDENCE.md entries E008/E009 for actual results.
+Checkpoint verification (2026-11-04): 300 Task 2 cases passed; Ruff lint and format
+checks passed. See root docs/TEST_EVIDENCE.md entries E008/E009/E011 for actual results.
 Independent engineering review accepted T2-001/T2-002, including the Decimal fix,
-as confirmed by the user on 2026-11-04. Whole Task 2 remains incomplete; T2-003
-implementation awaits explicit authorization. No HTTP endpoint or forwarding exists.
+as confirmed by the user on 2026-11-04. The user also confirmed independent
+acceptance of T2-003 on 2026-11-04. Whole Task 2 remains incomplete; T2-004 awaits
+explicit authorization. One T2-003 milestone commit is authorized; no push.
 
 From task2/ with uv installed:
 
@@ -21,7 +21,7 @@ uv sync --locked --extra dev --python 3.12.16
 ```
 
 Use this project's environment; do not install into the root Task 1 environment.
-Runtime guards use only the standard library. Dev/build versions are pinned;
+Guards use the standard library; the adapter pins HTTPX 0.28.1. Dev/build versions are pinned;
 uv.lock records their tested transitive selection. No secrets/default tokens ship.
 
 TASK2_ROLE_TOKENS is configured externally as JSON: admin and viewer keys each
@@ -48,3 +48,25 @@ Authentication errors remain transport-neutral pending HTTP status decisions.
 Task 1 source/tests/dependencies/lockfile and historical evidence are preserved.
 Passing these unit tests does not prove transparent HTTP forwarding or downstream
 non-delivery: those require the later independent HTTP integration/wire checkpoint.
+
+Upstream API (asyncio):
+
+```python
+from task2_proxy.upstream import UpstreamAdapter, load_upstream_settings
+
+# permit is obtained from security.guard_request using trusted caller settings.
+async with UpstreamAdapter(load_upstream_settings()) as adapter:
+    response = await adapter.forward(permit)
+```
+
+Configure TASK2_UPSTREAM_URL separately from inbound role tokens. Optional
+TASK2_UPSTREAM_BEARER_TOKEN is an independent upstream credential. URLs must be
+HTTPS or literal-loopback HTTP, with no userinfo/query/fragment. No caller header,
+cookie or URL is accepted by forward(). Original request/response bytes are retained.
+Only unambiguous correlated JSON-RPC JSON responses are supported; all upstream
+headers are replaced with safe local metadata. See CONTRACT.md for precise limits,
+failure kinds, credential isolation, cookie rejection and lifecycle responsibilities.
+
+No redirects/retries, SSE, compressed responses, OAuth or MCP session negotiation.
+Mock integration verifies forwarding and denied-permit non-delivery at the adapter;
+real upstream interoperability and inbound endpoint wire tests remain future work.
