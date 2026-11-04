@@ -1,0 +1,361 @@
+
+You are acting as a Senior Python Backend Engineer, AI Infrastructure Engineer, and MCP Protocol Specialist.
+
+PROJECT:
+AI Field Developer / AI Solutions Engineer Technical Assessment
+
+TASK:
+Task 1 — Build a Custom MCP Server with Strict Validation and STDIO Transport Handling.
+
+OBJECTIVE:
+Implement a fully runnable, independently testable MCP server using the official Model Context Protocol Python SDK and Pydantic v2.
+
+This is an engineering assessment. Prioritize protocol correctness, strict validation, transport isolation, readable code, and demonstrable tests over unnecessary architectural complexity.
+
+Implement the solution in the current repository. Do not stop after producing a design.
+
+==================================================
+A. ASSESSMENT REQUIREMENTS — SOURCE OF TRUTH
+==================================================
+
+Expose exactly two MCP tools:
+
+1. get_customer_record
+   Input: customer_id
+   Format: CUST-XXXXX, where XXXXX represents exactly five ASCII digits.
+
+2. trigger_refund
+   Inputs:
+   - customer_id: same format
+   - amount: positive finite JSON number
+   - reason: string of at least 10 characters
+
+Required behavior:
+- Strict input schema validation using Pydantic.
+- Invalid tool parameters must produce standard JSON-RPC protocol errors.
+- Use stdio transport.
+- Reserve stdout exclusively for MCP JSON-RPC messages.
+- Write all logging and debugging exclusively to stderr.
+- Implement correct MCP lifecycle, tools/list, and tools/call behavior.
+- Provide executable tests demonstrating compliance.
+
+Do not implement Tasks 2, 3, or 4.
+
+==================================================
+B. CRITICAL — IMPLEMENTATION CONTRACT
+==================================================
+
+1. Technology and compatibility
+
+- Python 3.12.
+- Official PyPI "mcp" SDK, preferably version 2.3.0.
+- Pydantic v2.
+- Use only documented, public SDK APIs.
+- Pin tested dependency versions.
+- Use the official SDK transport and protocol machinery.
+- Do not implement JSON-RPC framing or the MCP lifecycle from scratch.
+
+IMPORTANT:
+The high-level MCPServer API may return isError=true for schema validation failures, whereas this assessment explicitly requests JSON-RPC error codes.
+
+Investigate this difference and favor the official low-level mcp.server.Server API if needed.
+
+For failed tools/call argument validation, return a JSON-RPC protocol error with code -32602, not merely a successful JSON-RPC result containing isError=true.
+
+Use MCPError and INVALID_PARAMS from the official SDK where appropriate.
+
+Do not monkeypatch SDK internals.
+
+2. Input schema definitions
+
+Implement reusable Pydantic schemas.
+
+get_customer_record:
+- customer_id required
+- Must match ^CUST-[0-9]{5}$
+- Reject missing, null, nonstring, and malformed values
+- Reject additional fields
+
+trigger_refund:
+- customer_id required, same validation
+- amount required, numeric, finite, strictly greater than zero
+- reason required, string, minimum length 10
+- Reject unknown fields
+- Reject numeric strings, booleans, null, NaN, and Infinity
+- Reject blank/whitespace-only reasons
+- Do not silently coerce invalid input types
+
+Accept valid positive JSON numeric values such as 10, 10.5, and 10.25. Do not introduce an undocumented two-decimal-place input restriction.
+
+Use Decimal(str(amount)) or a similarly defensible technique for internal financial arithmetic. Do not use binary floating-point arithmetic for refund balance updates.
+
+Generate tools/list inputSchema from the same Pydantic models, or otherwise prove that advertised JSON Schema matches actual validation.
+
+3. JSON-RPC error handling
+
+Enforce and test these categories:
+
+- Malformed JSON: -32700 Parse error.
+- Invalid JSON-RPC request structure: -32600 Invalid Request.
+- Unknown protocol method: -32601 Method not found.
+- Invalid tool arguments: -32602 Invalid params.
+- Unknown tool name: -32602 Invalid params.
+- Unexpected internal protocol failure: -32603 Internal error.
+
+Use official SDK handling whenever possible.
+
+Preserve the request ID in applicable error responses.
+
+Distinguish protocol errors from business execution errors.
+
+Business execution failures, such as a well-formed but nonexistent customer, should return MCP tool results marked isError=true, rather than being mislabeled as malformed JSON-RPC requests.
+
+Never leak Python stack traces or internal implementation details in client-facing errors.
+
+If the SDK cannot produce a required error response on a malformed transport message, document the exact limitation and provide a failing or diagnostic wire test. Do not falsely report protocol compliance.
+
+4. STDIO transport
+
+Implement a runnable executable entry point that starts the MCP server over stdio.
+
+Requirements:
+- Read MCP messages through the SDK's stdio transport.
+- Emit valid JSON-RPC messages through stdout.
+- No print(), debug output, startup banners, or other nonprotocol text on stdout.
+- Configure Python logging exclusively to stderr.
+- Clean startup and shutdown.
+- Do not launch an HTTP server.
+- Do not require a listening TCP port.
+
+5. Mock customer data
+
+Create a deterministic in-memory customer repository.
+
+Seed at least three records:
+- CUST-00001
+- CUST-00002
+- CUST-00003
+
+Include minimal non-sensitive fields, such as:
+customer_id, customer_name, account_status, refundable_balance.
+
+get_customer_record should return structured customer data for existing IDs.
+
+For missing customers, return an appropriate business-level tool error.
+
+Avoid real personal or financial data.
+
+6. Mock refund behavior
+
+trigger_refund should:
+- Validate all inputs before side effects.
+- Confirm the customer exists.
+- Check that the requested refund does not exceed the available refundable balance.
+- Record successful refund transactions in memory.
+- Deduct successful refunds from the available refundable balance.
+- Return a deterministic refund identifier and status.
+- Avoid balance mutations when validation or execution fails.
+
+A deterministic sequential refund identifier is sufficient.
+
+No real payment integrations or database are required.
+
+Define the state lifecycle explicitly: in-memory mock state lasts only for the running server process.
+
+Do not claim persistence across restarts.
+
+==================================================
+C. MEDIUM — ENGINEERING QUALITY
+==================================================
+
+7. Project structure
+
+Create a clean task1/ package with separate modules for:
+- MCP server initialization
+- Pydantic schemas
+- Customer/refund business logic
+- Mock repository
+- Application entry point
+
+Provide a tests/ directory and concise README.
+
+Keep modules small and avoid unnecessary abstraction.
+
+8. Test strategy
+
+Use pytest and pytest-asyncio where appropriate.
+
+Create unit tests for:
+- Customer ID format validation
+- Missing fields
+- Extra fields
+- Wrong data types
+- Invalid refund amounts
+- Boundary values
+- Minimum reason length
+- Missing customers
+- Insufficient refundable balance
+- Refund balance mutation
+- No mutation after failed requests
+
+Create MCP integration tests for:
+- Server connection
+- Tool discovery
+- Exactly two advertised tools
+- Correct input schemas
+- Valid tools/call
+- JSON-RPC error codes
+- Request ID preservation
+- Business-level isError responses
+
+Create subprocess/wire tests for:
+- STDIO communication
+- Valid newline-delimited JSON-RPC messages
+- No nonprotocol stdout output
+- Logging exclusively on stderr
+- Malformed JSON
+- Clean subprocess termination
+
+Validate both the modern MCP lifecycle and legacy initialize-based connectivity if supported by the pinned SDK.
+
+Do not confuse in-process SDK tests with true subprocess wire tests. Both are valuable.
+
+9. Developer experience
+
+Include:
+- pyproject.toml
+- Reproducible installation instructions
+- Exact server startup command
+- Test execution command
+- Ruff linting configuration
+- .gitignore
+- README with examples
+- Sample successful and unsuccessful tool calls
+
+Ensure the entry point works when invoked from the documented working directory.
+
+10. Diagnostics
+
+Use Python logging.
+
+Provide concise diagnostic messages for:
+- Server startup/shutdown
+- Tool execution
+- Validation failure
+- Business operation failure
+- Unexpected exception
+
+Log to stderr only.
+
+Do not print raw sensitive customer records unnecessarily.
+
+==================================================
+D. OPTIONAL — ONLY AFTER CRITICAL TESTS PASS
+==================================================
+
+- GitHub Actions workflow for linting and tests.
+- Additional property-based schema tests.
+- Simple request correlation IDs in diagnostics.
+- Lightweight performance smoke test.
+- A short architecture/design-decisions document.
+
+Do not let these delay or interfere with required functionality.
+
+Explicitly exclude:
+- FastAPI
+- HTTP reverse proxies
+- OAuth/JWT authentication
+- SQLite
+- Distributed rate limiting
+- LLM inference APIs
+- SSE streaming
+- PII streaming guardrails
+- Docker/Kubernetes deployment
+
+Those are out of scope for Task 1.
+
+==================================================
+E. IMPLEMENTATION EXECUTION ORDER
+==================================================
+
+Step 1:
+Inspect the current repository. Preserve existing unrelated files and changes.
+
+Step 2:
+Confirm the installed Python environment, MCP SDK version, and public APIs. Inspect documentation if needed.
+
+Step 3:
+Create the Task 1 package and strict Pydantic models.
+
+Step 4:
+Implement the in-memory mock repository and business logic.
+
+Step 5:
+Implement the MCP server, including tool discovery, tool execution, and explicit protocol error handling.
+
+Step 6:
+Connect the server to the official stdio transport and configure stderr logging.
+
+Step 7:
+Write automated unit, integration, and subprocess wire tests.
+
+Step 8:
+Run the server and all tests. Fix any failures that can be fixed without violating the stated requirements.
+
+Step 9:
+Run the linter and document reproducible installation and startup commands.
+
+Step 10:
+Summarize results and any unresolved compatibility limitations.
+
+==================================================
+F. ACCEPTANCE CRITERIA
+==================================================
+
+The task is complete only when:
+
+[ ] The server starts successfully.
+[ ] Official MCP SDK is used.
+[ ] Exactly two tools are discoverable.
+[ ] Both tools execute successfully with valid inputs.
+[ ] Strict Pydantic validation is enforced.
+[ ] Extra fields and invalid types are rejected.
+[ ] Invalid tool arguments produce JSON-RPC -32602.
+[ ] Protocol errors are correctly distinguished from business errors.
+[ ] Refund side effects work correctly.
+[ ] Failed operations do not change balances.
+[ ] stdout contains only valid MCP JSON-RPC messages.
+[ ] stderr receives diagnostic logs.
+[ ] Subprocess-level STDIO tests pass.
+[ ] Test suite and lint checks pass.
+[ ] README documents setup, execution, and limitations.
+
+Do not mark a criterion as passing without verification.
+
+==================================================
+G. FINAL OUTPUT REQUIRED FROM CODEX
+==================================================
+
+After implementation, report:
+
+1. Final project directory tree.
+2. Exact Python and MCP SDK versions used.
+3. Installation and startup commands.
+4. Test commands and actual test results.
+5. JSON-RPC validation and error-handling matrix.
+6. STDIO isolation test results.
+7. Any failed or skipped checks.
+8. Important design decisions and limitations.
+9. What was intentionally excluded from Task 1.
+
+Conclude with a concise technical explanation of:
+
+- How the MCP lifecycle operates.
+- How tools/list and tools/call are dispatched.
+- Why invalid input becomes -32602.
+- How stdout isolation is guaranteed.
+- How refund state is managed.
+
+Do not claim completion if required tests fail.
+
+BEGIN IMPLEMENTATION.
