@@ -220,8 +220,9 @@ ai-solutions-engineer-assessment/
 ```
 
 Ignored local environments/caches are omitted. Read AGENTS.md and the ledger
-at every session start. Tasks 2–4 have no supplied requirements and remain
-untouched. FastAPI, HTTP proxies, OAuth/JWT, SQLite, rate limiting, inference APIs,
+at every session start.
+Tasks 2–4 are outside the scope of this Task 1 implementation and have not yet been implemented.
+FastAPI, HTTP proxies, OAuth/JWT, SQLite, rate limiting, inference APIs,
 SSE, PII streaming, Docker/Kubernetes and optional CI/performance/property-testing
 extras are intentionally excluded from this Task 1 implementation. Some HTTP
 libraries are transitive SDK dependencies; this application does not start them.
