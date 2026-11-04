@@ -17,8 +17,13 @@ MODERN_META = {
 
 
 class WireServer:
-    def __init__(self, mode="legacy", *, fault=False, console=False):
-        command = [sys.executable, "-u", "-m", "tests.fault_server" if fault else "task1"]
+    def __init__(self, mode="legacy", *, fault=False, console=False, module=None):
+        command = [
+            sys.executable,
+            "-u",
+            "-m",
+            module or ("tests.fault_server" if fault else "task1"),
+        ]
         if console:
             executable = "task1-mcp.exe" if os.name == "nt" else "task1-mcp"
             command = [str(Path(sys.executable).with_name(executable))]

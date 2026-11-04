@@ -4,9 +4,8 @@ import asyncio
 import logging
 import sys
 
-from mcp.server.stdio import stdio_server
-
 from task1.server import create_server
+from task1.stdio_boundary import validated_stdio
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ async def run() -> None:
     server = create_server()
     logger.info("MCP STDIO server starting")
     try:
-        async with stdio_server() as (read_stream, write_stream):
+        async with validated_stdio() as (read_stream, write_stream):
             await server.run(read_stream, write_stream, server.create_initialization_options())
     finally:
         logger.info("MCP STDIO server stopped")
