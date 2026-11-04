@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "assessment-task2-proxy"
+version = "0.1.0"
+description = "T2-001/T2-002: isolated security and JSON-RPC guards"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest==9.2.0", "ruff==0.17.3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["task2_proxy*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+cache_dir = ".cache/pytest"
+markers = ["task2: T2-001/T2-002 guard checkpoint"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

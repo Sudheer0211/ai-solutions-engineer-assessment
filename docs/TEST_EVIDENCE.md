@@ -296,3 +296,110 @@ all A1-A15/C1-C7 criteria checked; Tasks 2-4 registry rows equal baseline; all s
 changed documentation files are nonempty UTF-8 with no trailing whitespace.
 All passed. `git diff --check` exited 0. No production or test code changed after
 the 149-pass normal run; final edits were documentation only.
+
+## E008 — 2026-11-04: Task 2 contract and pure guards (T2-001, T2-002)
+
+Scope: task2 isolated project and pure unit-test checkpoint only. No HTTP endpoint,
+forwarding, Streamable HTTP, SSE, OAuth/JWT issuance, Tasks 3/4, commit or push.
+Task 1 historical entries E001-E007 above are preserved without alteration.
+
+| Executed command/check | Actual result |
+| --- | --- |
+| Read AGENTS.md, ledger, root configuration, prior decisions/build/evidence; `git status --short`; `git log -3 --oneline` | Clean tree at 6056bc7 before work; protected-file hashes and historical documentation prefixes captured |
+| `.\.tools\bin\uv.exe sync --project task2 --extra dev --python 3.12.16 --index-url https://pypi.org/simple` from root | Exit 0; created task2/.venv and task2/uv.lock; 8 isolated packages installed; runtime guards have no third-party dependencies |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` from task2 | Exit 0; 6 new files reformatted, 3 unchanged |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` from task2 | Exit 0; all checks passed |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short` from task2, first run | Exit 0; **156 passed, 1 cache warning in 0.27s**; sandbox denied pytest temporary cache-directory creation |
+| `New-Item -ItemType Directory -Path '.cache\pytest\v\cache' -Force` from task2 | Created explicit ignored cache directories to avoid sandbox atomic-cache warning |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short` from task2, final run | Exit 0; **156 passed in 0.17s**, no warnings/failures/skips/xfails |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` from task2, final | Exit 0; all checks passed |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` from task2 | Exit 0; 9 files already formatted |
+| Python -B metadata/import-path probe from task2 environment | Python 3.12.16; assessment-task2-proxy 0.1.0; pytest 9.2.0; Ruff 0.17.3; sys.prefix/task2_proxy import resolve exclusively to task2/.venv and task2/src |
+| `.\.tools\bin\uv.exe sync --project task2 --locked --extra dev --python 3.12.16 --offline` with task2 cache | Exit 0; resolved/checked 8 packages; locked offline setup works |
+| `.\.tools\bin\uv.exe pip check --python task2\.venv\Scripts\python.exe` | Exit 0; all 8 installed packages compatible |
+
+Network installation used approved escalated execution to populate only the new
+Task 2 environment/cache. No installation into Task 1's environment, and no
+root pyproject.toml/uv.lock edits. FastAPI/HTTPX are intentionally not installed
+as unused guard dependencies; their integration remains the later checkpoint.
+
+Verified behavior: missing/invalid/duplicate Bearer credentials; case-insensitive
+scheme with case-sensitive tokens; comparison of every candidate; validated,
+immutable/redacted configuration; exact literal prefix and denial message/code;
+IDs including zero/empty string/large integers/null; no bool/fraction coercion;
+duplicate keys at all nesting levels (including escaped spellings); escaped tool
+name/selector bypasses; spoofed role claims; strict JSON/UTF-8/nonfinite rejection;
+opaque large numeric arguments/extensions and original body preservation;
+unsupported batches; notifications inspected/authorized then rejected without
+ordinary JSON-RPC replies or forwarding permits; authentication before parsing.
+
+These are pure unit checks, not HTTP integration/wire evidence. There is no
+networking code. Actual transparent discovery responses, upstream delivery and
+non-delivery must be tested later when a forwarding implementation is authorized.
+Task 1's 149-pass result remains historical; it was not rerun or rewritten here.
+
+Preservation verification executed after the above checks: recomputed hashes for
+all 31 previously tracked files and compared them with the session-start manifest.
+All 27 files outside the four authorized governance records are byte-identical,
+including every Task 1 source/test file, root pyproject.toml/uv.lock, README,
+AGENTS.md, manual labs and source requirements. Historical decisions/build/evidence
+prefixes and the complete Task 1 acceptance section are unchanged. TASK-1/3/4
+registry rows and Git HEAD (6056bc7) are unchanged. No commit or push occurred.
+
+Checkpoint acceptance: T2-C1-T2-C9 verified, T2-001/T2-002 DONE. Whole TASK-2
+remains IN_PROGRESS. No remaining blocker for this checkpoint. Deferred HTTP
+status/notification/upstream/response decisions remain explicitly listed in
+task2/CONTRACT.md for review before any endpoint or forwarding implementation.
+
+## E009 — 2026-11-04: Review numeric-exponent correction (T2-002)
+
+Environment: existing isolated task2/.venv; Python 3.12.16. No install/upgrade.
+E008's 156-pass baseline and Task 1's historical E007 evidence are unchanged.
+
+| Executed command/check | Actual result |
+| --- | --- |
+| PowerShell Python stdin diagnostic via `.\.venv\Scripts\python.exe -B -` from task2: print sys.version; invoke inspect_request with the supplied tools/list/id=1/extra=1e999999999999999999999999999999999999999 input; inspect Decimal conversions and context traps | Python 3.12.16; reproduced decimal.InvalidOperation (caught/printed by diagnostic, process exit 0). Positive/negative extreme exponents and zero coefficient raise InvalidOperation; 1e9999 remains finite. This is a reproduction probe, not a passing test |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short` from task2 | Exit 0; **186 passed in 0.15s**; no warnings, failures, skips or xfails |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` from task2 | Exit 0; all checks passed |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` from task2 | Exit 0; 9 files already formatted |
+
+Added 30 cases exercise unrepresentable positive/negative exponents, negative/zero
+coefficients in tool arguments, opaque extensions and IDs, with InvalidOperation
+traps both on and off; plus representable extreme/exact values retaining the same
+raw-body object. Existing 156 cases remain passing, including strict ID checks,
+decoded tool-name authorization and duplicate-key detection. Unrepresentable
+numbers now return -32700 / Parse error, null ID; no decimal exception escapes.
+Policy and tradeoffs: ADR-010 and task2/CONTRACT.md. No HTTP/wire claim is made.
+Task 1 tests were not rerun. Independent re-verification of this fix is pending.
+
+Final read-only preservation check: a Python stdin SHA256 comparison against the
+47-file session-start manifest found exactly seven changed files (rpc.py,
+test_rpc.py, CONTRACT.md and four governance records). All other 40 files,
+including Task 1 and the existing review ZIP, are byte-identical. Session-start
+code/test diffs were generated without staging untracked files. HEAD remains
+6056bc7; nothing staged. `git diff --check` exited 0 (only Git line-ending
+advisories). No commit or push occurred.
+
+## E010 — 2026-11-04: Accepted foundation commit inspection (T2-001/T2-002)
+
+The user confirms independent engineering acceptance, including the Decimal fix.
+This records repository inspection, not a new automated test run. Latest test
+evidence remains E009: 186 passing cases and both Ruff checks passing.
+
+- Executed `git status --short --untracked-files=all`, `git diff --cached
+  --name-status` and `git log -3 --oneline`: initial index empty; HEAD 6056bc7;
+  five modified governance records, fifteen new foundation files and review ZIP.
+- Added local-only Git info/exclude patterns for task2 review ZIP exports and
+  credential-history report files. Executed `git check-ignore` for task2/.venv,
+  task2/.cache, .cache, .env, task2/.env, task2_review.zip and the credential-history
+  report path: all excluded. No environment/cache/artifact is staged or removed.
+- Executed explicit-path `git add` for the 20-file foundation/governance allowlist;
+  inspected `git diff --cached --stat`, `--name-status`, documentation diffs and
+  `--check`. No unexpected paths or whitespace errors.
+- Executed a Python stdin index-content/allowlist/SHA256 inspection: exactly 20
+  authorized files; staged content matches the worktree (normalizing Git EOLs);
+  targeted private-key/token/credential-URL patterns found no staged matches.
+  Reviewed Task 2 source/tests/config/lock are unchanged since session start;
+  Task 1 source/tests/root pins and prior evidence prefixes remain unchanged.
+- Commit is authorized; no push or T2-003 implementation is authorized. The
+  resulting foundation commit is identified by Git history and the session report.

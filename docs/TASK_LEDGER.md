@@ -1,6 +1,6 @@
 # Persistent task ledger
 
-Last updated: 2026-11-03 (America/Los_Angeles).
+Last updated: 2026-11-04 (America/Los_Angeles).
 
 ## Task registry
 
@@ -16,7 +16,10 @@ Last updated: 2026-11-03 (America/Los_Angeles).
 | T1-006 | Reproducibility, lint, README and final evidence | P1 | DONE | Setup/lock and README verified; final lint/format/evidence E007 | Maintain evidence on future changes |
 | T1-007 | Read-only STDIO blocker remediation investigation | P0 | DONE | R1-R5 verified; investigation report; E006 | Proposed candidate implemented and verified under T1-008 |
 | T1-008 | Controlled Approach C implementation and adoption | P0 | DONE | C1-C7 verified; E007; ADR-006/007 | Adopt; rerun boundary contract tests before any SDK upgrade |
-| TASK-2 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
+| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | Only T2-001/T2-002 authorized; HTTP forwarding remains deferred |
+| T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Foundation commit authorized; no push or T2-003 implementation |
+| T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Foundation commit authorized; no push or T2-003 implementation |
+| T2-003 | HTTP endpoint and upstream-adapter integration | P0 | NOT_STARTED | Pending contract decisions and explicit implementation authorization | Do not begin; await user authorization |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 | TASK-4 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 
@@ -118,3 +121,90 @@ This supersedes the previous research-only session restriction above.
 
 This research task does not implement a remedy, complete A7/A12/A13, or change
 any Tasks 2-4 requirement. The four existing strict XFAIL cases must remain intact.
+
+## Task 2 first checkpoint (2026-11-04)
+
+The user supplied Task 2 requirements and authorized T2-001/T2-002 only. Source:
+docs/TASK2_REQUIREMENTS.md; implementation choices and criteria T2-C1-T2-C9:
+task2/CONTRACT.md. Whole Task 2 remains IN_PROGRESS until later HTTP forwarding,
+unfiltered discovery and denied-call wire evidence exist. No Task 1 criteria or
+previous evidence have been changed. No commit/push authorized.
+
+### Task 2 checkpoint outcome
+
+- T2-001/T2-002 DONE: T2-C1-T2-C9 verified in E008; 156 passed without
+  warnings/skips/xfails; Ruff lint and format pass. Locked isolated setup works.
+- TASK-2 remains IN_PROGRESS: no HTTP route or HTTPX forwarding exists; real
+  discovery transparency and zero denied downstream HTTP calls remain later work.
+- Task 1 source/tests/dependencies/lock and historical evidence preserved;
+  TASK-1 stays DONE, Tasks 3/4 NOT_STARTED. No commit/push this session.
+- No checkpoint blockers. Next: independent review of task2/CONTRACT.md and
+  pure guards before any T2-003 authorization. HTTP mapping/notification policy,
+  upstream authentication/headers, limits and failure handling remain deferred.
+
+## Compaction restart handoff (2026-11-04)
+
+- Repository: S:\2026 jobs\Projects\ai-solutions-engineer-assessment; HEAD 6056bc7.
+- Task 1 remains DONE: 149 previously verified passing tests (E007); no changes
+  to task1/, root tests/, root pyproject.toml or root uv.lock. No tests rerun for
+  this handoff. Preserve its implementation and historical evidence.
+- T2-001/T2-002 are IMPLEMENTED and unit-verified, not independently approved:
+  independent ChatGPT engineering review PENDING. DONE registry statuses refer
+  to checkpoint implementation criteria only. TASK-2 remains IN_PROGRESS.
+- Prior Task 2 evidence E008: 156 passed in 0.17s; Ruff lint/format passed for
+  9 files; isolated locked setup verified. These are prior results, not new runs.
+- Approved architecture: independent task2/ project/venv/lock; FastAPI + HTTPX
+  for later HTTP proxy work. Current runtime is standard-library settings.py,
+  security.py and rpc.py only; no endpoint, HTTP client or forwarding exists.
+- Security: authenticate before inspection/authorization; role only from token
+  mapping; exact decoded case-sensitive admin_ rule; viewer denial exactly
+  -32001 / Unauthorized Tool Call with applicable ID; duplicate keys rejected;
+  no ambiguous/uninspected permit; raw body retained without business coercion.
+  Batches rejected wholesale. Notifications inspected/authorized then rejected
+  without a permit or ordinary JSON-RPC reply. Tokens have no production defaults
+  and are redacted from representations/errors. No discovery filtering is planned.
+- Pending review/contract decisions: notification HTTP reporting, authentication
+  challenge/body/status mappings, proxy path, upstream credentials and header/body
+  consistency, limits/timeouts, upstream failure mapping and response relay.
+  See task2/CONTRACT.md and ADR-008/009; passing guards is not HTTP wire evidence.
+- Next checkpoint is T2-003 HTTP/upstream-adapter integration, only AFTER
+  independent review and explicit user authorization. Do not begin it on resume.
+- Git working state: unstaged AGENTS.md and docs/{TASK_LEDGER,DECISIONS,BUILD_LOG,
+  TEST_EVIDENCE}.md; untracked docs/TASK2_REQUIREMENTS.md and 14 files under task2/
+  (project/lock/contract/README, source and tests). Nothing staged. Local task2
+  environment/caches are ignored. Preserve all uncommitted work; no commit/push.
+- Tasks 3/4 remain NOT_STARTED and unauthorized. No implementation blocker for
+  the completed checkpoint; independent review is the next required gate.
+
+## T2-002 independent-review correction (2026-11-04)
+
+- Initial status: IN_PROGRESS. Review reproduction confirmed on Python 3.12.16:
+  syntactically valid JSON with an unrepresentable exponent escapes as
+  decimal.InvalidOperation. Prior E008 results remain historical.
+- Acceptance: contain decimal parsing exceptions; reject unrepresentable numeric
+  values as -32700 / Parse error with null ID; preserve representable opaque
+  values/raw bytes, strict IDs, decoded-name checks and duplicate-key detection.
+  Add extreme-exponent regressions and run all Task 2 tests and both Ruff checks.
+- Scope: T2-002 fix only; Task 1 unchanged; no HTTP/forwarding, commit or push.
+  Next: implement and verify the correction, then stop for independent re-verification.
+
+- Outcome: correction implemented; E009 records 186 passed in 0.15s and both
+  Ruff checks passing (9 files formatted). T2-002 DONE for implementation only;
+  independent re-verification PENDING. ADR-010/CONTRACT clarify parser-range
+  rejection. No HTTP work or Task 1 modifications. Next: review this fix; T2-003
+  still requires completed review and explicit authorization.
+
+## Independent acceptance and foundation commit (2026-11-04)
+
+- The user confirms independent engineering approval of T2-001/T2-002, including
+  the Decimal correction. Both are DONE and independently ACCEPTED. This resolves
+  the review/re-verification gates in the historical entries above.
+- Latest executed evidence remains E009: 186 passed in 0.15s, Ruff lint and format
+  checks passing. No tests rerun for this documentation/staging/commit checkpoint.
+- User authorizes one descriptive foundation commit containing only task2/ files,
+  its requirement snapshot and relevant governance records. Exclude environments,
+  caches, credentials and temporary review artifacts. No push is authorized.
+- TASK-1 remains DONE with 149 historical passes; preserve its implementation,
+  tests, dependencies and lockfile. Whole TASK-2 remains IN_PROGRESS.
+- T2-003 is NOT_STARTED/pending: review approval is complete, but HTTP contract
+  decisions and explicit implementation authorization remain outstanding.

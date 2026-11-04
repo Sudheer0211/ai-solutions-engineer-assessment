@@ -187,3 +187,113 @@ investigations and material changes; Git remains the line-level code history.
   AGENTS.md and ledger, inspect Git status, and run the documented normal suite.
 - Next recommended step: adopt/review this assessed implementation. Before an
   SDK upgrade rerun all boundary tests. Tasks 2-4 await independent requirements.
+
+## 2026-11-04 — M011: Task 2 first checkpoint baseline (T2-001, T2-002)
+
+- Read repository instructions/ledger, current dependency configuration and
+  prior evidence. Git clean at 6056bc7; no commit or push authorized.
+- Captured hashes of 31 tracked files and exact historical governance prefixes
+  before changes. Task 1 source/tests/root dependencies/lockfile are protected.
+- Recorded supplied Task 2 requirements in docs/TASK2_REQUIREMENTS.md and exact
+  checkpoint criteria/implementation choices in task2/CONTRACT.md before code.
+- Created isolated task2 project configuration and standard-library pure modules
+  for explicit token loading, Bearer authentication, strict RPC inspection and
+  ordered authorization permits. No endpoint or network client implemented.
+- Choices: exact denial message/code; reject batches wholly; inspect/authorize
+  notifications then reject without RPC reply/permit; retain immutable raw body;
+  no default credentials; independent environment; FastAPI/HTTPX deferred until used.
+- Affected files: task2 project; new requirement snapshot; ledger; appended records.
+- Unresolved: tests/environment/lint not yet executed; full HTTP Task 2 remains
+  incomplete. Next: focused boundary/bypass tests, isolated install, actual checks.
+
+## 2026-11-04 — M012: Task 2 guard checkpoint verification (T2-001, T2-002)
+
+- Implemented isolated settings.py/security.py/rpc.py and 156 focused unit cases.
+  Exact authorization denial is -32001 / Unauthorized Tool Call with applicable ID.
+  No role is sourced from request content; duplicate/escaped key/name cases fail
+  safely. Batches and notifications cannot become permits under this checkpoint.
+- Initial suite: 156 passed with one sandbox pytest-cache warning. Precreated
+  ignored cache directories; final suite: 156 passed in 0.17s with no warnings,
+  skips, xfails or failures. Ruff lint/format pass (9 files). Evidence: E008.
+- Created task2/.venv and independent lock; Python 3.12.16, pytest 9.2.0,
+  Ruff 0.17.3. Locked offline sync and dependency consistency checks pass.
+- Affected files: task2 project/source/tests/contract/README; supplied requirement
+  snapshot; Task 2 ledger rows; append-only decisions/build/test evidence records.
+- Architecture: ADR-008 isolation and ADR-009 strict transport-neutral guard policy.
+  Approved FastAPI/HTTPX architecture deferred until used by the HTTP checkpoint.
+- Unresolved for later review: HTTP path/status/challenge/notification reporting,
+  upstream credentials/headers, limits, failure mapping and transparent forwarding.
+  These are not implemented and do not block the authorized pure-guard checkpoint.
+- Next: finish preservation/status checks, then stop for independent review.
+  Whole TASK-2 remains IN_PROGRESS; no HTTP/wire completion claim or commit/push.
+
+## 2026-11-04 — M013: Checkpoint handoff (T2-001, T2-002)
+
+- Preservation checks passed: 27 non-governance tracked files byte-identical;
+  all historical Task 1 decisions/build/test evidence prefixes and acceptance
+  criteria unchanged; TASK-1/3/4 rows and Git HEAD unchanged. No commit/push.
+- T2-001/T2-002 DONE with T2-C1-T2-C9 verified in E008. TASK-2 remains IN_PROGRESS;
+  the authorized checkpoint has no unresolved implementation blocker.
+- Created: task2 isolated config/lock/contract/README, four runtime package files
+  and five focused test/fixture files; docs/TASK2_REQUIREMENTS.md. Modified only
+  four existing governance files for Task 2 status and appended evidence/decisions.
+- Decisions ADR-008/009; no HTTP endpoint, HTTPX client or forwarding module.
+- Next recommended step: independent review of contract choices and guard API,
+  particularly notification reporting/ID policy, before authorizing T2-003.
+  Stop here; HTTP integration and Tasks 3/4 are not part of this checkpoint.
+
+## 2026-11-04 — M014: Compaction context handoff (T2-001, T2-002)
+
+- Verified AGENTS, ledger, decisions, build log and test evidence against the
+  current checkpoint. E008 already contains the actual 156-pass/Ruff results;
+  E007 preserves Task 1's prior 149-pass verification. No additional tests run.
+- Essential documentation correction: distinguish implemented/unit-verified
+  T2-001/T2-002 from still-PENDING independent ChatGPT engineering review.
+  Added restart gate/source pointers to AGENTS and a self-contained ledger
+  handoff; clarified ADR-009 review status. Test evidence left unchanged.
+- Recorded architecture, security invariants, deferred contract decisions and
+  T2-003 as a future checkpoint requiring review and new user authorization.
+- Git: HEAD 6056bc7; five unstaged governance documents, untracked Task 2
+  requirement snapshot and 14 task2 project files; nothing staged. No commit/push.
+- Affected during this handoff: AGENTS.md, TASK_LEDGER.md, DECISIONS.md and
+  BUILD_LOG.md only. No source/tests/dependencies/config changes; Task 1 preserved.
+- Next: independent ChatGPT review of task2/CONTRACT.md and guard implementation.
+  Stop; do not execute tests or begin HTTP forwarding/T2-003 during handoff.
+
+## 2026-11-04 — M015: Independent-review numeric parser correction (T2-002)
+
+- Reproduced review input on pinned Python 3.12.16: inspect_request leaked
+  decimal.InvalidOperation for an enormous exponent in an opaque extension.
+  Positive/negative exponents and zero coefficients exceeded Decimal's range.
+- Applied targeted Decimal conversion helper: reject nonfinite fallback values;
+  contain the DecimalException family alongside existing parse failures. Policy:
+  -32700 / Parse error, null ID, no partial envelope recovery or forwarding permit.
+- Added 30 regressions: unrepresentable values in arguments/extensions/IDs,
+  enabled/disabled InvalidOperation traps, and representable raw-byte preservation.
+- Actual checks: 186 passed in 0.15s; Ruff lint passes; format check reports
+  9 files already formatted. No failing tests/checks in this correction run.
+- Affected: task2/src/task2_proxy/rpc.py, task2/tests/test_rpc.py; parser policy in
+  task2/CONTRACT.md; ledger, ADR-010, build log and test evidence E009.
+- Task 1 remains untouched. No endpoint/forwarding, dependency changes, commit
+  or push. Independent re-verification remains pending; next: review this fix,
+  then obtain explicit authorization before any T2-003 work.
+
+## 2026-11-04 — M016: Independent acceptance and commit preparation (T2-001/T2-002)
+
+- User confirms independent engineering acceptance of both foundation tasks,
+  including the Decimal correction. Recorded acceptance in the ledger, current
+  restart gate, ADR-009/010, contract and Task 2 README. T2-003 remains NOT_STARTED.
+- User authorizes one foundation commit; no push or HTTP implementation.
+  Existing E009 evidence remains 186 passes and both Ruff checks passing;
+  no tests rerun during this documentation/staging/commit checkpoint.
+- Initial Git inventory: five modified governance files, fifteen untracked
+  Task 2 foundation/requirement files and task2_review.zip; index empty.
+- Commit scope: Task 2 config/lock/source/tests/docs and relevant governance.
+  Exclude local environments/caches/credentials/review ZIP; preserve Task 1.
+- Next: inspect the exact staged allowlist/diff, create the authorized foundation
+  commit, verify its contents/status, then stop pending T2-003 authorization.
+- Staging inspection complete (E010): 20 authorized files only; no unexpected
+  paths, whitespace errors or targeted credential-pattern matches. Reviewed code,
+  tests and lockfile remain byte-identical; Task 1 preserved. Local-only Git
+  exclusions keep review exports and credential reports out of staging, alongside
+  existing environment/cache exclusions. Proceed with the one authorized commit.

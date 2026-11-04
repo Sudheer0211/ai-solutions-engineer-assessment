@@ -145,3 +145,59 @@
 - Validation: E007: 149 passed under --runxfail; 149 normal passes after cleanup;
   Ruff passes. ADR-005's retained-XFAIL policy is superseded for the fixed cases.
 - Affected file: tests/test_wire.py only for the cleanup itself; evidence/docs updated.
+
+## ADR-008 — Isolated Task 2 guard checkpoint
+
+- Date: 2026-11-04; status: ACCEPTED for T2-001/T2-002 only.
+- Decision: Separate task2 project/environment/lock with standard-library pure
+  guard runtime; pinned pytest/Ruff development tools. Approved FastAPI/HTTPX
+  integration remains deferred until an HTTP checkpoint actually needs it.
+- Alternatives: Add dependencies/tests to Task 1's root environment or build an
+  HTTP application now. These risk changing verified Task 1 or exceed authorization.
+- Rationale: Preserve Task 1 and make security decisions independently testable.
+- Tradeoffs: Two environment/lock lifecycles; no HTTP compliance claim yet.
+- Consequences: No Task 1 source/tests/dependency/lock edits; no commit/push.
+  Full TASK-2 stays IN_PROGRESS. Source: docs/TASK2_REQUIREMENTS.md.
+- Affected files: task2 project, new requirements, governance records.
+
+## ADR-009 — Strict single-request guard policy and transport-neutral errors
+
+- Date: 2026-11-04; status: ACCEPTED after independent engineering review,
+  as confirmed by the user on 2026-11-04; tasks: T2-001/T2-002.
+- Decision: Authenticate first; inspect immutable original UTF-8 bytes; reject
+  all duplicate decoded keys and batches; preserve unique valid top-level IDs;
+  compare decoded names with literal case-sensitive admin_. Viewer denial is
+  exactly -32001 / Unauthorized Tool Call. No client role claims are trusted.
+- Notifications: inspect/authorize identically, then reject as unsupported.
+  Recognized notifications generate no JSON-RPC response and no permit; their
+  future HTTP rejection status is deferred. Protected viewer notifications still
+  carry the exact authorization error internally. Explicit null ID is a request.
+- Alternatives: Coerce types/normalize names; silently forward unknown shapes;
+  partially authorize batches; fabricate notification replies. These introduce
+  parser disagreement/bypasses or conflict with JSON-RPC notification semantics.
+- Rationale: No uninspected executable input can become a forwarding permit.
+- Tradeoffs: Restricted batch/notification support; a later HTTP contract must
+  define status/header policy. Integer/string/null IDs supported; no fractional IDs.
+- Consequences: Preserve opaque arguments/extensions/raw bytes; no tool-result
+  filtering. Settings are immutable, contain no defaults, hide tokens from repr
+  and errors, and reject conflicting/unknown roles. Exact choices: task2/CONTRACT.md.
+- Affected files: task2/src/task2_proxy/{settings,security,rpc}.py and focused tests.
+
+## ADR-010 — Contain unrepresentable JSON numeric conversions
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T2-002; status: ACCEPTED after
+  independent re-verification, confirmed by the user. Corrects ADR-009's baseline.
+- Evidence: review input reproduced decimal.InvalidOperation on Python 3.12.16;
+  Decimal can also return NaN for that input if its InvalidOperation trap is off.
+- Decision: keep Decimal parsing; catch DecimalException at the JSON inspection
+  boundary and reject nonfinite conversion results. Unrepresentable numbers yield
+  -32700 / Parse error with null ID and no permit, even if their syntax is valid.
+- Alternatives: catch InvalidOperation alone (narrower containment); use float
+  (overflow/precision loss); replace all noninteger values with opaque markers
+  (broader parser redesign). Retaining the current parser with a finite-result
+  check and exception-family handler is the smallest correction robust to traps.
+- Consequences: parser representation limits are an explicit input limitation;
+  no partial envelope/ID recovery on conversion failure. Representable values,
+  strict IDs, duplicate-key checks, decoded tool names and raw bytes are unchanged.
+- Affected: task2/src/task2_proxy/rpc.py, task2/tests/test_rpc.py, task2/CONTRACT.md.
+  Verification: E009, 186 passing tests and both Ruff checks. No HTTP/Task 1 changes.
