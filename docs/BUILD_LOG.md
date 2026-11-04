@@ -118,3 +118,72 @@ investigations and material changes; Git remains the line-level code history.
   a subsequent request authorizes code changes; retain the four XFAIL cases and
   use --runxfail for successful remediation acceptance. Keep TASK-1 BLOCKED until
   all mandatory criteria have actual passing evidence.
+
+## 2026-11-03 — M007: Controlled implementation baseline (T1-008)
+
+- Read all five requested governance/investigation/evidence files and inspected
+  the current untracked repository. User explicitly authorized Approach C.
+- Before editing, staged the existing project and user manual labs and created
+  root baseline commit dfb329b9e91620b3075710bb2466c11ba8703936. Git status clean.
+  No discarded changes; ignored runtimes/caches not committed.
+- Recorded C1-C7 before implementation. TASK-1 remains BLOCKED pending evidence.
+- Next: implement a bounded input observer and receive filter around official
+  stdio_server(stdin=...) and unchanged Server.run; retain all original tests.
+
+## 2026-11-03 — M008: Prototype and first verification (T1-008)
+
+- Added task1/stdio_boundary.py: public AsyncFile input observation, fail-closed
+  two-line capture, receive decoration and SDK error emission. __main__.py still
+  calls Server.run; stdio_server retains its default stdout writer/descriptor claim.
+- Original four diagnostic cases: 4 passed under --runxfail in 6.12s. Original
+  ordinary suite: 94 passed, 4 deselected in 18.81s. Original test bodies unchanged.
+- Added 49 boundary/unit/wire tests and test-only public method fixtures. First
+  new-test run: 45 passed, 4 failed, 1 warning in 35.57s. Failures involved modern
+  SDK result metadata in fixture assertions, child-output fixture stalls, and an
+  unsupported no-response assumption for pending-work EOF. Broken-pipe test also
+  started a Python communicate reader on an already closed stdout.
+- Correcting new fixtures to respect SDK-owned modern metadata and EOF behavior;
+  child gets DEVNULL stdin and a timeout; closed-output test avoids a second reader.
+  Explicit notification-cancellation still requires no response for the cancelled ID.
+- Affected files: boundary module, entry point, new tests/fixture, optional module
+  selection in tests/wire_support.py, documentation. Tools/schemas/dependencies intact.
+- No original-suite regression observed; rollback condition has not occurred.
+- Next: rerun new tests, investigate any remaining failures, then run full
+  --runxfail before the separately authorized obsolete-decorator cleanup.
+
+## 2026-11-03 — M009: All assertions pass; separate decorator cleanup (T1-008)
+
+- New tests passed 49/49 after fixture fixes. Added two further malformed-method
+  union-fallback cases; all original and new assertions then passed together:
+  149 passed in 37.19s under --runxfail, with original test_wire.py byte-identical.
+- SDK source integrity: all 124 installed MCP 2.3.0 Python files match wheel RECORD.
+- Checkpointed implementation/new tests in 7b0c79fdda6949e9a18a8919910ae58e9d04360f.
+- In a separate cleanup step, removed only the obsolete parametrized XFAIL
+  decorator. Byte comparison proves all four original test bodies/assertions intact.
+- Ruff lint/format passed, 17 files formatted. Normal final suite is running;
+  no claim of final completion until its result and documentation checks are recorded.
+- Next: record normal-suite outcome, adopt ADR-006 if verified, update README,
+  investigation report and all acceptance criteria. Rollback not triggered: no
+  original ordinary-test regression occurred.
+
+## 2026-11-03 — M010: Verified adoption and final handoff (TASK-1, T1-008)
+
+- Normal suite after separate obsolete-decorator cleanup: 149 passed in 39.94s,
+  no failures/skips/XFAIL/XPASS. Earlier full --runxfail: 149 passed in 37.19s.
+- Cleanup committed independently as 93a861f7bfd6f49bf40a882753aa376ac4662d0f,
+  exactly one decorator-line deletion. Original four bodies/assertions intact.
+- ADR-006 adopted; ADR-007 records user-authorized cleanup and supersedes the
+  old retained-XFAIL policy for the now-fixed cases. SDK/tool/schema/pin/manual-lab
+  changes remain excluded. No existing-suite regression; no rollback needed.
+- Updated README, ledger, decisions, evidence and preserved investigation report
+  with actual counts, error matrix, acceptance mapping, adoption and limitations.
+- All mandatory A1-A15 and controlled criteria C1-C7 verified in E007.
+  Completed this implementation: TASK-1, T1-003, T1-005, T1-008.
+- Remaining blockers: none for Task 1. Limits: Windows verified; pin/retest SDK
+  input correlation on upgrades; explicit stdin skips fd0 diversion while keeping
+  stdout protection; frame count is not byte-size limiting; SDK UTF-8/nonfinite
+  behavior preserved; broken pipes may exit nonzero within the tested bound.
+- Recovery: baseline dfb329b; implementation 7b0c79f; cleanup 93a861f. Read
+  AGENTS.md and ledger, inspect Git status, and run the documented normal suite.
+- Next recommended step: adopt/review this assessed implementation. Before an
+  SDK upgrade rerun all boundary tests. Tasks 2-4 await independent requirements.

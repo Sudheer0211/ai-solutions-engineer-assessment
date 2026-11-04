@@ -4,10 +4,11 @@ Runnable assessment implementation using Python **3.12.16**, official
 **mcp 2.3.0**, and **Pydantic 2.12.5**. Exactly two tools use the official STDIO
 transport. All records and transactions are synthetic and process-local.
 
-**Assessment status: BLOCKED.** The final regression run has **94 passed,
-4 xfailed**. MCP 2.3.0 drops malformed STDIO JSON/envelopes without the required
--32700/-32600 response. Running the retained diagnostics with `--runxfail`
-produces four failures. Task 1 is not fully compliant or DONE. See
+**Assessment status: DONE (2026-11-03).** The final normal suite has **149 passed**,
+with no skips or expected failures. A controlled input-boundary adapter resolves
+the SDK's missing -32700/-32600 responses while preserving its parser, dual-era
+runner, protocol writer and stdout protection. The original four diagnostic bodies
+passed under --runxfail before their obsolete XFAIL decorator was removed. See
 [task ledger](docs/TASK_LEDGER.md) and [actual evidence](docs/TEST_EVIDENCE.md).
 
 ## Install and run
@@ -51,20 +52,22 @@ Run from the repository root:
 .\.venv\Scripts\python.exe -m ruff format --check task1 tests
 ```
 
-The last run: 94 passed, 4 strict expected failures, no skips; lint and formatting
-passed. Expected failures document unmet requirements rather than compliance.
-To reproduce the outstanding failures directly:
+The final run: 149 passed, no skips or expected failures; lint and formatting pass.
+The historical `sdk_limitation` marker now selects four ordinary regression tests:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest -m sdk_limitation --runxfail --tb=short
 ```
 
-That command exits 1: 4 failed, 94 deselected. The ordinary suite exits 0 because
-those known failures are explicitly marked xfail; unexpected fixes become strict
-XPASS failures so the limitation cannot silently disappear from the record.
+All original 98 assertions plus 51 boundary cases passed together under
+`--runxfail` before cleanup (149 passed), then again under the normal command
+after cleanup. Only the obsolete XFAIL decorator was removed; the test function
+and all four parametrized assertions remain byte-identical to the baseline.
 
-`tests/test_integration.py` uses the real SDK in-process. `tests/test_wire.py`
-starts real processes and exercises raw STDIO and the official SDK client.
+`tests/test_integration.py` uses the real SDK in-process. `tests/test_wire.py` and
+`tests/test_stdio_boundary_wire.py` start real processes. Boundary tests cover
+pre-opening recovery, ID/order correlation, actual pipe backpressure, bounded
+capture, cancellation, EOF, broken output, UTF-8 and print/fd/child isolation.
 The SDK async client requires Windows named-pipe access; this environment's
 sandbox denied it, so the final full suite ran with approved unsandboxed access.
 No tests were skipped to hide that restriction.
@@ -138,25 +141,42 @@ Frozen records prevent external balance mutation. Each server instance owns its
 repository. A process restart resets balances, transactions and sequential IDs;
 there is no persistence, payment integration or cross-thread/distributed guarantee.
 
-## Verified error matrix and limitation
+## Verified error matrix and boundary adaptation
 
 | Case | Required | Observed on STDIO |
 | --- | --- | --- |
-| Malformed JSON | -32700, null ID | **Missing response**, both lifecycle eras |
-| Invalid request envelope | -32600, applicable ID | **Missing response**, both eras |
+| Malformed JSON | -32700, null ID | Verified before/after opening, both lifecycle eras |
+| Invalid request envelope | -32600, applicable ID | Verified; string/integer IDs preserved, unusable IDs become null |
 | Unknown protocol method | -32601 | Verified; integer/string IDs preserved |
 | Invalid arguments / unknown tool | -32602 | Verified; IDs preserved |
 | Unexpected injected service exception | -32603 | Verified; generic message, ID preserved |
 | Missing customer / insufficient balance | Tool result isError=true | Verified; no failed-operation mutation |
 
-Exact limitation: mcp 2.3.0's STDIO reader catches Pydantic JSON/envelope
-validation exceptions and forwards them as stream exceptions. Its default
-JSONRPCDispatcher drops those exceptions without emitting a JSON-RPC error.
-The tests send a bad frame followed by a valid tools/list sentinel: the sentinel
-succeeds, but no required error frame appears. No SDK monkeypatch or custom
-framing/lifecycle was introduced. The next step is an official SDK/public
-transport remedy followed by `--runxfail` and regression verification.
-See [ADR-003](docs/DECISIONS.md) and the
+The SDK itself still drops malformed-frame exceptions. `task1/stdio_boundary.py`
+supplies an observed public AnyIO AsyncFile as `stdio_server(stdin=...)`. The SDK
+remains the sole input reader/parser. A two-frame FIFO associates each SDK item
+with its original line; a receive decorator emits public JSONRPCError objects
+through the SDK's existing writer before `Server.run()` sees valid messages.
+Only rejected envelopes and notification/response union fallback need secondary
+JSON inspection. No new newline splitter, dispatcher or protocol serializer exists.
+
+Default stdout is retained so SDK descriptor protection remains active. The
+adapter owns a duplicate input handle; explicit stdin does skip the SDK's fd0
+diversion. Valid notifications and responses retain SDK routing, malformed
+response-shaped frames are not answered, and errors/logs omit raw input details.
+Explicit notification cancellation stops in-flight work without a reply. EOF
+teardown remains SDK-owned and can settle outstanding work before exiting.
+
+Maintenance limit: the two-frame correlation contract depends on pinned SDK
+2.3.0's one-item-per-line rendezvous reader. A changed contract fails closed;
+rerun all boundary tests before an SDK upgrade. The bound is in frames, not bytes;
+the SDK's existing per-line size and UTF-8 replacement behavior remain unchanged.
+Nonstandard NaN/Infinity tool-amount tokens still reach strict validation and
+are rejected with -32602, preserving the original behavior. Normal EOF exits
+cleanly; broken stdout combined with stdin EOF exits within the tested bound and
+may exit nonzero. No broader half-open transport shutdown guarantee is claimed.
+See [adopted ADR-006/007](docs/DECISIONS.md),
+[investigation and adoption](docs/STDIO_BLOCKER_INVESTIGATION.md), and the
 [versioned SDK documentation](https://github.com/modelcontextprotocol/python-sdk/blob/v2.3.0/docs/advanced/low-level-server.md).
 
 ## Project tree
@@ -175,6 +195,7 @@ ai-solutions-engineer-assessment/
     DECISIONS.md
     BUILD_LOG.md
     TEST_EVIDENCE.md
+    STDIO_BLOCKER_INVESTIGATION.md
   task1/
     __init__.py
     __main__.py
@@ -182,6 +203,7 @@ ai-solutions-engineer-assessment/
     repository.py
     service.py
     server.py
+    stdio_boundary.py
   tests/
     __init__.py
     test_schemas.py
@@ -190,6 +212,11 @@ ai-solutions-engineer-assessment/
     test_wire.py
     wire_support.py
     fault_server.py
+    boundary_server.py
+    test_stdio_boundary.py
+    test_stdio_boundary_wire.py
+  manual_validation_lab.py
+  manual_refund_lab.py
 ```
 
 Ignored local environments/caches are omitted. Read AGENTS.md and the ledger

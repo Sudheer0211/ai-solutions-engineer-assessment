@@ -1,9 +1,56 @@
 # T1-007: MCP STDIO protocol blocker investigation
 
-Date: 2026-11-03 (America/Los_Angeles). Status: research complete; remediation
-PROPOSED, not implemented. Parent TASK-1, T1-003 and T1-005 remain BLOCKED by B3.
+Date: 2026-11-03 (America/Los_Angeles). Current status: Approach C IMPLEMENTED,
+VERIFIED and ADOPTED under T1-008. B3 is resolved; TASK-1 mandatory criteria pass.
 
-## Recommendation
+## Controlled implementation and adoption
+
+The user subsequently authorized Approach C, a recoverable Git baseline, and
+removal of only obsolete XFAIL decorators after full --runxfail verification.
+The research-phase analysis below is preserved as history; its proposal-only
+and retained-XFAIL statements are superseded by this verified adoption record.
+
+- Baseline: dfb329b9e91620b3075710bb2466c11ba8703936 preserves all existing
+  files and manual labs. Implementation: 7b0c79fdda6949e9a18a8919910ae58e9d04360f.
+- task1/stdio_boundary.py uses a public AnyIO AsyncFile observer with one SDK
+  stdin reader, a fail-closed two-frame FIFO, and an ObjectReceiveStream adapter.
+  Each SDK item consumes its corresponding original line, including malformed
+  frames. No secondary stdin reader, newline splitter, runner or serializer exists.
+- task1/__main__.py composes validated_stdio() and retains Server.run(). The
+  SDK still parses every frame and owns stdout serialization/fd1 isolation.
+  All 124 installed MCP 2.3.0 Python files match the installed wheel RECORD.
+- Malformed JSON produces -32700/null. Invalid request envelopes produce -32600
+  with reliable top-level string/integer ID, otherwise null. Both eras recover
+  before/after opening. Invalid request methods cannot escape through SDK
+  notification/response union fallback. Raw input and ValidationError objects
+  are released before output backpressure; logs contain only generic codes.
+- Valid requests pass unchanged, with metadata/context. Notifications and
+  responses retain SDK handling; malformed response-shaped frames are not
+  answered, avoiding error-reply loops. No tool schema/business behavior changed.
+- New unit/wire tests and tests/boundary_server.py exercise the matrix;
+  tests/wire_support.py gained an optional module argument for test fixtures.
+  Production advertises two tools. Cases cover cancellation in both modes,
+  EOF/pending work, broken output, actual pipe backpressure, ordering,
+  UTF-8 fragmentation and print/fd/child stdout isolation.
+- Verification: 94 original ordinary passes; original four diagnostic passes with
+  --runxfail; 149 complete passes with --runxfail before marker cleanup;
+  149 normal passes after cleanup. Ruff passes. Exact results in E007.
+- Cleanup commit 93a861f7bfd6f49bf40a882753aa376ac4662d0f removes only the
+  obsolete parametrized XFAIL decorator. Original four test bodies/assertions
+  are byte-identical; the historical regression marker remains selectable.
+- Recommendation: adopt. No original-suite regression occurred; rollback was
+  not triggered. Baseline remains recoverable.
+
+Accepted limitations: correlation is pinned to MCP 2.3.0's one-item-per-line,
+rendezvous input contract; upgrades must rerun boundary tests. The bound is two
+frames, not bytes. Explicit stdin owns a duplicate handle and bypasses fd0
+diversion; SDK stdout protection remains. Existing UTF-8 replacement and
+nonstandard NaN/Infinity handling remain (-32602 at tool validation).
+Only Windows was executed. Normal EOF exits cleanly; broken stdout with stdin EOF
+exits within the tested bound and may exit nonzero. EOF settlement is SDK-owned, distinct from explicit
+cancellation, which sends no later reply for the cancelled ID.
+
+## Original research recommendation (T1-007)
 
 Prefer an official SDK transport fix once published and verified. No newer
 compatible release or ready-made server option was found in the sources checked
@@ -232,7 +279,7 @@ will report four XPASS failures after a real fix. That is expected marker behavi
 not a failure of the previously passing 94 tests. Do not weaken the assertions or
 remove markers to hide it; use --runxfail for the remediation acceptance run.
 
-## Actual session verification
+## Original read-only session verification (E006)
 
 - Existing suite unchanged: **94 passed, 4 xfailed in 20.40s**, exit 0.
 - Existing strict diagnostics: **4 failed, 94 deselected in 4.38s**, exit 1;

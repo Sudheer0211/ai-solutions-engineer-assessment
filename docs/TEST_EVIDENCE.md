@@ -215,3 +215,84 @@ untracked project/manual-lab state; hashes provide the implementation evidence.
 
 Completed in this session: T1-007 research criteria R1-R5 only. No remediation
 acceptance criterion changed to passing; B3 remains unresolved.
+
+## E007 — 2026-11-03: Controlled Approach C implementation (T1-008)
+
+Working directory: repository root. Python 3.12.16 / MCP 2.3.0 / Pydantic 2.12.5.
+User authorized implementation, a recoverable Git baseline, and removal of only
+obsolete XFAIL decorators after all assertions pass under --runxfail.
+
+| Executed command/check | Actual result |
+| --- | --- |
+| `git add -- .gitignore .python-version AGENTS.md README.md docs manual_refund_lab.py manual_validation_lab.py pyproject.toml task1 tests uv.lock`, then `git -c user.name=Codex -c user.email=codex@openai.com commit -m 'Baseline Task 1 before controlled STDIO remediation'` | Exit 0; baseline dfb329b9e91620b3075710bb2466c11ba8703936; 27 existing files preserved; clean status before edits |
+| `.\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest -m sdk_limitation --runxfail --tb=short` | Exit 0; **4 passed, 94 deselected in 6.12s**; original test file untouched |
+| `.\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest tests/test_schemas.py tests/test_service.py tests/test_integration.py tests/test_wire.py -m 'not sdk_limitation'` (approved unsandboxed Windows pipe access) | Exit 0; **94 passed, 4 deselected in 18.81s** |
+| Initial `.\.venv\Scripts\python.exe -m ruff check task1 tests` / `ruff format --check task1/stdio_boundary.py task1/__main__.py` | Both exit 0; all checks passed; 2 files formatted |
+| `.\.venv\Scripts\python.exe -m ruff format task1/stdio_boundary.py tests/test_stdio_boundary.py tests/test_stdio_boundary_wire.py tests/boundary_server.py tests/wire_support.py` | Exit 0; 4 files reformatted, 1 unchanged; original test_wire.py excluded |
+| `.\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest tests/test_stdio_boundary.py tests/test_stdio_boundary_wire.py --tb=short` (initial sandbox run) | Exit 1; **45 passed, 4 failed, 1 warning in 35.57s** |
+| Same new-test command after fixture corrections (approved unsandboxed execution) | Exit 0; **49 passed in 19.32s** |
+| `.\.venv\Scripts\python.exe -m ruff format task1/stdio_boundary.py tests/test_stdio_boundary.py` after two added union-fallback cases | Exit 0; 2 files unchanged |
+| `.\.venv\Scripts\python.exe -m ruff check task1 tests` and `.\.venv\Scripts\python.exe -m ruff format --check task1 tests` | Exit 0 each; all checks passed; 17 files formatted |
+| Python stdin assertion comparing tests/test_wire.py to `git show dfb329b:tests/test_wire.py` before cleanup | Entire file byte-identical; SHA256 5e7cbf5f63ab7d79797727b07772b74ae0035365c65628642ba21c5e3916e3d8 |
+| `.\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest --runxfail --tb=short` (approved unsandboxed execution) | Exit 0; **149 passed in 37.19s**, no skips/xfails; original four cases still decorated |
+| Code checkpoint commit: `git ... commit -m 'Implement SDK-preserving STDIO error recovery (T1-008)'` | Exit 0; 7b0c79fdda6949e9a18a8919910ae58e9d04360f; code/new tests checkpointed before cleanup |
+| Separate cleanup: removed only the one parametrized `@pytest.mark.xfail(...)` decorator in tests/test_wire.py | Original four assertions/bodies unchanged; sdk_limitation marker retained for targeted regression selection |
+| Python stdin source comparison / AST function-span comparison after cleanup | Current test_wire.py equals baseline with exactly that decorator removed; original test function bytes identical |
+| Python stdin importlib.metadata RECORD/SHA256 verification | All **124 MCP 2.3.0 Python source files** match installed wheel RECORD; no SDK monkeypatch or source modification |
+| Post-cleanup Ruff check / format --check | Both exit 0; all checks passed; 17 files formatted |
+
+Initial new-test failures were test fixture issues, not regressions in the 94
+ordinary tests: modern custom results include SDK resultType/_meta fields; the
+child-output fixture needed explicit DEVNULL stdin/timeout in this Windows setup;
+EOF teardown may answer outstanding work under SDK policy and is not an explicit
+notifications/cancelled request. The broken-output test's communicate reader on a
+closed pipe caused the warning; it was corrected without changing production.
+The explicit cancellation tests continue to require no response for the cancelled
+ID in either lifecycle mode. No test was skipped, xfailed or weakened to hide an
+adapter failure. Production was additionally hardened against invalid-method
+requests accepted by the SDK union as a response; two unit cases verify this.
+
+New tests exercise 51 cases, including real SDK parsing with paused error output,
+real OS-pipe backpressure (24 large error frames), exact ID/order correlation,
+two-frame capture bound, no-opener recovery beyond eight frames, cancellation,
+normal EOF with pending work, broken output bounded exit, UTF-8 fragmentation,
+notification/response routing, and print/fd/child stdout isolation.
+
+Final post-cleanup execution:
+
+| Executed command/check | Actual result |
+| --- | --- |
+| `.\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest --tb=short` (approved unsandboxed Windows subprocess access) | Exit 0; **149 passed in 39.94s**, no failures, skips, XFAIL or XPASS |
+| `git add -- tests/test_wire.py`, then cleanup commit | Exit 0; 93a861f7bfd6f49bf40a882753aa376ac4662d0f; exactly 1 file/1 deletion; separate from implementation checkpoint |
+
+### Final TASK-1 acceptance mapping
+
+| Mandatory criteria | Verified evidence |
+| --- | --- |
+| A1-A4 | Python 3.12 startup/module/console, official SDK, exactly two tools, successful calls and model-derived schemas in original suite, retained in all 149 passes |
+| A5-A6 | Original strict schema/business tests and wire -32602/IDs pass unchanged |
+| A7 | -32700/null and -32600/reliable IDs pass before/after legacy/modern opening; -32601/-32602/-32603 and business isError remain passing |
+| A8-A9 | Deterministic records/refunds, exact Decimal updates, reset-on-restart and failure atomicity pass |
+| A10-A11 | Every wire line is JSON-RPC; stderr diagnostics verified; new print/fd/child isolation passes |
+| A12-A13 | All 149 unit, SDK integration and subprocess assertions pass normally, including cancellation, ordering, pipe backpressure, EOF and broken-output exit |
+| A14 | Existing locked setup/pins retained; module/console still run; final lint and format checks pass |
+| A15 | README and investigation/adoption report updated with tree, versions, commands, matrix, architecture and limitations |
+
+Adoption decision: ACCEPT. B3 resolved; TASK-1/T1-003/T1-005/T1-008 DONE.
+Initial new-fixture failures are preserved above and resolved; no existing
+ordinary-suite regression occurred, so the requested prototype rollback was not
+triggered. No SDK, business tools/schemas, dependency pins, manual labs or Tasks
+2-4 requirements were changed. Remaining limits are documented in README/ADR-006:
+MCP 2.3.0 correlation contract, two-frame (not byte) bound, explicit stdin handle,
+existing SDK UTF-8/nonfinite handling and Windows-only verification. Broken-output
+test uses communicate(), which closes stdin; bounded exit is verified for broken
+stdout plus stdin EOF, not an arbitrary half-open transport. It may exit nonzero.
+These do not leave a mandatory assessment criterion unmet.
+
+Final integrity/documentation checks executed via a Python stdin assertion script:
+protected business/schema/dependency/manual-lab/requirements paths have no diff
+against dfb329b; test_wire.py equals the baseline minus exactly one decorator;
+all A1-A15/C1-C7 criteria checked; Tasks 2-4 registry rows equal baseline; all six
+changed documentation files are nonempty UTF-8 with no trailing whitespace.
+All passed. `git diff --check` exited 0. No production or test code changed after
+the 149-pass normal run; final edits were documentation only.

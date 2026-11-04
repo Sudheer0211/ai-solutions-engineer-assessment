@@ -75,10 +75,10 @@
 - Affected files: tests/test_wire.py, README.md, docs/TASK_LEDGER.md,
   docs/TEST_EVIDENCE.md. No requirements of Tasks 2–4 are changed.
 
-## ADR-006 — Proposed minimal STDIO input-boundary composition
+## ADR-006 — Minimal STDIO input-boundary composition
 
-- Date: 2026-11-03; status: PROPOSED (research only; no architecture change
-  implemented); tasks: T1-007, TASK-1, T1-003, T1-005; blocker: B3.
+- Date: 2026-11-03; status: ACCEPTED after controlled implementation T1-008;
+  originally PROPOSED during T1-007 research; B3 resolved by E007.
 - Context: Current official release listings and inspected main sources do not
   provide a ready-made dual-era Server.run error-recovery option. The documented
   dispatcher observer is not injectable through that driver. Public Pydantic
@@ -100,10 +100,48 @@
   context propagation and shutdown races require dedicated tests. Supplying stdin
   skips SDK fd0 diversion; default stdout protection must remain. The input/item
   relationship is inspected behavior requiring a pinned-version contract test.
-- Consequences: No code/dependency/test changes now. Original four XFAIL cases
+- Research-phase consequences: No code/dependency/test changes then. Original four XFAIL cases
   remain byte-identical. A real fix produces strict XPASS under the default command;
   use --runxfail to verify all original 98 assertions plus new tests. Do not remove
   markers, weaken tests, or mark TASK-1 DONE before all mandatory criteria pass.
 - Proposed affected files: task1/stdio_boundary.py (new), task1/__main__.py,
   new boundary tests, optional test harness support, README and governance records.
-- Actual affected files this session: docs only. Tasks 2-4 remain out of scope.
+- Research-phase affected files: docs only. Subsequent implementation is recorded
+  below. Tasks 2-4 remain out of scope.
+
+### Adoption after controlled implementation (T1-008)
+
+- User explicitly authorized the candidate, retaining official MCP 2.3.0 and
+  Server.run. Implemented public AnyIO AsyncFile observation, bounded two-frame
+  FIFO and receive decoration; SDK stdout parameter remains omitted.
+- SDK parser/runner/writer are unchanged; all 124 installed MCP Python files
+  match wheel RECORD. Business tools/schemas, pins and manual labs are unchanged.
+- Verified all original 98 assertions plus 51 new cases under --runxfail, then
+  normal execution after the separately authorized cleanup: 149 passed each.
+- Backpressure test withheld draining a real output pipe while 24 large error
+  frames were pipelined; IDs/order preserved and capture high-water mark <=2.
+  Both cancellation eras, EOF, broken output and print/fd/child isolation pass.
+- Accepted tradeoffs: pinned one-line/item contract; explicit stdin bypasses fd0
+  diversion while stdout protection stays active; two-frame bound is not a byte
+  size limit; existing UTF-8 replacement/nonfinite lexical behavior is preserved.
+- No architecture expansion into SDK internals. Adopt for this assessment;
+  prefer a future verified upstream remedy and rerun this suite before upgrading.
+- Supersedes the research-only/no-code consequences above for the authorized
+  implementation. Prior research statements remain the historical decision trail.
+
+## ADR-007 — Retire only the verified obsolete XFAIL decorator
+
+- Date: 2026-11-03; status: ACCEPTED; tasks: T1-008, T1-005, TASK-1.
+- Decision: After 149 passing assertions under --runxfail, remove only the single
+  parametrized @pytest.mark.xfail decorator; keep the historical sdk_limitation
+  marker and all four original bodies/assertions unchanged.
+- Alternative: Keep strict XFAIL forever, causing XPASS failure after a real fix;
+  weaken/remove the diagnostic assertions. User expressly authorized only the
+  obsolete-decorator cleanup after verification, so assertions remain intact.
+- Rationale: Normal suite now expresses real compliance without masking failures.
+- Tradeoff/consequence: Historical records retain old failures and markers; the
+  current suite has no expected failures. Baseline/implementation/cleanup commits
+  isolate the change, and source comparison proves body preservation.
+- Validation: E007: 149 passed under --runxfail; 149 normal passes after cleanup;
+  Ruff passes. ADR-005's retained-XFAIL policy is superseded for the fixed cases.
+- Affected file: tests/test_wire.py only for the cleanup itself; evidence/docs updated.
