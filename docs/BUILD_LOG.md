@@ -1180,3 +1180,116 @@ Targeted credential scan identified only the invalid-destination negative fixtur
 no actual secret or staged artifact. git diff --cached --check exit 0; no default
 active hooks, no test rerun. Re-stage final inspection records, repeat whitespace
 check, commit once, verify identity/parent/manifest/status/counts and stop. No push.
+
+## M051 - 2026-11-05 (America/Los_Angeles): T3-004 HTTP integration begins
+
+Latest attachment authorizes minimal HTTP integration/ASGI verification only.
+Read AGENTS/ledger/approved contract/accepted APIs; baseline e4bd001, working tree
+clean, captured tracked SHA256 baseline. Mandatory Q16-Q18: strict bounded request/
+auth/zero upstream on rejection, preheader JSON versus postheader closure, measured
+ASGI-send backpressure/deadlines/disconnect, cap16 and lifespan/retained ownership.
+Proposed implementation policies: POST /stream exact prompt, operator-configured
+Bearer separate from upstream credentials; custom Response awaits each ASGI send;
+local postheader errors close without end, never bypass Processor to create text.
+Source/framework/public API inspection only so far, no new test execution. Preserve
+all accepted source/tests and Tasks 1/2/4. Next implement narrow settings/app/tests,
+record actual full pytest/Ruff; no wire/T3-005, commit/push or vendor claim.
+
+## M052 - 2026-11-05 (America/Los_Angeles): T3-004 first ASGI checks
+
+Added strict HTTP settings, custom ASGI Response and HTTP/settings test harness.
+Only Task 3 offline environment/lock changed: resolved 25 packages, installed
+FastAPI 0.162.0/Starlette 1.10.0/Pydantic 2.14.2 and optional Uvicorn 0.54.0.
+First actual native subset: 105 passed/two failed in 2.97s (exit 1), no warnings/
+skips. Exact 10/10.001s send tests released the ASGI gate concurrently with deadline
+observation, allowing the already-offered SANITIZED frame to complete before cancel.
+This cannot prove bytes can be retracted. Corrected new fixture synchronization to
+observe cancellation before gate release; retained no-output/end/count assertions.
+Initial Ruff exits 1: 17 E501 findings; format check exits 1, four new files need
+formatting. New files only will be formatted, no ignores/accepted test changes.
+No accepted pure/upstream/service defect or correction. Further overall/cleanup/
+shutdown adversarial coverage follows before full regression and final evidence.
+
+Expanded ASGI/settings subset then passed 119 cases in 0.75s, exit 0. Added
+HTTPX ASGI smoke/client-header blocking/cross-app process-cap cases and tightened
+HTTP success bookkeeping to require confirmed teardown. First complete run:
+579 passed/one failed in 4.54s, exit 1, no warnings/skips. New ASGITransport smoke
+test incorrectly passed its coalesced multi-event response as one frame to the
+existing frame-at-a-time test helper. Corrected ONLY new fixture parsing to split
+complete SSE blocks; original expected redacted logical text retained. No accepted
+or production behavior changed for this failure. Full final rerun follows.
+
+## M053 - 2026-11-05 (America/Los_Angeles): T3-004 locally verified / review handoff
+
+Final native E035: **580 passed in4.67s**, zero failures/errors/skips/warnings/
+xfails/xpasses; Ruff lint/format22 pass. Includes all457 accepted cases and123 new
+HTTP/settings cases. Prior clean580/4.53s was followed by final lifecycle tightening:
+set unclean_shutdown true before await, assert it on cancelled lifespan waiter;
+complete final rerun above covers that change. No source changes since final run.
+Locked offline sync/import/CLI-version probes pass; Python3.12.16, FastAPI0.162.0/
+Starlette1.10.0, optional Uvicorn0.54.0, HTTPX0.28.1, unique25-package environment.
+
+New app.py/settings.py, http_support.py/test_app.py/test_http_settings.py. Only
+Task3 pyproject/lock dependencies changed; accepted pure/upstream/service/tests and
+Tasks1/2/4 unchanged. ADR-025/T3-H1-H9/Task3 README document synthetic prompt/Bearer/
+HTTP choices, preflight-before200, source-only fixed SSE frames and local error
+closure. Root README corrects stale Task3-unimplemented claim, keeps Task1/2/4
+completion/evidence unchanged. Updated AGENTS/requirements/ledger/decisions/evidence.
+
+Observed at actual ASGI send boundary: read1 while send blocked/20 scheduler turns,
+read2 only after release, cross-chunk replacement before valid end. Three bounded
+output sends all fromread1. Exact10s and120s-shared send limits, disconnect and
+postheader no-new-error-budget behavior verified. Global HTTP cap16 covers blocked
+terminal sends after service slot release, including two apps. Shielded cleanup
+shares anchored1s, retains/quarantines uncertainty and prevents premature pool close.
+Cancelled/unclean lifespan retains explicit owner/flag; concurrent close only once.
+Already-offered ASGI bytes are irreversible, no socket/RSS/vendor proof claimed.
+
+No current test/lint blocker. T3-004/TASK-3 IN_PROGRESS, independent acceptance
+PENDING; next review source/tests/T3-H/ADR-025/E035. No T3-005/wire/deployment/vendor/
+final audit, stage/commit/push. Final baseline/links/manifest checks follow; preserve
+this recoverable working tree and await independent review.
+
+Final integrity inspection E035 exits0: ten authorized tracked changes plus five
+new Python files, 94 baseline tracked paths unchanged, all17 accepted Python files
+byte-identical and22 final tested hashes recorded. 28 named test references/17 local
+links resolve, zero targeted credential candidates, no unignored artifacts/index
+entries. Whitespace check exits0; HEAD still e4bd001/main ahead2/behind0 recorded
+origin/main. No source/test/config changes after final verification, commit/push
+or later checkpoint. Review T3-004 independently; retain current uncommitted files.
+
+## M054 - 2026-11-05 (America/Los_Angeles): T3-004 independent acceptance checkpoint
+
+User independently APPROVES FastAPI/send-deadline/disconnect checkpoint. Reported
+complete suite580 passes,180 additional randomized interleaved two-channel ASGI
+scenarios with4613 upstream reads; five extra fail-closed scenarios passed:
+candidate overflow/unexpected EOF/duplicate done/premature end/malformed payload.
+All17 prior Python files byte-identical to T3-003 archive, no blocking source defect.
+Review Linux/Python3.13.5 had one nonfatal pytest configuration warning; exact
+warning/pytest version/commands/timings not supplied. E035 native Windows/
+Python3.12.16/Ruff authoritative, no new local test run. Real sockets/RSS remain
+unverified; original brief unavailable. T3-004 DONE/TASK-3 IN_PROGRESS, no T3-005.
+
+Initial HEAD e4bd001039f8a752142adb84ff1ca51a57dad5ae, main ahead2/behind0 recorded
+origin/main, index empty. Ten tracked changes/five new approved Python files plus
+one local review ZIP. Acceptance SHA256 snapshot covers104 tracked/six untracked
+paths. All22 final verified Python hashes match E035 snapshot, approved dependency/
+lock diff inspected, no unexpected functional change or reason for test rerun.
+Full tracked diff/new-file inventory inspected; source/test AST and TOML dependency
+inventory read-only, no execution of tests/compile/install/Ruff.
+
+Acceptance docs updated: ledger/requirements/ADR-025/build/E036, AGENTS and root/
+Task3 READMEs; preserve all evidence/history/policies/limitations. No accepted
+source/test/config/dependency/lock or completed Tasks1/2/4 changes this session.
+Retain review archive with exact local exclusion, never stage artifacts/secrets.
+Stage only approved15 paths, inspect full staged inventory/content, run staged
+whitespace check, one descriptive commit, verify SHA/parent/manifest/clean tree/
+recorded-origin counts and stop. No push, T3-005, feature work or new architecture.
+
+Staged inspection completed: exact15 approved paths, content matches inspected
+files after newline normalization, no unstaged/unignored leftovers. All22 verified
+Python hashes/retained ZIP unchanged; no staged artifacts or targeted credential
+candidates.18 local links valid; staged whitespace check exits0. No active Git
+hooks, no tests rerun. Re-stage final inspection records, repeat whitespace check,
+commit once, verify full SHA/parent/manifest/clean status/branch counts and stop.
+No push, T3-005 or accepted implementation changes.

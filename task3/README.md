@@ -1,6 +1,163 @@
-# Task 3: pure synthetic SSE parsing and PII redaction
+# Task 3: asynchronous synthetic SSE proxy with PII redaction
 
-## Current T3-003 acceptance checkpoint
+## Current T3-004 acceptance checkpoint
+
+FastAPI HTTP integration is **DONE and independently APPROVED**, confirmed
+2026-11-05 (America/Los_Angeles). E035 final native Windows/Python 3.12.16: **580 passed in 4.67s**, zero
+failures/errors/skips/warnings/xfails/xpasses; both Ruff checks pass, 22 Python
+files. Existing 457 tests and all 17 accepted Python files remain unchanged.
+FastAPI 0.162.0/Starlette 1.10.0, HTTPX 0.28.1/httpcore 1.0.9, optional Uvicorn
+0.54.0; isolated 25-package lock. T3-001 through T3-004 accepted; TASK-3 IN_PROGRESS.
+This gate supersedes historical no-HTTP/T3-004 instructions below for current work.
+No actual socket/process wire tests, deployment/vendor/universal PII certification,
+T3-005 or push. One descriptive T3-004 acceptance commit authorized, then stop.
+Original vendor brief remains unavailable.
+
+E036 records reported independent580 suite passes,180 additional randomized
+interleaved two-channel ASGI scenarios/4613 upstream reads, five extra fail-closed
+scenarios (candidate overflow, unexpected EOF, duplicate done, premature end and
+malformed payload), all17 prior Python files byte-identical and no blocking source
+defect. Linux/Python3.13.5 review had one nonfatal pytest configuration warning;
+native Windows/Python3.12.16 and Ruff E035 remain authoritative. No tests rerun
+during acceptance; real sockets/RSS still unverified, no widened-runtime claim.
+
+## HTTP setup and synthetic request contract
+
+From task3/, use its own environment, never a completed task's environment:
+
+```powershell
+uv sync --locked --extra dev --extra serve --python 3.12.16
+```
+
+The app factory is task3_streaming.app:create_app. It reads T3_ACCESS_TOKEN and
+T3_UPSTREAM_URL at lifespan startup; optional T3_UPSTREAM_BEARER is separate.
+There are no secret defaults. Access token must be 32-4096 ASCII Bearer-token
+characters, and must differ from upstream token. Use a randomly generated value
+outside the repository, not a fixture value. Config/body/error values are not logged.
+
+Example operator setup/launch (documented, not socket-tested this checkpoint):
+
+```powershell
+$env:T3_ACCESS_TOKEN = (& .\.venv\Scripts\python.exe -c "import secrets; print(secrets.token_urlsafe(32))")
+$env:T3_UPSTREAM_URL = 'http://127.0.0.1:9103/stream'
+.\.venv\Scripts\python.exe -m uvicorn task3_streaming.app:create_app --factory --host 127.0.0.1 --port 8003 --no-access-log --log-level warning
+```
+
+The URL must identify an already available trusted upstream implementing the
+[synthetic SSE profile](../docs/TASK3_REQUIREMENTS.md). Port 9103 is an example,
+not a server bundled/launched by this checkpoint. HTTPS or literal-loopback HTTP
+only; no query/userinfo/fragment. Set optional upstream credential separately from
+the inbound access token. No real LLM vendor API/endpoint/tokenizer is inferred.
+
+POST /stream with one Authorization: Bearer header and application/json (optional
+UTF-8 charset). Exact JSON shape: {"prompt":"synthetic input"}. Prompt is 1-4096
+Unicode scalars, no unpaired surrogates; entire raw UTF-8 body <=16384 bytes,
+absolute upload timeout 10s. Reject duplicate keys/extra fields/non-string prompt,
+malformed JSON/UTF-8/BOM, ANY content encoding, duplicate framing/media headers,
+Length+Transfer-Encoding, invalid lengths or mismatched actual bytes. De-chunked
+bodies are checked incrementally. Queries/credentials/routing/model options are
+not accepted. Valid input becomes compact UTF-8 prompt JSON; inbound whitespace/
+escape serialization is not preserved. Never forward inbound tokens/cookies/IDs.
+No CORS, docs/schema, OAuth, SSE retry/resume, slash redirect or extra route.
+
+Example real client for a separately available synthetic upstream (no wire claim):
+
+```powershell
+@'
+import os
+import httpx
+with httpx.stream(
+    "POST", "http://127.0.0.1:8003/stream",
+    headers={"Authorization": "Bearer " + os.environ["T3_ACCESS_TOKEN"]},
+    json={"prompt": "synthetic input"}, timeout=130,
+) as response:
+    response.raise_for_status()
+    for part in response.iter_text():
+        print(part, end="", flush=True)
+'@ | .\.venv\Scripts\python.exe
+```
+
+HTTP 200 has text/event-stream; charset=utf-8, no-store/nosniff and no Content-Length.
+Clients reconstruct text separately by channel, require valid done/end for success
+and treat abrupt closure/missing end as failure even after HTTP 200. Only existing
+Processor-approved delta/done/end/error frames are forwarded/rechunked.
+
+Before streaming headers, fixed JSON errors have {"error":{"code":"...","message":"..."}}:
+
+| Status | Code |
+| --- | --- |
+| 400 | invalid_request (schema/JSON/framing/query, including >4096 chars) |
+| 401 | invalid_credentials; WWW-Authenticate: Bearer realm="task3" |
+| 404 / 405 | not_found / method_not_allowed (Allow: POST) |
+| 408 / 413 / 415 | request_timeout / request_too_large / unsupported_media |
+| 429 | stream_capacity_exceeded (no queue, zero upstream on rejection) |
+| 502 | upstream_error / invalid_stream / stream_limit_exceeded |
+| 503 / 504 | service_unavailable / stream_timeout |
+
+Runtime availability -> authentication -> metadata -> bounded upload/strict JSON ->
+HTTP cap -> service admission/header preflight -> response.start. Preflight reads
+zero upstream body bytes; payload/stream errors after 200 cannot change status.
+Local postheader failures close without locally constructed SSE error/end. The
+existing upstream synthetic error is still Processor-owned and sanitized. A
+best-effort empty HTTP close uses the existing last-send/overall deadline only.
+No further writes after known disconnect/send failure/stall/shutdown. Ordinary
+nonadmitted JSON errors have no upstream owner; their connection lifecycle and
+request-header allocation are server responsibilities, not certified by ASGI tests.
+
+## ASGI send deadlines, ownership and verification
+
+The custom Response awaits every admitted response.start/body/final-empty send
+under min(now+10s, the accepted session's original 120s deadline). Send observation
+at the deadline fails; no timer restarts overall or grants a new error-send budget.
+One post-upload receive monitor handles disconnect without stealing body chunks.
+No producer queue or detached reader. A separate atomic global HTTP cap16 remains
+held through terminal ASGI send/cleanup, even after accepted upstream slot release.
+The 17th is rejected immediately across app instances, before another upstream call.
+
+One anchored additional 1s joins HTTP operation/send cancellation, monitor shutdown
+and accepted session.aclose; existing service grace is not renewed. Shielded worker
+stays retained if the request/lifespan waiter is cancelled repeatedly. Unconfirmed
+cleanup keeps ownership/slot, quarantines admission and prevents shared-pool close.
+Late confirmed HTTP work releases its slot. If service confirmation arrives after
+its guard returned false, explicit runtime.aclose rechecks public confirmation,
+without retrying resource close; quarantine stays sticky. Request success requires
+source completion, final ASGI send and confirmed teardown.
+
+Lifespan initializes one pooled service only after valid config, blocks admission
+on shutdown, cancels/drains HTTP owners then calls the accepted service shutdown.
+app.state.runtime retains ownership even on failure; unclean_shutdown stays true
+until confirmed (including cancelled lifespan waiters). Failed shutdown raises a
+fixed Unclean streaming shutdown. Pool's existing one-time 1s close budget follows
+drained request ownership; no repeated request-grace renewal. Retain the app and
+supervise uncertain resources; GC, asyncio and local cancellation do not certify
+physical remote-provider termination/billing cancellation.
+
+Executed direct-ASGI evidence: first sanitized safe prefix at raw read1; while its
+send is blocked, 20 scheduler turns leave reads1; release permits read2, whose
+separate upstream gate still blocks completion. Three 256/256/88-scalar sends use
+the SAME read1. Send tests cover 9.999/10/10.001s, and an overall-budget send started
+at117s remains pending119.999 but aborts120/120.001, not127. Disconnect/body/header/
+raw-tail/cancellation/shutdown/quarantine/late-confirmation tests are included.
+Read/send/cancel gates, not wall-clock sleeps, control assertions.
+
+Bytes already offered to ASGI cannot be retracted; resistant sends may complete
+that one already-offered SANITIZED frame after local cancellation. No new sends
+follow failure, and no success flag follows unconfirmed teardown. This is not
+actual socket acknowledgement, OS/proxy-buffer/RSS/process-cleanup evidence.
+Those concerns remain T3-005; no real wire services/processes started here.
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+E035 records exact basetemp commands, setup/versions, actual final 580/4.67s pass,
+zero failures/skips/warnings/xfails and Ruff22, plus initial fixture failures/fixes.
+No accepted source/test correction; Tasks 1/2/4 unchanged. Independent review now
+approved; next one acceptance commit, then stop. No T3-005 or push.
+
+## Accepted T3-003 checkpoint (history)
 
 Async HTTPX adapter and owned StreamService are **DONE and independently APPROVED**,
 confirmed 2026-11-05 (America/Los_Angeles). E033 native Windows/Python 3.12.16: **457 passed

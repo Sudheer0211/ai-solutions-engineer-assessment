@@ -9,8 +9,13 @@ T3-002 independently APPROVED, user confirmation 2026-11-05; DONE, committed 0a7
 E032 records qualified review provenance. T3-003 independently APPROVED, confirmed
 2026-11-05; DONE. E033 preserves actual native execution; E034 records qualified
 independent review and this acceptance Git checkpoint, without new test executions.
-One descriptive T3-003 acceptance commit authorized; preserve source/tests/pins/lock.
-T3-004 NOT_STARTED/not authorized. No public HTTP/wire/vendor claims or push.
+T3-003 accepted baseline e4bd001. T3-004 independently APPROVED, user confirmation
+2026-11-05; DONE. E035 preserves actual native verification; E036 records qualified
+review and acceptance Git inspection without new test executions. One descriptive
+acceptance commit authorized; preserve all source/tests/config/dependencies/lock.
+T3-005 NOT_STARTED/not authorized. No real-socket/RSS/vendor/deployment claim or push.
+T3-H policies below define
+the implemented HTTP choices; they are not recovered original assessment wording.
 The T3-003 section below supersedes historical no-network gates for the accepted
 async checkpoint only; pure contract remains unchanged.
 The additional mandatory rules preserve valid-done-only finalization, no raw EOF/
@@ -330,9 +335,9 @@ Inbound route/method/request/authentication/browser-client decisions still requi
 explicit approval before T3-004. Real vendor adapters/tokenizers are not inferred.
 
 T3-001/T3-002 DONE / independently accepted within the synthetic profile.
-T3-003 DONE/independently accepted; T3-004 through T3-006 NOT_STARTED. Completed
-Tasks 1/2/4 remain DONE and must not change. One T3-003 acceptance commit authorized;
-no T3-004 or push. Full TASK-3 remains IN_PROGRESS.
+T3-003/T3-004 DONE/independently accepted; T3-005/T3-006 NOT_STARTED. Completed
+Tasks 1/2/4 remain DONE and must not change. One T3-004 acceptance commit authorized,
+no T3-005 or push. Full TASK-3 remains IN_PROGRESS.
 
 ## Standards references consulted for the design
 
@@ -483,3 +488,136 @@ Python 3.12.16 and Ruff remain authoritative. No real socket or ASGI claims,
 vendor interoperability or universal PII guarantees follow from this acceptance.
 Preserve all engineering policies/limitations and Tasks 1/2/4. E034 records this
 documentation/Git checkpoint only; no test rerun absent unexpected functional change.
+
+## T3-004 HTTP implementation choices / review checkpoint - 2026-11-05
+
+America/Los_Angeles. Latest attachment authorizes FastAPI integration and direct
+ASGI verification over e4bd001/457 tests. These H1-H9 are implementation policies,
+not original vendor requirements. Original brief unavailable; approved narrow
+PII/synthetic SSE/metadata/terminal rules are unchanged. Native E035: 580 passes
+(457 preserved +123 new), both Ruff checks/22 Python files. T3-004 DONE,
+independently APPROVED 2026-11-05; qualified review E036. No FastAPI shortcuts bypass accepted Processor,
+SSE/payload/redaction/upstream/service components; none of their bytes changed.
+
+- T3-H1: exact POST /stream, no slash redirects, query strings, documentation/schema
+  routes, CORS, SSE resume/retry or extra routes. Other methods 405/Allow: POST;
+  unknown paths 404. One lifespan per factory-created app. Plain HTTP examples bind
+  loopback only, not deployment/TLS certification.
+- T3-H2: one operator-configured opaque Bearer token, 32-4096 ASCII token-syntax
+  characters, separate from optional upstream Bearer (equal values rejected).
+  Scheme is case-insensitive, token exact; one header/one ASCII space, no commas,
+  tabs, outer whitespace or duplicate authorization. Constant-time comparison.
+  No production credential defaults, role/tenant/OAuth/JWT system or caller URL/
+  credential/routing options. Missing/invalid auth fails before body consumption.
+- T3-H3: operator environment T3_ACCESS_TOKEN and T3_UPSTREAM_URL required;
+  T3_UPSTREAM_BEARER optional. Typed HTTPSettings/UpstreamSettings injection is
+  trusted composition. Load/validate before resource creation; no connection opens
+  until an admitted upstream call. No await between client creation and retaining
+  it in app.state.runtime. Test transport/clock injection never comes from HTTP.
+- T3-H4: strict UTF-8 application/json, optional UTF-8 charset; reject ANY
+  Content-Encoding including identity. Reject duplicate Content-Type/Encoding/
+  Length/Transfer-Encoding, malformed/nondecimal/over-10-digit Content-Length,
+  Length+Transfer-Encoding and transfer coding other than sole chunked. ASGI server
+  already de-chunks; limit every received body increment before extending storage.
+  Raw body <=16384 bytes and absolute body-read deadline 10s. Declared lengths must
+  match. Receive/disconnect during upload has one reader; confirmed upload disconnect
+  writes nothing. ASGI receive is the trusted cancellation-cooperative server API.
+- T3-H5: one exact JSON object with ONLY prompt, a strict string of 1-4096 Unicode
+  scalars. Reject malformed JSON/UTF-8/BOM, decoded duplicate keys, extra fields,
+  numeric/nonfinite values, nested/type-mismatched prompt and unpaired surrogates.
+  All invalid prompt/schema cases 400, including character overflow; raw-byte
+  overflow 413. Both bounds apply independently. Form canonical UTF-8 compact
+  {"prompt":...} bytes; accepted adapter preserves THOSE bytes unchanged, not original
+  inbound whitespace/escapes. This is a synthetic prompt API, not a vendor format.
+- T3-H6: order: framework path/method -> runtime availability -> Bearer -> HTTP
+  metadata -> bounded body -> strict JSON -> HTTP capacity -> accepted service
+  admission/header preflight -> one response.start. Preflight validates upstream
+  HTTP headers WITHOUT reading any response body. Payload errors after 200 close
+  as failed SSE, not retroactive JSON status. Early rejection does zero upstream work.
+- T3-H7: custom Response owns one post-body receive monitor and one sequential
+  open/read/send operation; no producer queue/background body reader. Await each
+  ASGI send before another anext/upstream read. Admitted response.start, frames
+  and final empty body each use min(now+10s, session.deadline); observation at the
+  deadline loses. Overall 120s includes setup/processing/backpressure and is never
+  reset. Only Processor-approved frames reach SSE; all upstream metadata stays
+  dropped. No Content-Length/compression; text/event-stream; charset=utf-8, no-store,
+  nosniff. ASGI completion is not a socket acknowledgement or wire backpressure proof.
+- T3-H8: after headers, local processing/upstream/timeout errors CLOSE without a
+  locally generated SSE event or end. A best-effort empty HTTP close may use only
+  the EXISTING last-send/overall budgets, never a fresh error-send allowance.
+  Known synthetic upstream error remains the existing Processor-owned fixed error
+  frame. Disconnect/send failure/shutdown writes no further frames or errors.
+  Attempted response.start is never retried even if delivery is uncertain. Bytes
+  already offered to a server send cannot be retracted; resistant test sends may
+  finish that already-offered sanitized frame later. No new sends follow failure.
+- T3-H9: separate atomic process-global HTTP cap16 holds through final ASGI send
+  and confirmed cleanup, in addition to unchanged upstream service cap16. This
+  prevents blocked terminal sends bypassing the cap after upstream slot release.
+  No waiting admission queue. HTTP owner shares one anchored additional 1s for
+  send/operation cancellation, receive-monitor close and accepted session cleanup;
+  never renew an existing service grace. Work stays owned/shielded on repeated
+  caller cancellation. Unconfirmed close retains owner/slot, quarantines admissions
+  and prevents pool close underneath it. Late confirmed work releases its slot;
+  if service confirmation arrives after its guard returns false, explicit runtime
+  aclose rechecks public session.cleaned state without retrying resource close.
+  Quarantine is sticky. Shutdown sets stop barrier, cancels/drains HTTP owners then
+  invokes unchanged service.aclose/pool budget. app.state.runtime retains handles;
+  app.state.unclean_shutdown stays true until confirmation, including cancelled
+  lifespan waiters. Failed shutdown raises fixed Unclean streaming shutdown. No
+  automatic restart/replay/recovery or remote termination guarantee.
+
+Before headers, every error uses {"error":{"code":"...","message":"..."}},
+no-store/nosniff; fixed values only:
+
+| HTTP status | Code / meaning |
+| --- | --- |
+| 400 | invalid_request: framing/schema/query/JSON invalid |
+| 401 | invalid_credentials; WWW-Authenticate: Bearer realm="task3" |
+| 404 / 405 | not_found / method_not_allowed (Allow: POST) |
+| 408 | request_timeout: body-read deadline |
+| 413 | request_too_large: raw-byte limit |
+| 415 | unsupported_media: unsupported media/encoding |
+| 429 | stream_capacity_exceeded: HTTP or accepted service cap, no queued work |
+| 502 | upstream_error, invalid_stream or stream_limit_exceeded per fixed MESSAGES |
+| 503 | service_unavailable: unavailable/stopping/quarantined runtime |
+| 504 | stream_timeout during preflight |
+
+Admission failures are ordinary bounded-size JSON responses without an upstream
+owner; ASGI server owns nonadmitted connection/receive lifecycle and request-header
+allocation. Streaming/send deadlines are verified at the admitted ASGI boundary,
+not as transport-level guarantees for every rejected HTTP connection. Limits do
+not certify total RSS or arbitrary server/OS buffers. No input/output secrets are
+logged; operator must keep access/body/debug/telemetry capture disabled.
+
+| Actual Q16-Q18 evidence | Named tests (task3/tests/test_app.py unless stated) |
+| --- | --- |
+| Strict HTTP/auth/zero forwarding | test_http_authentication_rejects_before_body_or_upstream; test_metadata_failures_do_not_read_body_or_contact_upstream; test_strict_prompt_validation_zero_upstream; test_body_limit_enforced_across_chunked_receive_messages; tests/test_http_settings.py |
+| ASGI backpressure/progression | test_asgi_send_backpressure_counts_and_progressive_safe_delivery: read1 while send blocked/20 scheduler turns, read2 only after release; test_pending_sanitized_frames_await_individual_asgi_sends_without_more_reads: 256/256/88 scalars, all from read1 |
+| Deadlines | test_exact_send_deadline_no_raw_tail_or_error_write_after_stall: 9.999/10/10.001; test_send_uses_remaining_overall_budget_instead_of_another_ten_seconds: send starts117, 119.999/120/120.001; test_postheader_failure_cannot_renew_an_expired_send_budget_for_error_or_close |
+| Disconnect/error privacy | test_disconnect_never_writes_error_or_flushes_pending_pii; test_queued_disconnect_is_seen_before_admission_or_headers; test_blocked_response_start_does_not_pull_upstream_body; test_send_failure_no_second_status_or_error_send; test_postheader_failure_closes_without_end_or_new_status |
+| Capacity/isolation | test_http_cap_includes_blocked_terminal_sends_after_upstream_releases; test_http_capacity_is_process_global_across_application_instances; test_concurrent_clients_isolate_prompts_channels_and_responses |
+| Lifecycle/ownership | test_real_asgi_lifespan_startup_shutdown_messages_and_shared_close_once; test_unclean_lifespan_retains_resource_owner_and_reports_fixed_shutdown_failure; test_send_cancellation_and_response_close_share_one_cleanup_grace; test_repeated_request_cancellation_cannot_discard_owned_send_cleanup; test_cancelled_lifespan_waiter_retains_and_finishes_shared_pool_close |
+
+No accepted-component integration correction was required. Initial/new-fixture
+failures and intermediate results remain in E035/M052. HTTP/TLS socket behavior,
+proxy/server buffering, process/RSS/leak audit, deployment, real LLM providers and
+universal PII detection are unverified/excluded. Independent T3-004 review approved;
+next the authorized acceptance commit, then stop. No T3-005 or push.
+T3-001 through T3-004 accepted, TASK-3 IN_PROGRESS.
+
+### T3-004 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User confirms independent APPROVAL: complete suite580 passed,
+180 additional randomized interleaved two-channel ASGI streaming scenarios passed,
+4613 upstream reads exercised. Five additional fail-closed scenarios passed:
+candidate overflow, unexpected EOF, duplicate done, premature end, malformed payload.
+All17 previously accepted Python source/test files byte-identical to T3-003 review
+archive; source inspection found no blocking defect. These are reported review
+results, not new commands executed during acceptance. Linux/Python3.13.5 produced
+one nonfatal pytest configuration warning; warning text/pytest version/exact
+commands/timings not supplied. E035 native Windows/Python3.12.16 verification and
+Ruff remain authoritative. No widened Python support, real socket/RSS evidence,
+vendor compatibility or universal PII claim. All H/P/I policies, historical
+failures/evidence and limitations retained; original vendor brief unavailable.
+E036 records this acceptance/docs/Git checkpoint, with accepted source/tests/
+dependencies/lock unchanged. No T3-005 or push; stop after one commit verification.

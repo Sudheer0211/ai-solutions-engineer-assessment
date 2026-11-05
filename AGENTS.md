@@ -360,3 +360,47 @@ exclude env/cache/pycache/egg-info/credentials/review archives (retain locally),
 run git diff --cached --check, commit once, verify SHA/inventory/clean tree/branch
 counts and stop. No test/Ruff rerun absent unexpected functional change. TASK-3
 IN_PROGRESS; T3-004 NOT_STARTED/not authorized. No push or further implementation.
+
+## T3-004 active authorization (2026-11-05 America/Los_Angeles)
+
+Latest supplied attachment authorizes app.py/narrow HTTP settings and deterministic
+ASGI integration tests over e4bd001/457 accepted tests. Preserve pure/upstream/service
+source and accepted tests unless an integration defect is reproduced/documented.
+Strict bounded synthetic POST /stream, separate operator Bearer, FastAPI lifespan,
+preflight before headers, pull-driven actual ASGI sends under min(10s, remaining
+120s overall), one additional 1s cleanup, disconnect monitoring AFTER body read,
+immediate process cap16 including blocked HTTP sends, retained/quarantined uncertain
+ownership. Run native full Task 3 pytest/Ruff; record actual results and stop for
+independent review. No real wire/T3-005, final audit, vendor/deployment/resume,
+Tasks 1/2/4 changes, commit or push. Supersedes historical no-T3-004 gates only.
+
+T3-004 local outcome: verified/independent review PENDING. E035 final native
+Windows/Python 3.12.16: 580 passed (457 unchanged +123 new), zero failures/skips/
+warnings/xfails, Ruff lint/format pass (22 Python files). Read T3-H1-H9, ADR-025 and
+task3/README.md. New app/settings/direct ASGI tests only; isolated FastAPI/optional
+Uvicorn additions/25-package lock. Original 17 Python files and Tasks 1/2/4 unchanged.
+POST /stream strict prompt/operator Bearer, preflight before 200, bounded ASGI sends,
+separate process-global HTTP cap16, retained/quarantined uncertain cleanup. No real
+socket/send-ack/RSS/vendor certification. No tests after final source verification
+unless new changes/concerns; docs-only handoff. T3-004/TASK-3 IN_PROGRESS; next is
+independent review, not T3-005 or staging/commit/push.
+
+## T3-004 independent acceptance / Git checkpoint (2026-11-05 America/Los_Angeles)
+
+Latest user independently APPROVES T3-004; DONE. Read E036/ADR-025 acceptance
+provenance: reported580 suite passes,180 randomized interleaved two-channel ASGI
+scenarios/4613 upstream reads, five fail-closed scenarios, all17 prior Python files
+unchanged, no blocking source defect. Linux/Python3.13.5 review recorded one
+nonfatal pytest configuration warning, details not supplied; native Windows/
+Python3.12.16 E035 tests/Ruff authoritative. Real sockets/RSS remain unverified,
+original brief unavailable; no pin widening/vendor/universal privacy claim.
+
+One descriptive T3-004 acceptance commit authorized, superseding historical
+pending/no-commit gates only for this checkpoint. Preserve all22 verified Python
+files, approved config/dependencies/lock and Tasks1/2/4. Record review in docs,
+inspect full diff/new files/index, stage exact approved source/tests/config/lock/
+READMEs/governance only, retain/exclude env/cache/pycache/egg-info/credentials/
+databases/review ZIPs. Run git diff --cached --check, commit once, verify full SHA/
+manifest/clean tree/recorded-origin counts and stop. No tests/Ruff/install rerun
+absent unexpected functional change. TASK-3 IN_PROGRESS; T3-005 NOT_STARTED/not
+authorized. No push or further implementation.

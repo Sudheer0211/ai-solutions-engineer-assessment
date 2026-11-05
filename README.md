@@ -11,6 +11,11 @@ This repository contains independently executable Python assessment projects:
   [final audit / requirements traceability](docs/TASK2_FINAL_AUDIT.md).
   T2-006 evidence: 452 passing tests, including 52 real HTTP wire cases; final
   independent approval confirmed 2026-11-04. No tests rerun for the acceptance commit.
+- **Task 3: IN_PROGRESS.** T3-001 through T3-004 independently accepted, user
+  confirmation 2026-11-05; qualified review recorded in [E036](docs/TEST_EVIDENCE.md).
+  Native Task 3 suite: 580 passing tests/Ruff ([E035](docs/TEST_EVIDENCE.md)). See
+  [Task 3 setup and synthetic HTTP contract](task3/README.md). Original vendor
+  brief unavailable; real sockets/RSS unverified, no vendor/deployment claim.
 - **Task 4: DONE; independently approved, assessment-ready within its documented
   requirements, supported Windows/SQLite environment and trusted-adapter policies.**
   Native Windows full-suite evidence remains authoritative; Linux review used
@@ -22,7 +27,7 @@ This repository contains independently executable Python assessment projects:
   tests; all Ruff lint/format checks pass ([E028](docs/TEST_EVIDENCE.md)).
   Clean locked Task 4 setup and deterministic primary/fallback fixtures verified.
   Stock Task 4 intentionally returns 503 without trusted provider/bounds adapters;
-  no real LLM/tokenizer or production deployment is certified. Task 3 unimplemented.
+  no real LLM/tokenizer or production deployment is certified.
   E029 records independent acceptance and the documentation-only Git checkpoint;
   tests were not rerun for acceptance. No GitHub push is authorized.
 

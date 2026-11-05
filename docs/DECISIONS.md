@@ -881,3 +881,87 @@ No architecture or accepted implementation change. Supersedes pending/no-commit
 handoff above only for one descriptive T3-003 acceptance commit with exact approved
 source/tests/dependency/lock/README/governance inventory. Preserve all limitations
 and completed Tasks 1/2/4; no T3-004 or push; stop after Git verification.
+
+## ADR-025 - 2026-11-05: T3-004 HTTP boundary and owned ASGI send operations
+
+- Status: independently ACCEPTED, user confirmation 2026-11-05; T3-004 DONE.
+  TASK-3 IN_PROGRESS; e4bd001 components unchanged. T3-005 NOT_STARTED/not authorized.
+- Contract: T3-H1-H9 document implementation policies, not recovered assessment
+  wording: POST /stream exact bounded prompt JSON, one operator-configured opaque
+  Bearer distinct from upstream optional credential, no caller routing/extra fields,
+  queries/docs/CORS/resume. Validate config at lifespan, auth before body, strict
+  framing/raw bytes/scalars/JSON duplicates. Existing pure PII/profile unchanged;
+  original vendor brief unavailable. No roles/tenant/OAuth/vendor schema invented.
+- Response choice: a small Starlette Response subclass uses the public ASGI
+  scope/receive/send protocol. Installed Response/StreamingResponse/init_headers
+  source inspected read-only. Ordinary StreamingResponse does not expose the
+  required shared send-deadline/retained-resistant-worker controls; framework
+  version-dependent disconnect behavior is not our ownership protocol. No framework
+  internals patched. Admission and upstream header validation precede response.start,
+  body parsing remains the accepted service/Processor. Never await another anext
+  until the current send completes, no queue/background reader.
+- Deadlines: admitted start/body/final-empty send gets min(now+10s, session.deadline),
+  checked with injected monotonic clock/timer tasks, not cancellation-resistant
+  wait_for. Request upload has independent 10s/16384-byte budget. Timely sends
+  cannot renew overall120. Postheader local failure uses connection closure, not a
+  locally encoded SSE frame bypass. Only accepted Processor frames reach SSE;
+  known upstream error remains fixed. Best-effort empty close uses existing send
+  budget. Never retry a response.start, send an error after disconnect or invent end.
+- Capacity: reuse accepted Capacity primitive for a separate unconditional global
+  HTTP cap16 through terminal send/cleanup. Upstream service can release its slot
+  before HTTP sends finish; counting only service.active would permit unbounded
+  stalled terminal response owners. Cross-app tests prove zero 17th upstream call.
+  Admission is immediate, not a semaphore waiting queue. No production cap override;
+  only new HTTP test fixture isolates its new counter.
+- Lifespan/ownership: one service/client, no await between validated construction
+  and retention; config failure opens no transport. After body completion one
+  receive monitor races open/read/send with disconnect/shutdown/deadline. Cleanup
+  starts accepted session close and HTTP worker joins under one anchored additional
+  1s, without renewing service grace. Shields retain resistant workers on repeated
+  caller cancellation. Unconfirmed close quarantines admissions/retains HTTP owner
+  and slot; never close pool under that owner. Late confirmed work releases; explicit
+  aclose may recheck public session.cleaned if late service confirmation followed
+  false guard result, without new close/retry. app.state.runtime retains handles,
+  unclean_shutdown remains true on cancelled/failed shutdown; fixed failure only.
+  Shared pool's accepted one-time 1s budget follows drained request owners.
+- Alternatives: ordinary unbounded StreamingResponse/send await (no required send
+  enforcement), async producer queue (read-ahead), service-only cap (terminal-send
+  bypass), replay/retry/resume (out of scope), raw encoder for local SSE errors
+  (unnecessary bypass), provider-specific request adapter (brief unavailable).
+- Tradeoffs: close-after-header failures require clients to verify SSE end, even
+  with status200. Preflight validates headers only, not entire stream. HTTP canonical
+  prompt JSON changes inbound whitespace/escapes but adapter preserves formed bytes.
+  Nonadmitted JSON response connection lifetime/header allocation relies on ASGI
+  server, not streaming cap. Server receive is trusted/cancellation-cooperative;
+  bytes offered to ASGI cannot be retracted. Resistant sends may later finish only
+  the already-offered sanitized frame; no new output/success claim follows failure.
+  No socket acknowledgment/real proxy buffering/RSS/provider termination guarantee.
+- Dependencies: Task 3 only FastAPI0.162.0/Starlette1.10.0, optional serve extra
+  Uvicorn0.54.0; existing HTTPX/Python/dev pins preserved; 25-package locked env.
+  No completed project imports/environment changes or accepted source/test edits.
+- Verification E035: final native Windows/Python3.12.16, 580 passes (457 unchanged
+  +123 HTTP/settings), Ruff lint/format22. Controlled ASGI read counts1 whileblocked,
+  then2 afterrelease; exact10/overall120/sharedcleanup/cancel/quarantine/lifespan
+  gates. One HTTPX ASGITransport smoke is NOT socket-backpressure evidence. Initial
+  fixture deadline-race and coalesced-frame failures retained, no weakened assertions.
+- References: [FastAPI custom responses](https://fastapi.tiangolo.com/advanced/custom-response/)
+  and [ASGI HTTP send/receive/disconnect specification](https://asgi.readthedocs.io/en/latest/specs/www.html).
+  Public installed source inspection supplements these; a failed Starlette website
+  fetch is not treated as retrieved documentation. Next independent T3-004 review,
+  no wire/T3-005, deployment/vendor/final audit, commit or push.
+
+### ADR-025 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User confirms independent APPROVAL, no blocking source defect.
+Reported complete suite580 passes;180 additional randomized interleaved two-channel
+ASGI scenarios/4613 upstream reads; five fail-closed scenarios (candidate overflow,
+unexpected EOF, duplicate done, premature end, malformed payload) pass. All17 prior
+Task3 Python files byte-identical to T3-003 review archive. Review Linux/Python3.13.5
+had one nonfatal pytest configuration warning; exact warning/pytest version/
+commands/timings not supplied. E035 native Windows/Python3.12.16 tests/Ruff remain
+authoritative, not a new local execution or supported-runtime/pin change. E036
+records reported review and Git inspection. No architecture/implementation change,
+real socket/RSS/vendor/deployment certification or universal PII claim. Original
+brief unavailable; all historical evidence/tradeoffs retained. Supersedes pending/
+no-commit handoff above only for one T3-004 acceptance commit of approved source/
+tests/config/lock/README/governance. Preserve Tasks1/2/4; no T3-005 or push; stop.

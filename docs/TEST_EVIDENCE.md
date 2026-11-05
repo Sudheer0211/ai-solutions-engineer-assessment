@@ -2258,3 +2258,243 @@ functional changes or test warnings. Final changes after inspection are these
 documentation records only; re-stage them and repeat staged whitespace check before
 the one commit. SHA/parent/manifest/clean status/branch counts are verified afterward
 and reported in the session/Git history. No test/Ruff/compile/install rerun.
+
+## E035 - 2026-11-05: T3-004 FastAPI/ASGI integration and downstream ownership
+
+America/Los_Angeles (client date). Actual local verification, not independent
+acceptance. Baseline e4bd001039f8a752142adb84ff1ca51a57dad5ae, clean main ahead2/
+behind0 recorded origin/main; 104 tracked SHA256 baseline captured. Read AGENTS,
+ledger/approved synthetic contract/ADRs/accepted API source. User attachment
+authorizes only HTTP settings/app and deterministic ASGI tests; no real sockets,
+wire subprocesses, vendor APIs or completed-task modifications.
+
+### Setup/runtime/API inspection (not implementation test claims)
+
+Read installed public Starlette Response/StreamingResponse/init_headers and FastAPI
+source read-only using Task 2's existing interpreter, no environment changes there.
+Confirmed Response subclass callable can own public ASGI send/receive; ordinary
+StreamingResponse does not expose our shared send deadline/retained-worker policy.
+Official FastAPI custom-response and ASGI spec pages retrieved, ADR-025 links.
+Starlette website fetch failed502; not used as successfully retrieved evidence.
+
+From task3/, actual native offline setup:
+
+```powershell
+$env:UV_CACHE_DIR='..\.cache\uv'
+..\.tools\bin\uv.exe sync --extra dev --extra serve --python .venv/Scripts/python.exe --offline
+```
+
+Exit0: resolved25 packages, rebuilt editable Task3 project, installed11 (including
+replacement project). Only Task3 environment/pyproject/lock changed. New FastAPI
+0.162.0/Starlette1.10.0/Pydantic2.14.2, optional Uvicorn0.54.0; Python/dev/HTTPX pins
+preserved. Cache only, no external inference or TCP listener started.
+
+Final sys.version/importlib.metadata probe: Python3.12.16 (Oct26 2026, MSC1944,
+AMD64). Unique 25-package inventory: annotated-doc0.0.5, annotated-types0.8.0,
+anyio4.16.0, assessment-task3-streaming0.1.0, certifi2026.10.23, click8.5.0,
+colorama0.4.6, fastapi0.162.0, h110.16.0, httpcore1.0.9, httpx0.28.1, idna3.20,
+iniconfig2.3.1, opentelemetry-api1.45.2, packaging26.3, pluggy1.7.0,
+pydantic2.14.2, pydantic_core2.50.2, Pygments2.21.0, pytest9.2.0, Ruff0.17.3,
+starlette1.10.0, typing-inspection0.4.5, typing_extensions4.16.0, uvicorn0.54.0.
+The editable project appeared twice in metadata enumeration: inspected locations
+are its .venv dist-info and ignored src egg-info, same0.1.0, not a second project
+version. App import resolves task3/src/task3_streaming/app.py, exit0.
+SQLite not used. No completed-task test/environment/pin changes needed.
+
+Final actual locked check, same cwd/cache:
+
+```powershell
+..\.tools\bin\uv.exe sync --locked --extra dev --extra serve --python .venv/Scripts/python.exe --offline
+.\.venv\Scripts\python.exe -m uvicorn --version
+```
+
+Both exit0: resolved/checked25, no lock changes; Running uvicorn0.54.0 with
+CPython3.12.16 on Windows. Version probe is NOT a server startup/wire test.
+
+### Initial failures / actual corrections, retained as evidence
+
+From task3/, native outside sandbox due cache permissions:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_app.py tests/test_http_settings.py --tb=short --maxfail=3 --basetemp=.cache/t3004-initial
+```
+
+Exit1: **105 passed, 2 failed in2.97s**, no skips/warnings/xfails. Both new
+test_exact_send_deadline_no_raw_tail_or_error_write_after_stall cases10/10.001
+released ASGI send gate concurrently with clock expiry. An already-offered
+SANITIZED frame completed before cancellation observation; no raw tail leaked.
+Corrected new fixture synchronization to await cancellation signal before release;
+retained original no-frame/end/attempt assertions. Timers cannot retract bytes
+already offered to a server; this limitation remains documented, not hidden.
+
+Initial ruff check exits1, 17 E501 findings; format --check exits1, four new files
+would change/18 already formatted. Formatted only five named NEW files (four
+changed/one unchanged), no rule ignores or accepted-file edits. Next Ruff check
+passes. This was formatting, not an accepted source integration correction.
+
+Expanded subset command (same as initial with --basetemp=.cache/t3004-expanded)
+exits0: **119 passed in0.75s**, no skips/warnings. Further tests add cross-app
+capacity/header-blocking and HTTPX ASGI smoke, plus explicit success bookkeeping.
+First complete command
+`.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3004-full`
+exits1: **579 passed, 1 failed in4.54s**, no skips/warnings/xfails. New ASGITransport
+smoke passed coalesced multi-event body to the accepted frame-at-a-time test helper.
+Corrected only NEW test splitting on complete SSE blocks, preserving expected
+redacted logical text. No production correction or accepted-test change.
+
+First clean full command with --basetemp=.cache/t3004-final exits0:
+580 passed in4.53s, Ruff lint/format22 pass. Final lifecycle review then made
+unclean_shutdown true BEFORE awaiting teardown so a cancelled lifespan waiter
+cannot leave that indicator unset. Added its assertion to existing NEW shutdown
+test and reran complete suite/checks below. No accepted source correction.
+
+### Final actual supported native verification
+
+All commands from task3/, Windows/Python3.12.16, no compatibility substitutions,
+warning filters or test selection. pytest outside sandbox for ordinary cache access:
+
+| Exact command | Actual result | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3004-verified` | **580 passed in4.67s** | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` | 22 files already formatted | 0 |
+
+580 =457 accepted tests unchanged +123 new HTTP/settings cases. Zero failures,
+errors, skips, warnings, xfails/xpasses. 22 Python files:9 source/package and13
+test/support/package. No actual upstream/proxy listener or child services started.
+
+### Actual ASGI assertions / bounded-state evidence
+
+- test_asgi_send_backpressure_counts_and_progressive_safe_delivery: response200
+  started, first safe prefix offered at raw read1; blocked send/20 scheduler turns
+  stay read1/no delivered frame, next upstream gate not entered. Releasing send
+  delivers safe prefix and enters read2; request still unfinished until upstream
+  gate releases, final cross-chunk redaction/end and confirmed close, totalreads2.
+- test_pending_sanitized_frames_await_individual_asgi_sends_without_more_reads:
+  three independently gated 256/256/88-scalar sends all hold raw read1. Controls
+  use read2. Existing service/pure high-water/long-stream tests also rerun.
+- test_exact_send_deadline_no_raw_tail_or_error_write_after_stall:9.999 succeeds,
+  10/10.001 cancel blocked send, zero further attempt/frame/error/end, close confirms.
+  Header-block timeout/disconnect makes zero raw reads; attempted start not retried.
+- test_send_uses_remaining_overall_budget_instead_of_another_ten_seconds: periodic
+  event schedule reaches117s (14 raw reads), gated send remains pending/open119.999,
+  completes if released then; 120/120.001 cancel, close, no end. No127s extension.
+- test_postheader_failure_cannot_renew_an_expired_send_budget_for_error_or_close:
+  after prior successful send, failure at11s yields zero new send attempts, no
+  renewed error/empty-close allowance. No status change, no unclassified tail flush.
+- Authentication/media/schema/framing/raw-byte/length/query/method rejects assert
+  zero upstream requests; auth/metadata rejects also assert zero body receives.
+  Two receive chunks exactly16384 accept;16385 rejects413 before upstream. Prompt
+  exactly4096 ASCII/Unicode chars and valid Content-Length accept;4097 rejects400.
+- Four upstream fragmentation step sizes1/2/7/4096 preserve independent channels,
+  cross-delta PII and Unicode. Client Bearer/cookies/role/resume IDs absent upstream;
+  separately configured Bearer and canonical prompt bytes confirmed. DEBUG caplog
+  contains no synthetic private prompt/value/credential marker. Errors fixed only.
+- Sixteen clients isolate prompts/results. Separate global HTTP capacity keeps16
+  blocked terminal sends even when service.active=0;17th returns429, no17th upstream.
+  Same invariant passes across two independent app instances, no waiting queue.
+
+### Actual cancellation / lifespan / ownership assertions
+
+Queued post-body disconnect can reject before upstream/header start. Disconnect
+during upload/header acquisition/send/raw-tail read yields no new send or raw flush.
+Request cancellation during blocked upstream propagates CancelledError and closes.
+Repeated request cancellation does not discard shielded send/cleanup worker.
+Transport send OSError never retries start or attempts an error write.
+
+Shared-grace test: send stalls10s, resistant send cancellation plus response close
+anchor same11s deadline; cancellation release10.75 does not extend it. At11.001
+owner/session remain uncertain/quarantined; later close confirmation plus explicit
+runtime.aclose releases only after public confirmation, no retry/new grace.
+Uncertain ASGI send similarly retains owner/slot beyond11.001, blocks new request
+503 with zero extra upstream calls and prevents pool close; releasing gate confirms
+work, releases owner and allows exactly one pool close. Already-offered sanitized
+frame may finish late; no new sends/end follow. No physical byte-retraction claim.
+
+Actual ASGI lifespan messages startup.complete/shutdown.complete tested. Concurrent
+shutdown blocks admission and closes shared transport once. Invalid startup config
+opens zero transport/request; fixed configuration error only. Resistant upstream
+read during shutdown produces shutdown.failed/Unclean streaming shutdown and true
+unclean flag, retains app.state.runtime/owner, zero pool closes under uncertainty.
+Late confirmed cleanup permits explicit close. Cancelled lifespan waiter propagates
+cancellation, retains true unclean flag/shielded pool-close task, later confirmation
+closes transport once. No dropped worker or automatic generation retry.
+
+Scope qualification: native controlled ASGI/HTTPX doubles, not sockets, real server
+buffering, HTTP client acknowledgement, RSS, TLS/deployment, subprocess cleanup,
+real vendor/tokenizer integration or universal PII detection. Ordinary nonadmitted
+JSON response lifetime/HTTP headers rely on ASGI server. Original brief unavailable.
+T3-004 locally verified, independent acceptance PENDING; T3-005 NOT_STARTED.
+No stage/commit/push. Final source/hash/link/artifact inspection follows.
+
+### Final integrity inspection (not additional test executions)
+
+Native Python baseline/inventory/AST/link/targeted credential inspection exits0:
+94 baseline tracked paths unchanged, all17 accepted Task3 Python files byte-identical,
+22 final verified Python SHA256 hashes captured. Exact unignored inventory is ten
+tracked changes/five new Python files, no environment/cache/egg-info/database/review
+archive or credential file. Completed Task1/2/4 directories/root source/tests/pins/
+lock unchanged; root README only updates Task3 progress/stale-unimplemented text.
+28 named test references and17 local Markdown links resolve; no unexpected control
+characters. Targeted private-key/provider-key/credential-URL scan found zero
+candidates in changed/new files, not an exhaustive publication/history audit.
+git diff --check exits0 (LF/CRLF notice only, not a functional/test warning).
+Index empty, HEAD still e4bd001039f8a752142adb84ff1ca51a57dad5ae, main ahead2/behind0
+recorded origin/main. No fetch/stage/commit/push; no source/test/config changes
+after final580/4.67s and Ruff22 verification. Further changes are documentation-only.
+
+## E036 - 2026-11-05: T3-004 reported independent acceptance / Git checkpoint
+
+America/Los_Angeles. User confirms **independent APPROVAL; T3-004 DONE**. This
+record distinguishes reported review from actual documentation/Git inspection.
+No pytest/Ruff/compile/install rerun during acceptance; E035 native Windows/
+Python3.12.16 and Ruff remain the authoritative local execution record.
+
+Reported independent evidence, not commands newly executed here:
+
+- Complete Task3 suite:580 passed.
+- Additional180 randomized interleaved two-channel ASGI scenarios passed.
+- 4613 upstream read operations exercised across those randomized scenarios.
+- Five additional fail-closed scenarios passed: candidate overflow, unexpected EOF,
+  duplicate done, premature end and malformed payload.
+- All17 previously accepted Task3 Python files byte-identical to T3-003 archive.
+- Source-level inspection found no blocking defect.
+
+Independent environment Linux/Python3.13.5 produced one nonfatal pytest
+configuration warning. Specific warning, pytest version, commands and timings not
+supplied; no invented details, local pass claim, pin widening or native verification
+inference. Real sockets/RSS remain unverified; no vendor/deployment/universal PII
+claim, original brief unavailable. Existing synthetic P/I/H policies retained.
+
+Actual initial inspection commands: Get-Content AGENTS/ledger/current requirements/
+README/build/ADR/evidence; git status --short --branch, git diff --cached
+--name-status, git diff --stat and complete path-scoped git diff. Native SHA256/
+inventory script exits0: snapshot104 tracked/six untracked paths, all22 verified
+Python hashes unchanged, index empty, HEAD e4bd001039f8a752142adb84ff1ca51a57dad5ae.
+Main ahead2/behind0 recorded origin/main, no fetch. Read-only AST/TOML inspection
+enumerated all22 Python files and approved HTTPX/FastAPI/dev/serve pins/25-package
+lock; this is not compilation or passing automated tests.
+
+Only eight acceptance-documentation files changed this session: AGENTS, root/
+Task3 READMEs, requirements/ledger/decisions/build/evidence. Approved application/
+tests/config/dependencies/lock and Tasks1/2/4 preserved. Local review ZIP retained
+and excluded via exact .git/info/exclude entry, no tracked ignore/config mutation.
+Authorized15-path stage: two source/three test-support files, Task3 pyproject/lock/
+README and root README/AGENTS/five governance documents. Inspect index/contents,
+exclude env/cache/egg-info/credentials/databases/archives, run git diff --cached
+--check, one descriptive commit and parent/SHA/manifest/clean-status/branch-count
+verification. No T3-005 or push; TASK-3 remains IN_PROGRESS.
+
+Actual final staging inspection: explicit git add of exactly15 authorized paths;
+git diff --cached --name-status / --stat inspected. Native staged-content/hash/
+artifact/link script exits0: exact manifest, staged bytes equal inspected working
+files after Git newline normalization, no unstaged/unignored leftovers. All22
+verified Python hashes/retained review ZIP hash unchanged. Targeted credential-URL/
+private-key/provider-key scan zero candidates, no excluded artifact paths;18 local
+Markdown links valid, no unexpected control characters. This is not an exhaustive
+publication/history audit. git diff --cached --check exits0. No active default or
+custom Git hooks; LF/CRLF notices are normalization, not functional/test warnings.
+Final changes after inspection are these documentation records only; re-stage
+and repeat staged whitespace check before one commit. Verify SHA/parent/manifest/
+clean status/recorded-origin counts afterward; identity belongs to Git history and
+the session report, avoiding a circular self-hash. No tests/Ruff/compile/install.
