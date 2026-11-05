@@ -1187,3 +1187,185 @@ is introduced in this repository. No pytest/Ruff/install/DB/provider command run
   or test warnings. No test/Ruff/native/shim run performed. Create one descriptive
   milestone commit; verify parent/manifest/clean tree/branch status. Git history and
   final report record identity. No push, Tasks 1/2 changes or T4-004 implementation.
+
+## E024 - 2026-11-04: T4-004 native orchestration verification
+
+America/Los_Angeles (clock probe 2026-11-05 04:29:22 UTC = Nov 4 locally).
+Starting HEAD ebc226a5eda6f9bb31927eb760abf7cd3b04a6e1, clean tree, empty index;
+main ahead 2/behind 0 recorded origin/main. Captured SHA256 of 69 tracked files
+in ignored .cache/t4004_baseline.json. Only seven relevant docs may change among
+those files; all accepted code/tests/configuration/locks must remain identical.
+No dependency installation, commit, push, HTTP or T4-005 implementation.
+
+### Runtime inspection (not tests)
+
+Task 4 interpreter command (cwd task4/):
+
+```powershell
+.\.venv\Scripts\python.exe -c "import sys,sqlite3,importlib.metadata as m; print(sys.version); print('SQLite',sqlite3.sqlite_version); print('pytest',m.version('pytest')); print('ruff',m.version('ruff'))"
+```
+
+Exit 0: Python 3.12.16 (main, Oct 26 2026, 14:10:56), MSC v.1944 64-bit AMD64;
+SQLite 3.53.1; pytest 9.2.0; Ruff 0.17.3. Existing standard-library runtime and
+pinned dev environment reused unchanged. Native Windows fixed-local-drive gates
+remain enabled in unchanged storage.py; no Linux/platform compatibility shim.
+
+### Commands actually executed (cwd task4/)
+
+| Command / stage | Actual outcome | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m ruff format src/task4_limiter/providers.py src/task4_limiter/service.py tests/orchestration_support.py tests/test_service.py tests/test_providers.py` initial | Four files formatted; one unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` initial | Two new-test issues: default-constructor B008 and unused-import F401; corrected without touching accepted files | 1 |
+| `.\.venv\Scripts\python.exe -m pytest -q tests/test_service.py tests/test_providers.py --tb=short --basetemp=.cache/t4004-dev` sandbox | Setup errors and session-finish WinError 5 on pytest temp-directory access; aborted, no valid passing-suite summary claimed | 1 |
+| `.\.venv\Scripts\python.exe -m pytest -q tests/test_service.py tests/test_providers.py --tb=short --basetemp=.cache/t4004-dev-native` native | 85 passed in 2.03s | 0 |
+| Same scoped Ruff format command after additional tests | Two formatted, three unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` expanded | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4004-full-01` native | 318 passed in 6.74s | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4004-full-02` native | 323 passed in 7.24s | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` expanded final candidates | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` expanded final candidates | One new test file needed formatting; 14 already formatted | 1 |
+| Same scoped Ruff format command after final review refinement | Two formatted, three unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4004-final` earlier final candidate | 323 passed in 7.28s | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format src/task4_limiter/service.py tests/test_service.py` after close-failure ownership refinement | One formatted, one unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4004-final-ownership` final native | **324 passed in 7.24s**, zero failures/skips/warnings/xfails | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` final | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` final | **15 files already formatted** | 0 |
+
+Native pytest calls used authorized execution outside sandbox restrictions for
+actual local SQLite files/locks and spawned Windows processes, as E022 did. No
+tests were weakened, filtered or skipped to obtain the final results. Earlier
+failures are inspection/environment/format findings above, not hidden passes.
+No accepted source/test was edited. All 221 accepted tests plus 103 new pass.
+
+### Verified behavior / test references
+
+- Q6/Q9: test_primary_success_releases_backup_and_preserves_admission,
+  test_primary_429_exactly_one_backup_after_cleanup (known/unknown/zero usage),
+  test_local_quota_denial_zero_provider_calls: no quota-bypassing fallback,
+  exactly one authorized backup after primary 429, ordered primary finish/close
+  before backup start, exact charge and admission timestamps.
+- Q7: test_primary_monotonic_timeout_boundaries (2999/3000/3001),
+  test_cleanup_shared_grace_and_no_concurrent_backup (499/500/501),
+  test_cancellation_and_close_share_one_grace_budget,
+  test_late_timeout_observation_does_not_renew_cleanup_budget,
+  test_429_resource_close_also_has_one_bounded_grace,
+  test_timeout_unknown_usage_is_full_primary_charge. Manual monotonic clock/events
+  assert exact boundaries, not elapsed-wall-time sleeps. Late reliable usage can
+  settle, late content cannot win; missing usage charges the full bound.
+- Q6-Q10: test_backup_failure_is_terminal_no_third_attempt,
+  test_backup_real_deadline_no_third_attempt,
+  test_nonfallback_primary_failures and
+  test_primary_exceptions_do_not_trigger_fallback_or_leak: backup 429/timeout/
+  transport failure are terminal; early adapter timeouts do not authorize fallback.
+  The "real_deadline" test name refers to the orchestration's owned deadline with
+  an injected clock, not a real network request or three-second wall-clock wait.
+- Q8/Q9: test_concurrent_admission_shared_budget_and_tenant_isolation (five 10000
+  token reservations fit; sixth denies; another tenant admits independently),
+  test_independent_service_owners_share_sqlite_quota_without_shared_python_lock
+  (two 30000-token demands, one winner),
+  test_repeated_uuid_across_tenants_does_not_mix_results_or_usage (eight tenants),
+  test_duplicate_request_has_one_dispatch_and_one_settlement. Exact ownership,
+  tenant budget and duplicate protection use real SQLite, not an in-memory store.
+- Q8/Q11: test_durable_intent_visible_before_execution_and_no_transaction_held,
+  test_storage_failure_no_unauthorized_send_or_replay (before/after committed
+  faults), test_cancelled_db_worker_completion_discovered (eight controlled DB
+  boundaries), test_db_delay_exhausts_overall_send_budget_without_dispatch,
+  test_expired_sqlite_reservation_prevents_dispatch_and_keeps_deadline_charges.
+  Database operations execute on non-event-loop threads; cancellation signals
+  do not discard worker completion or falsely assert rollback. No network work
+  is inside SQLite transactions; independent writer acquisition confirms this.
+- Q8-Q10: client cancellation of primary, backup, resistant cleanup and preparation;
+  test_shutdown_reports_unconfirmed_cleanup_without_unbounded_wait and
+  test_failed_close_retains_resource_handle_and_reports_unclean_shutdown;
+  test_adapter_bound_breach_fails_closed; unreliable/model-mismatched bounds,
+  strict typed usage/budgets/overflow and invalid inputs fail safely. Public errors
+  and captured logs exclude injected private diagnostics; prompt/success text is
+  excluded from outcome repr. Provider API receives text, never the tenant key.
+
+### Process, preservation and scope evidence
+
+After final suite, parsed task4/.cache/sqlite_process_summary.json: children=15,
+alive=0, forced=0; each exitcode=0. These are the accepted storage-process tests
+rerun in this full native checkpoint. New orchestration uses controlled fake
+providers and real SQLite in-process/offloaded threads, not external services.
+
+Baseline SHA256 comparison verified accepted files unchanged; only permitted
+engineering docs differ. Newly added providers.py/service.py and three test/support
+files are the implementation delta. No accepted models/accounting/storage/tests,
+Task 1/2 implementation/dependencies, lockfiles or shared environment changed.
+Therefore no Task 1/2 tests were rerun or newly claimed passing in this checkpoint.
+Final Git/whitespace and fixture-secret inspection are recorded below as inspections,
+not tests. Index remains empty; ignored DB/WAL/cache/archives are not staged.
+
+Remaining: independent engineering review of T4-004. No current test/lint failure.
+No real vendor/tokenizer/output-cap certification, provider socket interoperability,
+HTTP/auth provisioning, production backup/overall budget approval or final fault
+analysis is claimed. Windows-local-drive/supported-runtime limitations and trusted
+UTC assumptions remain. A permanently uncooperative adapter or blocked filesystem
+cannot be forcibly cancelled by asyncio; quarantine/explicit unclean close and
+owner drain are required. See ADR-019 and current T4-004 requirements contract.
+
+Final inspection (not tests): Python baseline/manifest script exited 0: 62 original
+tracked files byte-identical, exactly seven authorized docs modified and five new
+Python files; original R1-R7/P1-P4 and Task 1/2 ledger rows unchanged. Accepted
+source/tests/pins are identical. Final native process receipt: 15 children/all exit
+0/zero alive/forced. Targeted private-key/provider-token/credential-URL patterns
+found no candidates in changed/new files; tracked artifact inventory contains no
+virtual environments/caches/SQLite databases/ZIPs. Existing ignore rules cover
+actual test cache/DB/WAL/SHM paths, environment and local review ZIP. Exact new
+file allowlist, empty index and unchanged ebc226a HEAD verified; source verification
+hashes retained only in ignored .cache/t4004_verified_code.json. git diff --check
+exited 0. main remains ahead 2/behind 0 recorded origin/main; no fetch/push/commit.
+T4-004 is ready for independent review, not independently accepted or TASK-4 DONE.
+
+## E025 - 2026-11-04: T4-004 independent acceptance / Git inspection
+
+America/Los_Angeles; user reports independent engineering APPROVAL, no blocking
+production defect. Reported evidence (NOT commands executed by Codex this session):
+
+- All 324 tests passed in an isolated Linux review copy with review-only platform/
+  SQLite compatibility changes. Review interpreter/SQLite versions and exact
+  commands were not supplied; do not invent them or claim native Linux support.
+- Additional adversarial output-category cap violations and total reservation-bound
+  breaches passed. No numerical count beyond the supplied scenarios is asserted.
+- A real monotonic-clock test observed successful fallback after approximately
+  3.020 seconds with exactly one backup execution and conservative usage accounting.
+  This is reported probe evidence, not a new local test, latency SLA, provider socket
+  interoperability claim, or real-model/tokenizer/cancellation-billing guarantee.
+- E024 native Windows/Python 3.12.16/SQLite 3.53.1 full 324-pass/Ruff verification
+  remains authoritative for the documented supported environment. No review-only
+  compatibility code/gate change is included. Earlier evidence remains unchanged.
+
+T4-004 DONE/independently ACCEPTED; TASK-4 remains IN_PROGRESS. One descriptive
+approved T4-004 commit authorized; no T4-005, push or implementation modifications.
+No pytest/Ruff/install/provider/SQLite execution in this Git checkpoint. Subsequent
+checks below are source/index/Git inspections, not new test results.
+
+Initial inspections: git status --short --branch, git diff --stat, git diff --cached
+--name-status, git rev-parse HEAD and git rev-list --left-right --count
+HEAD...origin/main all exit 0. HEAD ebc226a5eda6f9bb31927eb760abf7cd3b04a6e1,
+main ahead 2/behind 0 recorded origin/main; index empty. Seven modified engineering
+docs, five approved new Python files and untracked task4_t4004_review.zip. Captured
+75 initial SHA256 hashes in ignored .cache/t4004_acceptance_baseline.json. Verified
+all 15 Python files against .cache/t4004_verified_code.json: exact E024 snapshot,
+no unexpected implementation changes. Retained ZIP excluded locally via
+.git/info/exclude; tracked ignore rules and all accepted code/pins unchanged.
+
+Docs record reported qualified acceptance without new executions. Inspect full
+tracked diff/new source/tests and exact staged inventory, exclude environments/
+SQLite DB/WAL/cache/credentials/archives, run git diff --cached --check, commit once
+and verify SHA/parent/manifest/clean status/branch counts. Preserve Tasks 1/2.
+
+Completed staged inspections (not tests): full tracked diff and all five new
+source/test/support files reviewed. Explicit git add -- with the 12-file allowlist
+staged seven docs/README/requirements plus providers.py/service.py and three test/
+support files. git diff --cached --name-status/--stat inspected: exactly 12 entries,
+no dependency/config/lock/Task 1/2 or unexpected file. Staged blobs match reviewed
+working files after Git EOL normalization; no unstaged or unignored leftovers.
+All 68 captured non-document files, including source/tests/pins/archive, unchanged.
+Targeted private-key/provider-token/credential-URL and staged artifact scans found
+zero candidates; check-ignore confirms actual cache DB/WAL/SHM/environment/pycache/
+review ZIP exclusions. git diff --cached --check exits 0. Git LF-to-CRLF advisories
+are not implementation changes or test warnings. No test/Ruff rerun or new feature.
+Proceed with one authorized commit; Git history/final report record SHA and final
+clean-tree/branch verification. No fetch/push or T4-005.

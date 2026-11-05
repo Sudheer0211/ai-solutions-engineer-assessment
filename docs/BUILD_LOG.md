@@ -735,3 +735,71 @@ investigations and material changes; Git remains the line-level code history.
   tests/pins/native gates/archive unchanged; original policies and E022 text retained.
   No shim or targeted secret candidates; DB/WAL/environment/cache/archive paths
   excluded. git diff --cached --check passes. Proceed with the one approved commit.
+
+## M038 - 2026-11-04 (America/Los_Angeles): T4-004 prototype and native verification
+
+Against ebc226a, added injectable providers.py/service.py and three new test/support
+files. Model-specific bounds/caps belong to trusted resource-free preparation; no
+vendor/tokenizer/API is invented. Whole SQLite calls run off-loop in a bounded
+offload lane; a shielded request owner discovers DB completion after caller cancel.
+Primary uses monotonic 3000 ms, one shared 500 ms cleanup budget; uncertain cleanup
+retains holds, quarantines dispatch and prevents backup. No accepted code/pins or
+Tasks 1/2 changed. Initial lint found two test-only issues, corrected; initial
+sandbox pytest failed temporary-directory permissions, not passing evidence. Native
+focused run: 85 passed in 2.03s. Native full run: 318 passed in 6.74s.
+Review refinement anchors timeout cleanup at original deadline+500 even when event
+loop observation is late; new deterministic race cases added. Remaining: final
+full suite/Ruff, durable contract/error/limitation documentation, independent review.
+No HTTP/T4-005, installation, commit or push.
+
+## M039 - 2026-11-04 (America/Los_Angeles): T4-004 final review handoff
+
+Finalized deadline-anchored cleanup, late reliable-usage settlement without late
+success routing, explicit unclean-close reporting, and actual-invocation backup
+outcome flag. Retain handles when resource close itself fails; a weak-reference
+regression confirms ownership and repeated unclean shutdown reporting. Added
+independent-owner/tenant concurrency, backup/preparation cancel,
+late-observation and shared cleanup boundary tests. E024 final native complete
+suite: 324 passed in 7.24s (221 accepted + 103 new), no failures/skips/warnings/xfails;
+Ruff lint/format pass, 15 files. Expanded candidate format check initially found one
+new test file; scoped formatting corrected it. All 15 accepted storage-process
+children exit 0 without forced cleanup; all baseline source/tests/pins unchanged.
+
+Affected: new providers.py/service.py and orchestration_support.py/test_service.py/
+test_providers.py; AGENTS, requirements, ledger, decisions ADR-019, evidence E024,
+build log and task4 README. No dependencies/lock/config/accepted implementations
+changed or installed. Final records distinguish explicit R1-R7 from engineering
+policy, external real-adapter trust and unconfigured production backup/overall
+budgets. No current test/lint failure; independent acceptance PENDING. Next action:
+independent review, not T4-005. No HTTP/vendor execution/Task 1/2/3 edits, commit/push.
+
+## M040 - 2026-11-04 (America/Los_Angeles): T4-004 acceptance/Git checkpoint
+
+User APPROVES T4-004; no blocking production defect. Reported independent review
+passed all 324 tests in an isolated Linux copy with review-only platform/SQLite
+compatibility changes; category-cap and total-reservation adversarial checks passed.
+A real monotonic-clock test observed fallback around 3.020 s, exactly one backup
+execution and conservative accounting. E024 native Windows/Python 3.12.16/SQLite
+3.53.1 verification remains authoritative. No review compatibility change ships;
+no new Linux support, real-vendor/tokenizer proof or timing SLA is implied. E025
+records reported review rather than inventing local commands/executions.
+
+Updated AGENTS, ledger (T4-004 DONE/ACCEPTED; TASK-4 IN_PROGRESS), accepted ADR-019,
+requirements and task4 README; append evidence/build history. No architectural
+change; existing limitations preserved. All 15 Python files match the E024 verified
+hashes; no unexpected implementation change or test/Ruff rerun needed. Captured 75
+initial hashes (69 tracked, five approved Python files, one review ZIP). Initial
+HEAD ebc226a, index empty, ahead 2/behind 0 recorded origin/main. Retain/exclude
+review ZIP through local Git exclude; tracked ignore/configuration unchanged.
+
+Next: inspect complete diff and exact 12-file staged inventory, check whitespace,
+create one descriptive authorized T4-004 commit, verify SHA/manifest/clean tree and
+branch counts, then stop. Exclude environments/DB/WAL/cache/credentials/archives.
+No provider/service/test changes, Tasks 1/2/3 edits, T4-005, install, fetch or push.
+
+Staged review complete: exact 12-file allowlist, reviewed full content/diff,
+index/worktree match, no unexpected leftovers, zero targeted secret/artifact
+candidates. Approved code/tests/pins/archive hashes unchanged; E024 remains intact.
+DB/WAL/environment/cache/review ZIP paths excluded; git diff --cached --check
+passes. Create the one approved commit, verify parent/SHA/manifest/clean status and
+branch counts, then stop. No tests, source edits or T4-005.

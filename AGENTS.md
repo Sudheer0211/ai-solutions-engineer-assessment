@@ -165,3 +165,30 @@ above. E022 actual local 221-pass/Ruff evidence is unchanged; no new local tests
 TASK-4 remains IN_PROGRESS; T4-004 NOT_STARTED and not authorized. Preserve Tasks
 1/2 and the accounting/storage baseline. After the one Git checkpoint, stop; future
 implementation/publication requires separate authorization.
+
+## T4-004 active authorization (2026-11-04)
+
+The latest user instruction supersedes historical no-T4-004 gates for injectable
+providers.py/service.py and new tests only. Preserve ebc226a accounting/storage,
+accepted tests/pins and Tasks 1/2. Required primary monotonic 3000 ms/shared cleanup
+500 ms; uncertain cleanup prevents backup; no retries/hedging. Offload whole DB
+operations and discover completion after caller cancellation. No vendor contract or
+untrusted token estimates. Run full Task 4 suite and both Ruff checks, record actual
+results and stop for independent review. No HTTP/T4-005, commit or push.
+
+T4-004 outcome: DONE and independently ACCEPTED, user confirmation 2026-11-04.
+Read E024/E025 and ADR-019. E024 native Windows/Python 3.12.16/SQLite 3.53.1
+verification (324 passes/Ruff) remains authoritative. E025 records reported Linux
+review-copy passes with review-only platform/SQLite compatibility changes, plus
+adversarial category/total-bound probes and approximately 3.020 s real-monotonic
+fallback with one backup/conservative usage. No blocking source defect; no new
+native Linux support, real-vendor guarantee or shipped compatibility change.
+
+The latest user instruction authorizes ONE descriptive T4-004 Git checkpoint,
+superseding historical no-commit/no-T4-004 gates for this scope only. Preserve
+providers.py/service.py, all accepted code/tests/pins and Tasks 1/2 unchanged.
+Record acceptance in docs, inspect/stage only approved T4-004 files, exclude
+DB/WAL/environments/cache/credentials/review archives, run staged whitespace check,
+commit once and verify SHA/clean tree/ahead-behind. No tests/Ruff rerun unless an
+unexpected implementation change appears. TASK-4 IN_PROGRESS; T4-005 NOT_STARTED
+and not authorized. No push/HTTP/vendor changes/Task 3. Stop after Git checkpoint.

@@ -493,3 +493,67 @@
   shims. This is not native Linux support or native Windows gate evidence. E022's
   native Windows/SQLite 3.53.1 execution remains authoritative. No source defect,
   architecture/gate modification, local test/Ruff rerun or shipped shim.
+
+## ADR-019 - Owned asynchronous attempts over durable SQLite intent
+
+- Date: 2026-11-04 (America/Los_Angeles); T4-004; status ACCEPTED following
+  independent engineering review, confirmed by the user. Accepted ADR-016/017/018
+  and ebc226a are preserved; no architecture or implementation change.
+- Decision: resource-free trusted Provider.prepare creates a one-shot bounded/cap-
+  enforcing handle; separate execute and aclose. Controlled typed status/usage,
+  no invented vendor/tokenizer/endpoint, credentials external. Matching metadata
+  is necessary, not proof of a real accounting guarantee. No caller estimates.
+- Require explicit backup and overall lifetimes; no numeric deployment defaults.
+  Combined reservation covers both attempts. One bounded offload lane calls whole
+  synchronous store APIs; SQLite transactions, not that lane, enforce concurrency.
+  Durable start before send, recheck budget/cancellation after DB completion and
+  at execution entry. Success is returned only after known/unknown settlement and
+  release of provably unused backup. Late reliable usage can settle, never win
+  the response deadline. Total bound breach uses storage's durable block; an
+  in-total category/cap breach charges full bound and quarantines this instance.
+- Primary monotonic 3000 ms / original deadline+500 ms cleanup ceiling, one shared
+  termination+close grace; boundary ties fail closed. Only primary 429/owned
+  deadline expiry trigger one backup after confirmed termination/close. Early
+  adapter timeouts do not prove deadline expiry and do not trigger fallback.
+  Backup uses explicit finite timeout and no third attempt. No retries/hedging.
+- One shielded request workflow remains owned after caller cancellation. Signal
+  cancellation, discover actual DB completion, finalize provably unsent intent or
+  charge known/unknown dispatched usage. Never infer DB rollback from coroutine
+  cancellation. Ambiguous commits leave holds, not automatic retries/refunds.
+  Owner drains before store/loop close. Failed/unconfirmed cleanup stops further
+  dispatch, retains strong task references and durable holds, returns sanitized
+  unavailable; aclose can explicitly report unclean shutdown. Remote cancellation
+  and billing are not proven by local task termination.
+- Alternatives rejected: cancel-and-forget to_thread (false rollback), unbounded
+  wait_for cancellation (may exceed deadline), overlapping fallback (duplicate
+  owned execution), refund 429/timeout as zero (unproven billing), implicit backup
+  timeout/vendor tokenizer (unspecified contract), production SQLite changes
+  (unnecessary accepted-baseline risk). Official Python 3.12
+  [asyncio tasks/cancellation](https://docs.python.org/3.12/library/asyncio-task.html)
+  documents shield, to_thread and wait semantics used here.
+- Tradeoffs: conservative combined reservation/unknown billing may reject early;
+  one offload lane per service limits DB submission concurrency but is not a
+  cross-process lock. An uncooperative adapter cannot be forcibly terminated by
+  asyncio; quarantine and explicit unclean shutdown are required. Blocking OS DB
+  I/O cannot be cancelled safely; drain can wait on it. Trusted UTC/local Windows
+  storage and externally authenticated key/model adapters remain prerequisites.
+- Affected: new providers.py/service.py and three test/support files; Task 4
+  README/requirements/governance. No accepted code/test/config/lock changes or
+  installations. E024: full native 324 passes and Ruff checks; independent review
+  accepted (E025). One approved milestone commit only; HTTP/T4-005, real vendor
+  integration, final audit and push remain excluded.
+
+### T4-004 acceptance provenance / scope
+
+- User APPROVES T4-004 on 2026-11-04 (America/Los_Angeles), no blocking production
+  defect. Reported isolated Linux review used review-only platform/SQLite changes:
+  324 passes, additional category-cap/total-bound adversarial checks and a real
+  monotonic fallback probe at approximately 3.020 seconds with one backup and
+  conservative accounting. Commands/versions beyond that report were not supplied.
+- E024 native Windows/Python 3.12.16/SQLite 3.53.1 evidence remains authoritative;
+  Linux compatibility runs do not establish native Linux support or shipped gate
+  correctness. No compatibility change is included. Timed probe is not a latency
+  SLA, real-provider integration or proof of remote termination/billing semantics.
+- Accepted design/tradeoffs above remain intact. E025 records reported acceptance
+  and inspection, not new tests. One descriptive approved-source/test/doc commit;
+  preserve implementation/pins/Tasks 1/2, no T4-005 or push. TASK-4 remains incomplete.

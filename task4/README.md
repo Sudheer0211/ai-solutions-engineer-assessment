@@ -1,13 +1,21 @@
-# Task 4: token accounting and SQLite storage
+# Task 4: token accounting, SQLite storage and injectable LLM routing
 
-T4-003 local verification: **221 passed in 3.37s**, no failures/skips/warnings/xfails;
-Ruff lint/format pass (10 files). **T4-003 is independently ACCEPTED** within
-Windows fixed-local-drive/supported SQLite scope, confirmed by the user 2026-11-04.
-E022 native Windows/SQLite 3.53.1 results remain authoritative. E023 records reported
-Linux review-copy passes with test-only platform/runtime gate shims (221 tests,
-15 normal child exits and three additional scenarios). That review does not add
-native Linux support or native Windows gate evidence; no shim/gate change ships.
-One T4-003 milestone commit authorized; no new tests, T4-004, provider/HTTP or push.
+**T4-004 is independently ACCEPTED**, confirmed by the user 2026-11-04.
+E024: **324 passed in 7.24s**, zero failures/skips/warnings/xfails;
+Ruff lint and format pass (15 files), native Python 3.12.16/SQLite 3.53.1.
+No real model/tokenizer or HTTP endpoint is supplied. No vendor credentials needed
+for tests. TASK-4 remains IN_PROGRESS; one approved T4-004 milestone commit only,
+no T4-005 implementation or push. E025 records reported review: 324 tests passed
+in an isolated Linux copy with review-only platform/SQLite changes, additional
+category/total-bound checks and approximately 3.020 s real-monotonic fallback with
+one backup/conservative accounting. No review changes are shipped or native Linux
+support/real-provider guarantee claimed; E024 native Windows evidence is authoritative.
+
+T4-001/T4-002/T4-003 are independently accepted. Storage baseline: ebc226a.
+E022 native Windows/SQLite 3.53.1 evidence remains authoritative; E023's Linux
+shim review does not add native Linux support. All accepted code/tests/pins and
+Tasks 1/2 are unchanged. Historical checkpoint limits below are superseded only
+by the expressly authorized T4-004 section at the end.
 
 ## Accepted T4-001/T4-002 foundation
 
@@ -133,3 +141,65 @@ No Task 1/2 rerun was needed: no shared code/env changed. See
 transaction/error/recovery policy, actual commands, initial lint correction and risks.
 T4-003 is accepted with the qualification above; preserve implementation and stop
 after the authorized milestone commit. No T4-004 implementation or push authorized.
+
+## T4-004 provider/service API (independently accepted)
+
+`providers.Provider` is an injectable trusted adapter. Its pure `prepare(text)`
+returns a request-scoped `PreparedAttempt` with model-specific `bounds`,
+`async execute()` and `async aclose()`. It MUST reliably count every token category
+and enforce the matching output cap, with no hidden retry or redirect. The service
+checks typed/model/counter metadata; those checks do not prove real tokenizer
+correctness. No vendor contract/tokenizer is invented, and no caller-supplied
+bounds are accepted. Unavailable reliable bounds must fail before admission/send.
+Test doubles implement a synthetic counting/cap contract only.
+
+Create `LLMService(store, primary, backup, RoutingPolicy(backup_timeout_ms,
+reservation_ms), clock=optional_monotonic_clock)` using an initialized supported
+SQLiteStore and trusted adapters. There are deliberately no backup/overall budget
+defaults: supply positive integer budgets, reservation_ms greater than
+3000 + 500 + backup_timeout_ms + 500, plus sufficient DB/scheduling margin.
+The 2000/10000 values in tests are fixtures, not deployment requirements.
+
+`await service.generate(validated_key_bytes, text, request_id=optional_internal_UUID)`
+returns controlled ServiceOutcome(code/message/text/used_backup/request_id).
+The key is shape-checked and used only by storage, never passed to model adapters.
+Actual key authentication/provisioning and HTTP schemas remain deferred. Success
+text is preserved; errors never copy raw provider/SQL diagnostics.
+
+- Atomic combined admission precedes any send; local quota denial has zero provider
+  calls. Durable single-start guards and tenant separation remain in
+  accepted storage; provider input is the prompt alone, not a tenant credential.
+- Primary deadline is monotonic 3000 ms. At/after the deadline, content loses; late
+  reliable usage can still settle. Primary 429 or that deadline triggers exactly
+  one backup only after confirmed local termination AND resource close. Early
+  adapter timeouts are terminal failures, not evidence of the 3000 ms threshold.
+- One shared 500 ms cleanup grace covers termination and close; timeout's ceiling
+  remains original deadline+500 even after delayed observation. No confirmed cleanup
+  means unavailable/no backup, retained holds and quarantined service dispatch.
+- Backup has the explicit finite deadline; failure/timeout has no third attempt.
+  Known in-bound usage settles at admission time; unknown usage charges full bound.
+  Unsent backup is released only after confirmed cleanup. Bound breaches fail closed.
+- All DB calls and pure preparation are offloaded through one bounded lane. DB
+  transactions do not enclose provider I/O. SQLite remains the atomic quota arbiter
+  across independent service instances and processes.
+- Cancelling generate signals an owned workflow and raises CancelledError to the
+  caller; it does not cancel a DB thread or assert rollback. The workflow discovers
+  actual completion, cleans/accounts and prevents new fallback. Ambiguous storage
+  failures preserve durable holds for accepted deadline recovery, with no replay.
+- Stop submissions, then `await service.aclose()` BEFORE closing store/event loop.
+  It drains owners/DB work and bounds its remaining cleanup wait. False signals
+  unconfirmed/failed cleanup; retain ownership and do not claim graceful shutdown.
+  An arbitrary uncooperative adapter/blocked OS thread cannot be forcibly killed
+  by asyncio. Local cancellation cannot guarantee remote execution/billing stopped.
+
+New tests use real local SQLite plus controlled clocks/events/fake providers,
+including 2999/3000/3001 primary and cleanup boundaries, late observation, failure,
+cancellation during DB work, duplicate starts, independent concurrent service
+owners and tenant isolation. Complete suite includes the unchanged storage process
+fixtures (15 normal children/zero forced cleanup). No network/provider socket,
+actual model-token bound, HTTP or final fault-injection audit is claimed. Supported
+storage remains Windows fixed local drive/SQLite >=3.51.3, actual 3.53.1.
+See requirements T4-004 contract, accepted ADR-019 and E024/E025. Preserve approved
+implementation; no test rerun or T4-005. The approximately 3.020 s independent
+probe is reported evidence, not a latency SLA or new local execution. Stop after
+the one authorized milestone commit; no push.

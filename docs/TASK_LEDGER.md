@@ -24,11 +24,11 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
-| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001/T4-002/T4-003 independently accepted; E022/E023 | T4-003 Git checkpoint only; no T4-004 authorization |
+| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001 through T4-004 independently accepted; E024/E025 | T4-004 Git checkpoint only; T4-005 NOT_STARTED/not authorized |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
-| T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation; one commit, no T4-003 or push |
-| T4-003 | SQLite atomic admission, persistence and settlement | P0 | DONE | Independently ACCEPTED within supported Windows/SQLite scope; E022/E023 | One approved storage milestone commit; preserve source, no T4-004/push |
-| T4-004 | Primary/backup provider routing | P0 | NOT_STARTED | Proposed milestone only | T4-003 accepted; explicit implementation authorization still required |
+| T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
+| T4-003 | SQLite atomic admission, persistence and settlement | P0 | DONE | Independently ACCEPTED within supported Windows/SQLite scope; E022/E023 | Preserve accepted storage baseline ebc226a |
+| T4-004 | Primary/backup provider routing | P0 | DONE | Independently ACCEPTED in supported environment; native E024/qualified review E025 | One approved orchestration commit; preserve implementation, no T4-005/push |
 | T4-005 | HTTP and real-wire verification | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
 | T4-006 | Final Task 4 assessment audit | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
 
@@ -588,3 +588,60 @@ any provider integration. Preserve uncommitted docs/source/test checkpoint.
   staged inventory and whitespace. One descriptive milestone commit authorized.
 - No tests/Ruff rerun, provider/HTTP work, Tasks 1/2/3 changes, T4-004 or push. Verify
   resulting commit/clean tree/branch counts and stop; later work needs authorization.
+
+## T4-004 start - 2026-11-04 (America/Los_Angeles)
+
+User authorizes provider abstraction and async orchestration against ebc226a/221 tests.
+Acceptance: trusted bounds/output caps before admission, durable start before each
+send, monotonic 3000 ms primary deadline and shared 500 ms cleanup grace, exactly
+one backup on primary 429/timeout only, no fallback on quota denial or uncertainty,
+known/unknown settlement, cancellation-safe offloaded DB completion, deterministic
+concurrency/failure tests and full Task 4 pytest/Ruff evidence. Preserve all accepted
+code/tests/pins and Tasks 1/2. No vendor API, HTTP, T4-005, commit or push.
+
+T4-004 milestone M038: prototype plus native focused 85-pass/full 318-pass runs;
+final late-observation cleanup tests and final verification pending. All accepted
+accounting/storage/tests/pins unchanged. Independent acceptance remains pending.
+
+## T4-004 review handoff - 2026-11-04 (America/Los_Angeles)
+
+Implementation/local mandatory verification complete; independent acceptance PENDING.
+E024 final native Python 3.12.16/SQLite 3.53.1: 324 passed in 7.24s (221 unchanged
+accepted + 103 new), zero failures/skips/warnings/xfails; Ruff lint and format pass
+(15 files). Existing 15 storage child processes all exit 0, no forced/live children.
+ADR-019 and requirements' T4-004 section record adapter trust, mandatory explicit
+backup/overall budgets, monotonic primary/cleanup tie rules, no early-timeout
+fallback, known/unknown settlement, retained ownership after caller cancellation,
+and quarantine/unclean-close limitations. Admission/dispatch/settlement are short
+offloaded SQLite operations; no production storage/accounting/test/pin edits.
+
+All local acceptance bullets at session start have deterministic test evidence.
+No local test blocker; no external provider/tokenizer/cap guarantee or socket/HTTP
+verification claimed. Future real adapter and key-provisioning contracts plus
+production backup/overall budgets remain unspecified. Next action: independent
+review of providers.py/service.py, tests, E024 and ADR-019. Preserve recoverable
+uncommitted work; do not mark whole TASK-4 DONE, begin T4-005, commit or push.
+
+## T4-004 independent acceptance and Git checkpoint - 2026-11-04 (America/Los_Angeles)
+
+User APPROVES T4-004; DONE/independently ACCEPTED. TASK-4 remains IN_PROGRESS;
+T4-005 is NOT_STARTED and no implementation is authorized. No blocking production
+defect identified. Existing architecture and limitations are unchanged.
+
+Reported review: all 324 tests passed in an isolated Linux copy with review-only
+platform/SQLite compatibility changes; additional output-category cap and total
+reservation-bound adversarial checks passed. A real monotonic-clock probe observed
+successful fallback at approximately 3.020 seconds, exactly one backup execution
+and conservative usage accounting. These are reported independent results, not new
+local executions, native Linux support, real-vendor certification or a timing SLA.
+E024 native Windows/Python 3.12.16/SQLite 3.53.1 verification remains authoritative.
+No review-only compatibility change is shipped. E025 records provenance.
+
+One descriptive T4-004 commit is authorized for approved providers/service/tests/
+support/README/requirements/governance, superseding historical no-commit gates for
+this checkpoint only. Preserve all implementation/tests/pins and Tasks 1/2; no
+reruns absent unexpected implementation changes. Initial HEAD ebc226a, index empty,
+ahead 2/behind 0 recorded origin/main; seven modified docs/five new Python files
+and a local review ZIP. Capture hashes, retain/exclude archive, inspect full diff
+and exact index inventory, run git diff --cached --check, commit once and verify
+SHA/clean status/branch counts. No push, T4-005, Task 3 or new provider/HTTP work.

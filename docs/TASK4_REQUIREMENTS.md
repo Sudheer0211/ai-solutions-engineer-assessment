@@ -5,22 +5,16 @@ requirements and explicit clarifications supplied in this session. No separate
 verbatim original Task 4 document/provider specification was attached. This record
 preserves the confirmed requirements separately from proposed engineering choices.
 
-Current status: T4-001 independently APPROVED WITH CONDITIONS; the four required
-policies are finalized below under the subsequent user authorization. T4-001 DONE;
-TASK-4 remains IN_PROGRESS. T4-002 is independently ACCEPTED (user confirmation
-2026-11-04): 169 tests, 12,000 differential checks and six targeted invariants passed;
-no blocking defect. E021 records reported acceptance; E020 retains actual local
-pytest/Ruff evidence. One T4-001/T4-002 foundation commit is authorized. No accepted
-logic changes were permitted in that historical Git checkpoint. Current T4-003
-storage work is authorized below; provider/HTTP execution, T4-004 and push remain
-excluded. T4-003 is independently ACCEPTED within Windows fixed-local-drive and
-supported SQLite scope. Native E022 Windows/SQLite 3.53.1 verification remains
-its authoritative supported-platform evidence; qualified reported review is E023.
-One T4-003 storage milestone commit is authorized; no implementation/test changes,
-new executions, T4-004 or push.
-Tasks 1 and 2 remain DONE; their accepted implementations/tests/configuration stay
-unchanged. Task 3 remains NOT_STARTED. Historical Task 2 no-Task-4 restrictions are
-superseded for the expressly authorized Task 4 checkpoints recorded below.
+Current status (2026-11-04 America/Los_Angeles): T4-001/T4-002/T4-003 are
+independently accepted; the storage baseline is ebc226a. E022 remains native
+Windows/SQLite 3.53.1 evidence; E023 distinctly records the Linux shim review.
+T4-004 is independently ACCEPTED, user confirmation 2026-11-04; E024 records
+authoritative native Windows/Python 3.12.16/SQLite 3.53.1 verification (324 passes
+and Ruff), E025 records qualified reported independent review. One descriptive
+approved T4-004 commit is now authorized; no reruns or implementation changes.
+No real vendor, HTTP/T4-005, Task 3, installation or push. Tasks 1/2 and accepted Task 4
+models/accounting/storage/tests/configuration/lock remain unchanged. TASK-4 remains
+IN_PROGRESS. The original R1-R7 and approved P1-P4 are preserved below.
 
 ## Finalized engineering policies after conditional approval
 
@@ -456,3 +450,142 @@ T4-003 DONE/ACCEPTED; whole TASK-4 IN_PROGRESS. One descriptive commit of approv
 SQLite source/tests/support/requirements/governance is authorized, superseding only
 this checkpoint's earlier no-commit gate. Preserve accounting/storage/tests/pins
 and Tasks 1/2. No local test/Ruff rerun, new features, T4-004, Task 3 or push.
+
+## T4-004 injectable orchestration contract (2026-11-04)
+
+Independently ACCEPTED, confirmed by user 2026-11-04; E024/E025. No design change.
+Original R1-R7 remain the assessment requirements. The following interface and
+routing choices operationalize accepted P1-P4; they do not invent vendor contracts.
+
+### Adapter and configuration trust boundary
+
+- providers.Provider.prepare(text) is trusted, pure, resource-free model-specific
+  counting/cap preparation, offloaded from the event loop. It returns a one-shot
+  PreparedAttempt with immutable ModelTokenBounds and execute()/aclose(). Bounds
+  must match the provider's configured model_id and counter_id. Both providers
+  must prepare successfully before admission. No caller estimate or verified flag.
+- The prepared handle MUST enforce its output cap and cover all billable token
+  categories, use the prepared input exactly, and disable retries/hedging/redirects.
+  The service cannot certify a tokenizer/provider by inspecting its metadata. No
+  actual model, tokenizer, endpoint or provider credentials are selected. Synthetic
+  fake counters/caps verify orchestration, not real LLM enforcement. An unverified
+  real adapter must raise BoundsUnavailable before admission or execution.
+- ProviderResult has a controlled status (success, rate_limited, timeout or
+  transport_failure), optional reliable TokenUsage(input_tokens, output_tokens)
+  and success-only text. Unknown usage is None, never implicit zero. Raw provider
+  exceptions are sanitized, not exposed/logged. Tenant keys are never passed to
+  providers; credentials belong to a future externally configured adapter.
+- LLMService(store, primary, backup, RoutingPolicy(backup_timeout_ms,
+  reservation_ms), clock=...) exposes async generate(validated_key_bytes, text,
+  request_id=optional_internal_UUID). Key shape/length is checked; provisioning,
+  authentication and HTTP credential transport remain T4-005 contract decisions.
+  No caller-controlled tenant override or external response replay is provided.
+- Backup and overall budgets are REQUIRED positive signed-64-bit integer
+  configuration, with no invented defaults. reservation_ms must EXCEED
+  3000 + 500 + backup_timeout_ms + 500; the operator supplies DB/scheduling margin.
+  Test-only examples use 2000/10000 ms, not a newly approved deployment policy.
+
+### Dispatch, deadlines and fallback
+
+1. Offload whole synchronous store operations through a bounded lane. SQLite
+   BEGIN IMMEDIATE remains the cross-thread/process quota authority. Commit the
+   combined primary+backup admission before any send. Quota denial returns
+   tenant_quota_exceeded, with zero provider executions and no fallback.
+2. Commit start_attempt before the corresponding execute. Duplicate UUID/attempt
+   state fails closed, with no replay. Before intent, after DB completion and at
+   the owned execution task's entry, check cancellation/quarantine/time budget.
+   A monotonic reservation deadline sampled BEFORE admission is conservative for
+   elapsed time; storage separately checks persisted UTC/deadline/recovery state.
+   Trusted UTC/no large unexplained clock jumps remains an operational assumption.
+3. Primary gets one monotonic 3000 ms complete-exchange budget. Task scheduling
+   after dispatch intent is included conservatively. A response observed at 2999
+   ms may succeed; at/after 3000 it loses the content race. Late reliable usage
+   can still settle the primary; late success content cannot suppress fallback.
+4. Primary HTTP 429 or expiry of that owned primary deadline authorizes exactly
+   one backup, AFTER confirmed primary termination and local resource close.
+   Adapter-reported/raised early timeouts do not establish the required 3000 ms
+   deadline: returned TIMEOUT is a sanitized terminal model_timeout; raised
+   exceptions are terminal model_unavailable. Neither triggers early fallback.
+5. After completion/timeout/cancellation, one shared 500 ms grace covers task
+   cancellation/termination AND aclose. For timeout its ceiling is the ORIGINAL
+   attempt deadline+500, even if observation is delayed. At the grace boundary,
+   unconfirmed cleanup fails closed. No fresh allowance per cleanup step.
+6. On unconfirmed/failed cleanup return service_unavailable, retain ALL unresolved
+   holds for accepted deadline recovery, launch no backup, and quarantine further
+   dispatch on that service instance. Strong task references retain eventual local
+   cleanup; no retry task is started. asyncio cannot forcibly kill arbitrary
+   cancellation-resistant or event-loop-blocking adapters. Adapters must be async
+   cooperative; remote execution/billing after local cancellation remains uncertain.
+7. Backup has the explicit configured finite deadline, equivalent cleanup rules,
+   and no fallback/retry. Other primary failures have no fallback. No provider I/O
+   runs inside a DB transaction. used_backup reflects actual local backup execute
+   invocation, not merely durable intent.
+
+### Settlement, cancellation and lifecycle
+
+Reliable in-bound usage replaces its hold once at admission time; unknown usage
+charges the whole bound. A success can have unknown billing and is conservatively
+charged. Only never-sent backup capacity is released after confirmed primary
+cleanup. If intent committed but the owner proves execute was never invoked,
+known zero can settle that started intent; this is not a guessed rollback/refund.
+Total usage above the reserved bound invokes accepted storage's durable tenant
+block and keeps unresolved holds. A category/output-cap breach within total bound
+charges the full bound, quarantines this service and fails; it does not falsely
+claim that the storage total-bound block fired. Real-adapter correctness remains
+a prerequisite for a hard real-provider token bound.
+
+A cancelled caller sets an event and receives CancelledError. Its shielded owned
+workflow remains referenced: in-flight offloaded DB work finishes and its actual
+outcome is discovered. No cancellation implies rollback. After a successful
+cancelled admission, provably unsent holds are finalized; after actual dispatch,
+terminate/close and settle reliable or unknown usage; never launch new fallback
+once cancellation is observed. Ambiguous/failed DB operations are not retried,
+replayed or refunded; durable holds remain for P4 recovery. Provider close must
+confirm cleanup before settlement or fallback. Late completions do not overwrite
+recovered rows; storage expected-state/deadline guards remain unchanged.
+
+Owner must stop submissions and await service.aclose()/drain BEFORE closing store
+or event loop. aclose drains request owners/DB completion and bounds its wait for
+quarantined cleanup; False explicitly means cleanup remains unconfirmed or failed.
+This is not a thread-kill, a DB I/O cancellation deadline or a guarantee of graceful
+shutdown for a permanently broken adapter/filesystem. Pending cleanup handles must
+not be silently discarded. No provider replay or new recovery infrastructure.
+
+Structured outcomes contain internal UUID, controlled code/message, success-only
+text and used_backup. Codes: invalid_request, invalid_credentials,
+tenant_quota_exceeded, provider_rate_limited, model_timeout, model_unavailable,
+service_unavailable. They contain no raw diagnostics/keys/SQL paths/provider URLs.
+No HTTP status/schema is newly implemented: T4-005 will map this existing contract.
+
+### Local verification and independent acceptance
+
+E024: native Python 3.12.16/SQLite 3.53.1, 324 passes (221 accepted + 103 new),
+zero failures/skips/warnings/xfails, Ruff lint/format pass (15 files). Controlled
+clock tests include 2999/3000/3001, 499/500/501 cleanup, split termination/close
+budget and late observation, unknown/late usage, actual SQLite commits and
+multiple independent service owners, tenant isolation, duplicate IDs, cancellation
+at offloaded DB boundaries, storage failures and deadline recovery. All 15 existing
+storage-process children exit normally, zero forced/live children. No external
+LLM/network calls, real tokenizer certification, HTTP, final fault audit or
+cross-platform storage support. Tasks 1/2 and accepted Task 4 files/pins unchanged.
+Independent acceptance is recorded below; one approved milestone commit only.
+Do not begin T4-005 or push.
+
+### T4-004 independent acceptance and commit authorization
+
+On 2026-11-04 (America/Los_Angeles), user APPROVES T4-004 with no blocking
+production defect. Reported independent evidence: 324 tests passed in an isolated
+Linux review copy using review-only platform/SQLite compatibility changes;
+additional output-category cap and total reservation-bound adversarial checks
+passed; a real monotonic-clock test observed successful fallback after approximately
+3.020 seconds with exactly one backup execution and conservative usage accounting.
+Commands/runtime details beyond the supplied report were not provided. E024 native
+Windows/Python 3.12.16/SQLite 3.53.1 evidence remains authoritative. The review
+changes are not shipped and do not establish native Linux/storage-gate support,
+a real model/tokenizer guarantee or a response-time SLA. No new local runs.
+
+T4-004 DONE/ACCEPTED; TASK-4 remains IN_PROGRESS. Latest authorization permits
+one descriptive approved-source/tests/support/README/requirements/governance commit
+only, superseding historical no-commit gates for this checkpoint. Preserve approved
+provider/service/accounting/storage/tests/config/locks and Tasks 1/2. No test rerun
+absent unexpected implementation changes, no T4-005, new vendor/HTTP work or push.
