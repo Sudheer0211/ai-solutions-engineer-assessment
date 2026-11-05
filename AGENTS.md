@@ -256,3 +256,65 @@ inventory, exclude envs/caches/DB/WAL/SHM/credentials/generated artifacts/review
 run git diff --cached --check, commit once and verify SHA/manifest/clean tree/
 ahead-behind. No tests/Ruff/install unless unexpected code/config changes found.
 No Task 3, push or further implementation; stop after reporting Git checkpoint.
+
+## T3-001 current design authorization (2026-11-05 America/Los_Angeles)
+
+Latest user authorizes documentation/design only for Task 3, superseding historical
+no-Task-3 gates ONLY for this scope. Tasks 1/2/4 remain DONE; preserve their code,
+tests/dependencies/configuration/locks and acceptance/environment evidence.
+Architecture is independently APPROVED CONDITIONALLY: isolated FastAPI/HTTPX,
+explicit SSE parser, per-channel incremental redactor, bounded memory, pull-driven
+backpressure and owned cancellation. Exact contract is NOT approved yet.
+
+Read docs/TASK3_REQUIREMENTS.md, ADR-022, E030 and ledger. Original Task 3 brief
+unavailable after repeat bounded search; only high-level user requirements T3-R1-R8
+are available. T3-P1-P8/T3-L/T3-Q are PROVISIONAL proposals, including narrow ASCII
+email/phone/SSN rules, conservative whole-candidate masking, synthetic JSON-over-SSE
+profile, dropped metadata, limits and strict errors. Do not present them as original
+assessment wording or universal PII protection. Independent approval required.
+
+T3-001/TASK-3 IN_PROGRESS; T3-002 through T3-006 NOT_STARTED. Do not create source,
+task3 project/env/lock, install dependencies, run implementation tests, commit/push
+or begin T3-002. Allowed files this checkpoint: requirements and relevant AGENTS/
+ledger/decisions/build/evidence documentation only. Stop after contract presentation
+for independent approval; later source work needs explicit implementation authority.
+
+## T3-002 active authorization (2026-11-05 America/Los_Angeles)
+
+Latest user independently APPROVES T3-001 for the documented synthetic profile and
+authorizes isolated T3-002 models/SSE/payload/redaction pure code, tests, pins/env/lock.
+Read approved TASK3_REQUIREMENTS and ADR-022/023. Preserve candidate alphabet,
+256-char withholding/overflow rule, four channels, valid-done finalization, strict
+termination/duplicate keys and separate byte/scalar/encoded limits. Never claim
+universal PII or vendor interoperability; original vendor brief remains unavailable.
+Run complete new Task 3 pytest and both Ruff checks, record actual results and stop
+for independent review. Preserve Tasks 1/2/4. No HTTPX/network/upstream/service,
+FastAPI endpoints/wire/final-audit/T3-003, commit or push. This authorization
+supersedes historical no-source/no-install gates only for this checkpoint.
+
+T3-002 local outcome: implemented/verified, independent review PENDING. E031 native
+362 passes/zero failures/skips/warnings/xfails and both Ruff checks (11 files);
+Python 3.12.16, isolated eight-package lock, stdlib-only runtime. Preserve new
+verified code/tests and completed Task 1/2/4 baseline. T3-001 DONE/accepted;
+T3-002/TASK-3 IN_PROGRESS, T3-003 NOT_STARTED. Read task3/README.md and ADR-023.
+Pure counters/iterators are not actual async transport/backpressure/RSS evidence.
+Original vendor brief still unavailable. Stop for review; no commit/push/network.
+
+## T3-002 independent acceptance / Git checkpoint (2026-11-05 America/Los_Angeles)
+
+Latest user APPROVES T3-002; DONE/independently accepted. Read E032 and ADR-023
+provenance: reported 362 passes plus 1200 randomized interleaved streams, 2961
+channel-reference comparisons, 256 prefix/257-overflow probes, 376 truncated-wire
+cuts, 24000-event retained state and compilation; no blocking production defect.
+Review Linux/Python 3.13.5/pytest 9.0.2 had one configuration warning; warning
+details not provided. Native Windows/Python 3.12.16 E031 tests/Ruff authoritative;
+do not widen Python pins or claim new runtime/vendor/universal PII support.
+
+One descriptive T3-001/T3-002 accepted foundation commit authorized, superseding
+historical no-commit gates only for this checkpoint. Preserve all 11 approved
+Python files, pins/config/lock and Tasks 1/2/4. Update acceptance docs, inspect full
+diff/new files/index, stage exact approved Task 3 foundation and related governance
+only, exclude env/cache/pycache/egg-info/temp/credentials/review ZIP. Run staged
+whitespace check, commit once, verify SHA/inventory/clean tree/ahead-behind and stop.
+No tests/Ruff/install rerun unless unexpected implementation changes are found.
+TASK-3 IN_PROGRESS; T3-003 NOT_STARTED/not authorized. No push or further code.

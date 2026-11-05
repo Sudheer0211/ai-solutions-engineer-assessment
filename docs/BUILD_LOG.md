@@ -973,3 +973,115 @@ unchanged. Local ZIP retained/excluded; no unstaged/unignored leftovers or gener
 artifacts staged. No tests/Ruff rerun or architecture changes. Create the one final
 docs-only acceptance commit, verify identity/parent/inventory/clean tree/ahead-behind,
 then stop. Resulting identity is retained by Git history and the session report.
+
+## M046 - 2026-11-05 (America/Los_Angeles): T3-001 provisional exact contract
+
+User reports architecture APPROVED CONDITIONALLY (isolated FastAPI/HTTPX, explicit
+SSE parser, per-channel incremental redactor, bounded memory, pull-driven flow,
+owned cancellation). Latest authorization is documentation only; original Task 3
+brief absent after repeat bounded search of repository, reachable Git filenames
+and supplied text attachment inventory/contexts. Matches are unrelated/exclusions,
+not exact PII/event requirements. T3-R1-R8 preserve user high-level scope only.
+
+Created docs/TASK3_REQUIREMENTS.md with PROVISIONAL exact patterns/profile/budgets:
+narrow ASCII email/phone/SSN; whole K-candidate hold/classification, conservative @
+mask, [REDACTED], 256-character fail-closed cap and safe-prefix proof. Four logical
+channels retain state across events/deltas; JSON delta/done/end/error profile,
+metadata dropping/rechunking, strict malformed/truncation/terminal semantics.
+Separate chunk/line/event/delta/candidate/pending/stream/time caps and error/cleanup
+ownership are reviewable proposals, not invented assessment requirements.
+
+ADR-022 records choices/alternatives/tradeoffs. Updated AGENTS/ledger for current
+scope and review gate; E030 records actual read-only inspections, no test passes.
+T3-002 pure models/SSE/profile/redaction boundary and T3-Q01-Q12 tests defined,
+future async/HTTP/wire matrix Q13-Q21 separated. Long harmless tokens and @ strings
+may be rejected/masked; Unicode/obfuscated/general PII and real provider contracts
+not certified. Those decisions plus original brief absence remain approval inputs.
+
+Initial HEAD 7e37045, clean main aligned with recorded origin/main; captured 82
+tracked hashes in ignored .cache/t3001_design_baseline.json. No Task 3 project,
+source, dependency/env/install or tests. Tasks 1/2/4 preserved. Affected docs only:
+new requirements; AGENTS, ledger, decisions, build log and test evidence. Next:
+verify documentation/integrity, independent exact-contract approval; T3-001/TASK-3
+IN_PROGRESS, T3-002 NOT_STARTED/not authorized. No commit/push or implementation.
+
+Final inspections: requirements clarify metadata-only blocks are dropped, output
+errors cannot renew send/overall deadlines, cleanup gets only its separate 1000 ms
+grace and unconfirmed close quarantines shared adapter/new admissions with retained
+ownership. IDs/local links/whitespace checks pass; bounded secret-pattern scan zero
+candidates. Five changed governance docs plus one new contract only; 77 original
+tracked paths byte-identical, all completed-task ledger rows preserved. No task3
+directory, source/config/dependency/index change, test execution or install. Await
+independent approval of exact profile and tradeoffs; no T3-002 authorization inferred.
+
+## M047 - 2026-11-05 (America/Los_Angeles): accepted T3-001 / pure T3-002 implementation
+
+User APPROVES T3-001 explicitly for synthetic profile; recorded accepted contract
+and seven mandatory termination/limits/channel/payload/alphabet rules. Original
+vendor brief still unavailable; no universal PII or vendor interoperability claim.
+T3-001 DONE, T3-002 authorized. Baseline HEAD 7e37045; preserved earlier six-doc
+design changes and captured 83 hashes in ignored .cache/t3002_baseline.json.
+
+Created isolated task3 pyproject/.python-version/uv.lock/.venv, stdlib runtime,
+Python 3.12.16 and eight installed packages; offline locked setup/imports pass.
+Implemented models/sse/payloads/redaction (+ init), no HTTPX/FastAPI/network.
+Byte counters precede retained parser growth; deferred CR counts split CRLF;
+bounded JSON precheck then strict stdlib decoding. Whole K-candidate withholding/
+classification across deltas, four lifetime channels, strict done/end/error rules,
+lazy safe output/frame-byte checks and fail-latched cleanup. Pure Processor is
+composition, not async orchestration. Source review found abort must revoke a
+previously prepared end success flag; fixed and added regression before final run.
+
+Final E031: 362 passed in 3.02s, no failures/errors/skips/warnings/xfails; Ruff lint/
+format pass, 11 files. Earlier actual runs retained: 319 passes/cache permission
+warning in sandbox; six Ruff B008 issues; test-helper DEFAULT_LIMITS import error
+after automated unused-import cleanup; 334-pass corrected intermediate run. No
+warning filters/tests weakened; final native run resolves cache permissions.
+Tests cover exact synthetic grammar, all representative byte/delta cuts, Unicode,
+channel/control transitions, limits, randomized reference equivalence, retained
+state and privacy. ADR-023/README/E031 explain ownership/metrics/limitations.
+
+Affected: task3 project/source/tests/README/pins/lock; AGENTS, requirements, ledger,
+decisions, this log and test evidence. Existing Task 1/2/4 sources/tests/config/
+dependencies/locks untouched. T3-002 IN_PROGRESS/independent review pending; no
+current test/lint blocker. No actual network/deadline/RSS/vendor/async cancellation
+claim; HTTP auth/client route decisions still later. Next: independent engineering
+review; no T3-003, commit/push or work outside pure checkpoint.
+
+Final preservation/source-boundary/reference/link/whitespace inspections pass:
+77 baseline files unchanged, completed Tasks 1/2/4 fully preserved; only six relevant
+docs plus 15 new Task 3 files. Eleven Python files match tested snapshot after docs
+updates. No prohibited transport/completed-task imports, generated/env/DB/archive
+files exposed in unignored inventory, or targeted credential candidates. HEAD still
+7e37045, empty index/main aligned recorded origin/main, recoverable uncommitted
+checkpoint. No later source/test changes or reruns; hand off for independent review.
+
+## M048 - 2026-11-05 (America/Los_Angeles): T3-002 acceptance / Git checkpoint
+
+User APPROVES T3-002. Reported independent 362 passes, 1200 randomized interleaved
+streams, 2961 channel-reference comparisons, 256 prefix/character-257 probes, 376
+truncated-wire cuts, 24000-event retained-state test and compilation passed; no
+blocking production defect. Linux/Python 3.13.5/pytest 9.0.2 with one configuration
+warning (details not supplied) is supplementary/outside pinned Python 3.12 scope.
+E031 authoritative native Windows/Python 3.12.16 tests/Ruff untouched; no new tests,
+runtime support or universal PII/vendor claim. Original brief remains unavailable.
+
+T3-002 DONE/independently accepted; TASK-3 IN_PROGRESS. Update AGENTS/Task 3 README,
+requirements/ledger/ADR-023 acceptance provenance, this log and E032. Preserve all
+11 approved Python files, Python/dependency pins/config/lock and Tasks 1/2/4.
+Initial HEAD 7e37045, main aligned recorded origin, empty index; five tracked doc
+changes, new requirements/15 Task 3 files and task3_t3002_review.zip. Captured 99
+hashes in ignored acceptance baseline, verified E031 Python snapshot byte-identical.
+No unexpected implementation/config changes, no pytest/Ruff/compile/install rerun.
+
+Next: full diff/new files/index review, retain/local-exclude ZIP, explicitly stage
+21 approved foundation/requirements/governance paths, git diff --cached --check,
+one descriptive T3-001/T3-002 commit, verify parent/SHA/inventory/clean status and
+ahead-behind, stop. No blocker/T3-003/code/push; no new architecture decision.
+
+Full approved content/diff and exact 21-file index inspected; staged blobs match
+working files, whitespace check exit 0, targeted credential candidates zero. All
+92 non-document-update snapshot files unchanged; approved source/tests/pins/lock
+preserved, ZIP excluded locally, no unstaged/unignored artifacts. No test/Ruff/
+compile/install rerun. Create the one accepted foundation commit, verify resulting
+identity/parent/manifest/clean tree/recorded-origin counts, report and stop.

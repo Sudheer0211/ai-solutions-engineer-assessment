@@ -672,3 +672,133 @@ whitespace/artifact/secret inspection and final SHA/status verification. Preserv
 all implementation/tests/config/dependencies/locks and Tasks 1/2. E029 records
 reported acceptance and actual Git/document inspections; no tests/Ruff rerun absent
 unexpected implementation/config changes. No Task 3/push; stop at Git checkpoint.
+
+## ADR-022 - 2026-11-05: Task 3 conditional architecture and provisional streaming contract
+
+- Status: T3-001 independently APPROVED for the explicitly defined synthetic
+  profile, user confirmation 2026-11-05; acceptance provenance below. T3-P1-P8 /
+  T3-L are accepted engineering policies, not original vendor requirements.
+  T3-001 DONE; TASK-3 IN_PROGRESS. Original proposal history below is retained.
+- Provenance: no original Task 3 brief recovered after second repository/reachable
+  filename/attachment inspection. Available T3-R1-R8 are high-level user requirements,
+  not inferred PII categories/provider APIs. Preserve distinction in requirements.
+- Accepted architecture: isolated project/env/lock; explicit UTF-8/SSE parser,
+  validated payload adapter, request/channel-local redactor, one pull-driven async
+  chain, bounded memory and owned cancellation. Future FastAPI/Starlette handles
+  HTTP/lifespan, HTTPX owns pooled upstream streaming; neither supplies the PII proof.
+- Proposed security simplification: K = ASCII alnum plus ._%+@-. Withhold complete
+  maximal K-run (cap 256); all proposed EMAIL/PHONE/SSN forms lie within K. Real
+  delimiter or validated channel-done proves candidate complete, then classify
+  and replace whole candidate with [REDACTED] if any rule matches. Any @ candidate
+  is conservatively masked even if malformed. Before character 257 fail closed;
+  never release an unfinished prefix. Errors/transport EOF are not safe finalizers.
+  This yields a partition-invariant proof under the explicit grammar, not broad
+  semantic/Unicode/obfuscated PII recognition. Phone forms/normalization exclusions
+  in T3-P1/P2 need explicit review, not silent implementation assumptions.
+- Proposed wire semantics: synthetic JSON delta(channel,text), done(channel),
+  global end({}) and fixed upstream error. Four channel identities, no state reset
+  at event/delta boundaries. Rechunk generated safe output, preserve per-channel
+  order, drop comments/id/retry/unknown fields and reject unrecognized payload/event
+  shapes. No arbitrary metadata passthrough, provider sentinel or success-on-EOF.
+- Limits proposed separately: 4 KiB processing chunks, 8 KiB lines, 16 KiB events,
+  4096-scalar deltas, 256-char candidate/channel, 1024-scalar/8 KiB pending output,
+  four channels and 16 concurrent streams/process. Explicit monotonic upstream/
+  send/overall/cleanup budgets; all numeric choices provisional, not brief wording.
+- Cancellation/failure: no read-ahead queue, await downstream send; close response
+  in finally with one bounded cleanup budget, retain/quarantine uncertain resources.
+  Fixed postheader SSE error or connection close; never echo raw buffers/diagnostics,
+  fabricate success termination or retry/replay a generation automatically.
+- Alternatives: independent chunk regexes/guessed overlap (cross-boundary leak),
+  buffer complete stream (violates progressive bounded operation), general semantic
+  PII claim (unsupported), unbounded ambiguous token (memory risk), forward opaque
+  metadata (privacy bypass), invent a vendor API (missing contract). More permissive
+  bounded automata remain possible after an approved grammar/correctness argument.
+- Tradeoffs: harmless @ strings overmasked, punctuation within candidate removed,
+  long harmless identifiers/URLs rejected, formatted/international/obfuscated PII
+  outside the narrow profile not certified. No fixed content latency for an endless
+  candidate; deadlines terminate instead of raw flush. Rechunking/metadata loss
+  requires approval. Python/transport/OS memory copies require measurement, not a
+  false RSS sum from logical counters. Real provider/API/browser/auth contract
+  remains a later explicit approval item before HTTP integration.
+- T3-002 boundary: isolated foundation plus pure models/SSE/profile/redaction and
+  T3-Q01-Q12 tests only AFTER approval and authorization; no HTTPX/FastAPI/client/
+  service/provider/network code yet. Full matrix T3-Q01-Q21 in requirements.
+  No completed task changes, source/install/test execution/commit/push this session.
+  E030 records actual inspections only. Next: independent exact-contract review.
+
+### T3-001 final acceptance / T3-002 authorization - 2026-11-05
+
+User APPROVES the documented synthetic profile, narrow ASCII email/phone/SSN,
+whole-candidate [REDACTED], exact alphabet/256 cap/four channels, JSON-over-SSE
+delta/done/end/fixed-error, dropped metadata and rechunked per-channel order.
+Resource caps/deadlines are approved engineering policies, not original brief
+wording. Original Task 3 vendor brief remains unavailable; no universal PII or
+vendor-specific interoperability claim. T3-001 DONE and independently accepted.
+
+Mandatory rules explicitly preserved: only valid done finalizes; unexpected EOF/
+malformed termination cannot flush tails; independent byte/scalar/serialized limits;
+no raw threshold-prefix release; no data after done/duplicate done/early global end;
+reject duplicate/ambiguous payloads; every supported pattern character lies in K.
+User authorizes T3-002 isolated pinned pure implementation/tests and governance,
+not HTTPX/network, FastAPI, wire, T3-003 or commit/push. E031 records actual local
+verification; this approval itself is not a new test execution.
+
+## ADR-023 - 2026-11-05: bounded pure Task 3 pipeline and fail-latched ownership
+
+- Status: T3-002 independently ACCEPTED, user confirmation 2026-11-05; review
+  provenance below. Accepted implementation/architecture unchanged.
+  Applies only to task3 pure source/tests/config/lock/README and governance.
+- Decision: five small modules (package init plus models/sse/payloads/redaction),
+  standard-library runtime; Processor is a synchronous pull generator, not an
+  async service/network adapter. Typed frozen events/private payload repr, bounded
+  tightened-only Limits, fixed generic errors; immutable shared default limits.
+- SSE: raw byte counters before retained growth, incremental strict utf-8-sig,
+  deferred CR to count split CRLF before event dispatch, bounded line/data storage,
+  lazy event iteration. Metadata drops without output/authority. Resource lexical
+  JSON precheck precedes stdlib syntax/escape decoding; strict exact schemas.
+- Redaction: request-local four-channel state, <=256 ASCII hold/channel, classify
+  on real delimiter/done only. Closed channels never reused, global end only after
+  all opened channels done, fixed upstream error clears tails. No full-stream
+  buffering, output fragment <=256 scalars, independent scalar/UTF-8/JSON frame
+  checks before retained encoding buffer extension. Encoder is shape-only; only
+  Processor/redactor composition is the privacy path, not arbitrary encoder calls.
+- Ownership: fully consume/close each iterator. Failure/abandonment clears tails,
+  latches unusable state and revokes success; terminal stops reading trailing
+  upstream bytes. Success is pure protocol completion, not downstream delivery.
+  Real disconnect/deadline/backpressure ownership remains later work.
+- Alternatives: mutate completed projects/shared environments (baseline risk),
+  per-chunk regex or premature-tail flush (leak), queue/list all events (unbounded
+  flow), custom full JSON parser (unnecessary), implicit EOF completion (leak),
+  add FastAPI/HTTPX now (outside T3-002). Chosen bounded lexical precheck does not
+  replace the JSON syntax parser. No arbitrary metadata/extension passthrough.
+- Tradeoffs: byte-wise incremental decoding is deliberately simple and bounded,
+  not throughput-optimized; Python objects/encoding scratch add overhead beyond
+  logical counters. Conservative masking/long-token rejection and narrow scope
+  remain accepted. Pure tests do not certify RSS/HTTP async behavior/real providers.
+- Evidence E031: final 362 passes, zero failures/skips/warnings/xfails; both Ruff
+  checks pass (11 files). Initial cache warning, B008 findings and missing test
+  import collection failure retained as actual outcomes. New terminal-failure
+  regression ensures failed/abandoned end encoding cannot leave success asserted.
+  No accepted Task 1/2/4 implementation/test/pin changes. Next: independent review,
+  not T3-003, commit or push.
+
+### T3-002 independent acceptance provenance - 2026-11-05
+
+User reports APPROVED: complete independent 362-pass suite, additional 1200
+randomized interleaved SSE streams and 2961 channel-reference comparisons, 256
+candidate-prefix withholding probes plus character-257 fail-closed check, 376
+truncated-wire cuts without whole-value PII leakage, 24000-event retained-state
+test and Python compilation passed. No blocking production defect identified.
+
+Independent review ran Linux/Python 3.13.5/pytest 9.0.2 with ONE pytest configuration
+warning; specific warning text, commands/timings and extra Ruff results not supplied.
+This environment is outside project-pinned Python 3.12. Do not reinterpret it as
+supported Python 3.13 installation or change pins/config/filters. Native E031
+Windows/Python 3.12.16/pytest 9.2.0/Ruff 0.17.3 remains authoritative. E032 records
+reported review and Git inspection, not fresh test execution. Original brief still
+unavailable; approved synthetic/narrow PII scope and all limitations remain intact.
+
+T3-002 DONE/independently accepted; TASK-3 IN_PROGRESS. No architecture/source/test
+change. One accepted foundation commit authorized, exact source/test/config/pin/
+lock/README/requirements/governance inventory only. Preserve Tasks 1/2/4; no test
+rerun absent unexpected implementation changes, T3-003 or push. Verify Git and stop.

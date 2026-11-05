@@ -1817,3 +1817,226 @@ tracked ignore/config change. No unstaged or unignored leftovers. New audit's
 LF/CRLF Git advisory is not an implementation change or test warning. No tests
 rerun. Final checkpoint: one docs-only commit; verify parent/manifest/SHA, clean
 tree and recorded-origin branch counts, report and stop without push.
+
+## E030 - 2026-11-05: T3-001 materials/contract documentation inspection ONLY
+
+America/Los_Angeles (client date). User reports independent architecture APPROVED
+CONDITIONALLY; exact PII/profile/limits remain PROVISIONAL. This record has NO
+new pytest/Ruff/install/provider/HTTP/SQLite execution or test pass claims.
+Prior Task 1/2/4 actual E028 verification and acceptance evidence are unchanged.
+
+Actual commands/inspections this checkpoint:
+
+- Read AGENTS.md, task ledger, relevant ADRs/decision index and latest build/evidence.
+- git status --short --branch / git rev-parse HEAD: exit 0, initially clean, HEAD
+  7e3704588482b07ebf7cfbcfd65a8a58c0d2458e. No fetch/remote-publication verification.
+- rg --files under supplied attachments for text/Markdown/PDF/Word inventory;
+  rg -l -i with Task 3/T3-00/PII/redact/server-sent-events terms on text/Markdown,
+  then rg -n -C 3 on four matching attachments: exit 0. Task 1 SSE/PII exclusions,
+  Task 4 no-Task-3 exclusion, unrelated scene-schema Task 3 and unrelated security
+  guidance only. No original Task 3 assessment contract recovered.
+- Repository requirements/TASK3/PDF/Word/text filename inventory and git log --all
+  --format= --name-only -- '*TASK3*' '*task3*': no original Task 3 brief/path found.
+  Search bounded to available local materials, not external assessment systems.
+- Tool-inline Python hashlib/subprocess capture of all 82 tracked paths in ignored
+  .cache/t3001_design_baseline.json: exit 0. Used for docs-only preservation checks.
+
+Created TASK3_REQUIREMENTS.md, updated AGENTS/ledger/ADR-022/M046 and this record.
+T3-R1-R8 are user high-level requirements; T3-P1-P8/T3-L/T3-Q exact proposals need
+independent approval. No application code/project/env/lock installed/created.
+Pure-test and later async/wire matrices are NOT EXECUTED. T3-001/TASK-3 IN_PROGRESS;
+T3-002 through T3-006 NOT_STARTED. Preserve Tasks 1/2/4, no commit/push/stage.
+Final documentation link/ID/whitespace/hash/index inspections recorded below once
+executed; those are inspections, not functional test evidence or mathematical proof
+by test execution. Next: independent approval of T3-U1-U5 before implementation.
+
+Completed actual documentation inspections (not tests): git diff --check exits 0;
+new 340-line requirements file separately checked for trailing whitespace/final
+newline. All proposed R/P/L/Q/U IDs present, exactly 21 Q matrix rows; relative
+documentation links resolve. Targeted private-key/common-provider-key/credentialed-
+URL scan of the six affected docs found zero candidates (bounded pattern scan,
+not universal secret assurance). SHA256 comparison confirms exactly five existing
+governance Markdown files changed; all 77 other original tracked paths byte-identical,
+including completed-task sources/tests/READMEs/dependencies/config/locks. Existing
+Task 1/2/4 ledger rows unchanged. Only new untracked path is TASK3_REQUIREMENTS.md;
+no task3 directory/project/environment. HEAD remains 7e37045, index empty; no stage,
+commit/push/fetch/install/test execution. Preserve docs-only handoff for review.
+
+## E031 - 2026-11-05: accepted T3-001 / T3-002 pure implementation verification
+
+America/Los_Angeles (client date). User independently APPROVES the explicitly
+defined synthetic profile and authorizes T3-002 pure implementation/tests. Original
+vendor brief unavailable; no universal PII or vendor interoperability inference.
+T3-001 DONE/accepted. T3-002 implemented/locally verified, independent review PENDING;
+T3-003 and later NOT_STARTED. No completed-task source/test/pin change authorized.
+
+### Isolated setup / runtime (actual executions)
+
+From task3/, using ignored repository uv 0.13.7 and installed parent Python solely
+as interpreter selection (NOT installing into parent environment):
+
+```powershell
+$env:UV_CACHE_DIR = '..\.cache\uv'
+..\.tools\bin\uv.exe sync --extra dev --python ..\.venv\Scripts\python.exe --offline
+```
+
+Exit 0: created task3/.venv and new uv.lock, built project, resolved/installed eight
+packages. Python 3.12.16 (Oct 26 2026, MSC v.1944 64 bit AMD64). Installed runtime
+inventory: assessment-task3-streaming 0.1.0; pytest 9.2.0; Ruff 0.17.3; colorama
+0.4.6; iniconfig 2.3.1; packaging 26.3; pluggy 1.7.0; Pygments 2.21.0. No application
+runtime dependencies. Build requirement setuptools 82.0.1, not a runtime-installed
+distribution claim. Native SQLite 3.53.1 was probed as interpreter metadata only;
+no Task 3 SQLite operations/imports or database verification claimed.
+
+Locked recheck/import probe from task3/:
+
+```powershell
+$env:UV_CACHE_DIR = '..\.cache\uv'
+..\.tools\bin\uv.exe sync --locked --extra dev --python ..\.venv\Scripts\python.exe --offline
+.\.venv\Scripts\python.exe -c "import sys,importlib.metadata as m; import task3_streaming.sse,task3_streaming.payloads,task3_streaming.redaction; print(sys.version); print(dict(sorted((d.metadata['Name'], d.version) for d in m.distributions())))"
+```
+
+Combined probe exit 0, uv reports resolved eight/checked eight and package imports/
+inventory succeed. No lock/pin changes during this recheck. Own Python/env/lock
+separate from Tasks 1/2/4. No FastAPI/HTTPX/Uvicorn/vendor dependency installed here.
+
+### Initial actual results / corrections (not hidden)
+
+1. `.\.venv\Scripts\python.exe -m ruff format src tests`: exit 0, six reformatted/
+   five unchanged. Subsequent format calls normalized only new Task 3 code/tests.
+2. `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3002-first`:
+   exit 0, **319 passed, one warning in 1.18s**. Warning is Windows sandbox
+   PytestCacheWarning/WinError 5 creating .cache/pytest nodeids, not product behavior.
+   Zero test failures/skips/xfails. No filters/skips/assertions weakened.
+3. `.\.venv\Scripts\python.exe -m ruff check src tests`: standalone exit 1,
+   six B008 default-call findings. Changed frozen Limits defaults to immutable
+   DEFAULT_LIMITS singleton; no lint ignore/config weakening. An initial
+   `ruff check --fix` reported four findings/three fixes/one B008 remaining; fixed
+   remaining test helper default manually. Its unused import had been removed.
+4. Expanded native suite, `.\.venv\Scripts\python.exe -m pytest -q --tb=short
+   --basetemp=.cache/t3002-native`: exit 1, collection interrupted with **one error
+   in 0.15s** (NameError DEFAULT_LIMITS in tests/test_sse.py). No passing-count claim
+   for this run. Concurrent standalone Ruff exits 1/F821; format exits 0/11 formatted.
+   Restored missing test-helper import; no production defect or assertion change.
+5. `.\.venv\Scripts\python.exe -m pytest -q --tb=short
+   --basetemp=.cache/t3002-native-final`: native exit 0, **334 passed in 1.20s**,
+   zero failures/skips/warnings/xfails. Both standalone Ruff checks exit 0/11 files.
+6. Final source review: abort after failed/abandoned terminal encoding must revoke
+   a prepared success flag. Corrected Redactor.abort and added regression, then
+   added explicit numeric grammar boundaries/decoder carry and 16 independent-
+   reference adversarial-content seeds. Final full run below covers all changes.
+
+### Final complete suite and Ruff (actual, final code)
+
+All from task3/, native Windows outside the sandbox for pytest's cache permission;
+no warning filters/marker changes or compatibility substitutions:
+
+| Exact command | Actual result | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3002-complete` | **362 passed in 3.02s** | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` | 11 files already formatted | 0 |
+
+Final suite: zero failures, errors, skips, warnings, xfails/xpasses. Eleven Python
+files = five source/package files + six test/support/package files. Test references
+are mapped to Q01-Q12 in requirements, not fabricated passing test names.
+
+### What this execution verifies / does not verify
+
+Four representative sensitive values: every raw SSE stream byte cut and every
+model-delta cut, plus all 32 partitions of a short six-character candidate.
+Unicode raw/JSON-escaped streams: every byte cut; explicit three-byte decoder carry,
+CRLF/LF/lone CR/CR-only final terminal, multiline data/metadata and strict EOF.
+32 seeded delta/chunk partitions and 16 seeded adversarial-content tests compare
+against independent whole-input manual interval oracle, not production regexes.
+Exact 255/256/257 candidates, 8192-byte lines/16384-byte events, scalar/UTF-8/
+escaped-frame caps, duplicate decoded keys/strict JSON bounds and four-channel
+transitions verified. Fixed error frames, private repr, captured logs/output,
+no premature tail release, abort/terminal failure success revocation verified.
+
+5000 bounded events consumed without retaining results internally; stats show no
+event/hold/pending accumulation and bounded peaks. Four full 256-char holds remain
+1024 chars total through 1000 empty deltas, then abort clears them. These are
+logical retained-state counters and tests, NOT measured RSS/network buffers/real
+async backpressure/cancellation/deadline/wire evidence. There is no upstream.py,
+service.py, app.py or socket process, no real vendor/tokenizer/universal PII claim.
+The standalone encoder validates shape/size; privacy requires redactor/Processor
+composition, not encoding untrusted deltas directly. Synthetic fixtures only.
+
+Requirements/ADR-022 record accepted engineering policies separately from original
+brief absence; ADR-023 records implementation/ownership tradeoffs. Tasks 1/2/4
+regressions not rerun: their shared code/config/env is unchanged. Git/hash/artifact/
+source-boundary inspections recorded below after execution. No commit/push/stage,
+T3-003 or completed-task modification. Next: independent T3-002 engineering review.
+
+Final inspections (NOT additional tests): initial 83-file snapshot comparison finds
+only the six authorized governance/requirements docs changed; all 77 other baseline
+paths byte-identical, including completed Tasks 1/2/4 source/tests/READMEs/config/
+dependency locks. Eleven final tested/formatted Python files snapshotted to ignored
+.cache/t3002_verified_code.json and rechecked unchanged after documentation work.
+AST source-boundary inspection finds no completed-task, HTTPX, FastAPI, socket,
+SQLite or asyncio imports. Requirements test references resolve to actual functions
+and relative documentation links exist. An internal reference-check regex initially
+truncated module-name matches and was corrected; no application/test changes.
+
+git diff --check exits 0; index empty, HEAD remains 7e3704588482b07ebf7cfbcfd65a8a58c0d2458e,
+main aligned 0 ahead/0 behind recorded origin/main (no fetch). Exactly 15 new Task 3
+project/source/test/README/config/lock files plus new requirements and five modified
+governance docs; no env/cache/pycache/egg-info/database/archive artifact in unignored
+inventory. Targeted private-key/provider-key/credentialed-URL scan of affected
+docs/new project files found zero candidates, bounded scan not universal assurance.
+No source changes after final 362-pass/Ruff run; no reason to rerun completed-task
+suites. No stage/commit/push or T3-003 work. Independent acceptance still PENDING.
+
+## E032 - 2026-11-05: T3-002 independent acceptance / Git checkpoint inspection
+
+America/Los_Angeles (client date). User reports independent ChatGPT engineering
+review APPROVED; T3-002 DONE/independently accepted. Supplied evidence, NOT new
+Codex executions:
+
+- Complete independent suite: 362 passed.
+- Additional 1200 randomized interleaved SSE streams passed.
+- 2961 channel-level reference comparisons passed.
+- 256 candidate-prefix withholding probes/character-257 fail-closed behavior passed.
+- 376 truncated-wire cuts checked without whole-value PII leakage.
+- 24000-event retained-state test and Python compilation passed.
+- No blocking production defect identified.
+
+Independent Linux/Python 3.13.5/pytest 9.0.2 recorded ONE pytest configuration
+warning; specific warning text/config key, commands, timings and Ruff results not
+supplied. Do not invent them or present these as fresh native executions. Python
+3.13 is outside project-pinned >=3.12,<3.13; no pin/config/filter/runtime-support
+change shipped. E031 native Windows/Python 3.12.16/pytest 9.2.0 and Ruff 0.17.3
+remain authoritative. Original brief unavailable, synthetic profile scope intact.
+
+Actual initial inspections this checkpoint: git status --short --branch, diff
+--stat, diff --cached --name-status, rev-parse HEAD, rev-list --left-right --count
+HEAD...origin/main, ls-files --others --exclude-standard: exit 0. HEAD
+7e3704588482b07ebf7cfbcfd65a8a58c0d2458e; main aligned 0 ahead/0 behind recorded
+origin/main (no fetch), empty index. Five modified governance docs, new requirements,
+15 new Task 3 files and local task3_t3002_review.zip. Tool-inline SHA256 comparison:
+all 11 Python files match E031 verified snapshot; capture 99 current file hashes
+including archive in ignored .cache/t3002_acceptance_baseline.json. Config/pins/
+lock inspected, no unexpected changes; no pytest/Ruff/compile/install rerun needed.
+
+Acceptance docs only updated now: AGENTS, Task 3 README, requirements, ledger,
+ADR-023 provenance, M048 and this record. Preserve all code/tests/dependencies/
+configuration/locks and completed Tasks 1/2/4. Retain/local-exclude archive; full
+diff/new file content and exact 21-path stage inventory must exclude env/cache/
+pycache/egg-info/temp/credentials/ZIP. Run git diff --cached --check, commit once,
+verify parent/SHA/manifest/clean tree/branch counts. Git history/session report
+record resulting identity. No push/T3-003; stop after accepted foundation checkpoint.
+
+Precommit inspections completed (not tests): full tracked diff and all new approved
+source/test/config/lock/README/requirements content reviewed. Exact 21-path index
+(five tracked governance modifications, new requirements and 15 Task 3 files)
+matches reviewed working bytes after Git EOL normalization. E031's 11 Python hashes
+unchanged; all 92 captured files outside seven documentation-update paths unchanged,
+including source/tests/pins/config/lock/review ZIP and completed Tasks 1/2/4.
+No unstaged/unignored leftovers. Review ZIP retained via .git/info/exclude; no
+tracked ignore/config mutation. Targeted staged private-key/provider-key/credentialed-
+URL/quoted-credential scan zero candidates; no env/cache/pycache/egg-info/temp/archive
+staged. git diff --cached --check exits 0. Git LF/CRLF advisories are normalization
+not source functional changes or pytest warnings. No test/Ruff/compile/install
+rerun. One descriptive commit, then parent/SHA/inventory/clean-tree/branch-count
+verification and stop; commit identity recorded by Git history/session report.

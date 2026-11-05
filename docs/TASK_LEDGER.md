@@ -23,7 +23,13 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 | T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
-| TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
+| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | IN_PROGRESS | T3-001/T3-002 independently accepted synthetic profile | Preserve accepted pure baseline; T3-003 NOT_STARTED/not authorized |
+| T3-001 | Requirements provenance, architecture and exact streaming contract | P0 | DONE | Independently APPROVED 2026-11-05 for documented synthetic profile; ADR-022 | Original vendor brief unavailable; preserve narrow approved scope |
+| T3-002 | Isolated project and pure SSE/redaction components | P0 | DONE | Independently APPROVED 2026-11-05; E031 native verification / qualified review E032; ADR-023 | One accepted foundation commit authorized; no T3-003/push |
+| T3-003 | Async upstream adapter, orchestration and lifecycle | P0 | NOT_STARTED | Proposed T3-Q13 through Q15 | Await preceding checkpoint acceptance/authorization |
+| T3-004 | FastAPI streaming HTTP integration | P0 | NOT_STARTED | Proposed T3-Q16 through Q18 | Await preceding checkpoint acceptance/authorization |
+| T3-005 | Independent-process real HTTP wire verification | P1 | NOT_STARTED | Proposed T3-Q19 through Q21 | Await preceding checkpoint acceptance/authorization |
+| T3-006 | Final Task 3 assessment audit | P1 | NOT_STARTED | Future requirements traceability/fresh regression/privacy/reproducibility audit | Await preceding checkpoint acceptance/authorization |
 | TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | DONE | T4-001 through T4-006 independently accepted; final APPROVED 2026-11-05/E029; actual audit E028 | Assessment-ready within supported Windows/SQLite/trusted-adapter scope; preserve implementation, no push |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
@@ -757,3 +763,78 @@ all accepted Task 4 source/tests/configuration/dependencies/locks. Retain/exclud
 inspect full nine-file documentation diff/index, staged whitespace and artifacts,
 commit once and verify SHA/inventory/clean tree/branch counts. No push/Task 3 or
 further implementation. Future work/publication requires separate authorization.
+
+## T3-001 contract proposal / independent review handoff - 2026-11-05
+
+America/Los_Angeles. Architecture APPROVED CONDITIONALLY per user: isolated
+FastAPI/HTTPX, explicit SSE parser, per-channel incremental redaction, bounded
+memory, pull-driven backpressure and cancellation ownership. Exact contract still
+PROVISIONAL. Second bounded materials inspection finds no original Task 3 brief;
+known T3-R1-R8 come from user high-level requirements. No inferred vendor/categories.
+
+Mandatory T3-001 acceptance criteria / actual current status:
+
+- [x] Record requirement provenance and distinguish requirements from assumptions.
+- [x] Record architecture conditional acceptance and original-brief search evidence.
+- [x] Propose exact PII grammar, normalization/replacement and safe-prefix argument.
+- [x] Specify synthetic SSE/JSON/channel/metadata/terminal/error behavior.
+- [x] Specify separate line/event/candidate/output/channel/stream/time budgets.
+- [x] Define cancellation, backpressure and bounded cleanup/postheader failure policy.
+- [x] Define pure T3-002 scope and T3-Q01-Q12 / later Q13-Q21 acceptance matrix.
+- [ ] Independent approval of exact T3-P1-P8 / T3-L proposals and omissions.
+
+TASK3_REQUIREMENTS.md / ADR-022 / E030 hold proposals and actual inspections.
+T3-001/TASK-3 IN_PROGRESS, NOT DONE; T3-002 through T3-006 NOT_STARTED. No tests,
+new project/env/dependencies/source, commit or push. Tasks 1/2/4 remain DONE;
+existing evidence/qualified support unchanged. Next action: approve or revise
+T3-U1-U5, especially omitted PII/ASCII scope, whole-token @ masking/256-char reject,
+synthetic event profile/metadata loss and numeric budgets. No implementation yet.
+
+## T3-001 acceptance / T3-002 local implementation handoff - 2026-11-05
+
+America/Los_Angeles. User independently APPROVES T3-001 for the explicitly defined
+synthetic profile and all documented engineering policies; T3-001 DONE. Original
+vendor brief unavailable, no universal PII/vendor interoperability claim. Approval
+resolves the exact streaming contract, not future HTTP authentication/client/API
+choices. All seven additional mandatory rules are retained (requirements/ADR-022).
+
+T3-002 implemented and locally verified, IN_PROGRESS/independent review PENDING.
+E031 final native Python 3.12.16: **362 passed in 3.02s**, zero failures/errors/
+skips/warnings/xfails/xpasses, Ruff lint/format pass (11 files). Isolated 8-package
+lock/offline locked sync/imports pass. No FastAPI/HTTPX/network dependency/runtime.
+Pure models/SSE/profile/redactor/Processor and T3-Q01-Q12 tests only; ADR-023.
+
+Byte-counted lines/events, strict incremental UTF-8/JSON, exact four-channel
+transitions, whole-candidate masking/no raw overflow or EOF flush, separate Unicode/
+raw/escaped-byte output caps, bounded lazy ownership and fixed errors verified.
+Every representative raw-byte/delta cut, short-candidate partitions, Unicode cuts,
+32 random partition seeds, 16 adversarial-content/reference seeds, 5000-event and
+four-full-hold/1000-empty-event bounded-state tests included. Terminal error/abandon
+revokes success. Initial cache warning/style/import failures preserved in E031.
+
+No current test/lint blocker. Limits remain narrow ASCII grammar, conservative @
+overmasking/long-token rejection, synthetic schema and trusted library composition.
+No real async backpressure/cancellation/wire/RSS/deadline/provider claim yet.
+Tasks 1/2/4 stay DONE/preserved. Next: independent review of task3 source/tests/
+requirements/ADR-023/E031, not T3-003 or a Git checkpoint. No commit/push.
+
+## T3-002 independent acceptance / Git checkpoint - 2026-11-05
+
+America/Los_Angeles. User APPROVES T3-002; DONE/independently ACCEPTED. Reported
+review: 362 passes; 1200 randomized interleaved streams; 2961 channel-level reference
+comparisons; 256 prefix withholding/character-257 rejection probes; 376 truncated
+wire cuts without whole-value PII leakage; 24000-event retained-state test and
+compilation passed. No blocking production defect identified.
+
+Linux/Python 3.13.5/pytest 9.0.2 review recorded one configuration warning, details
+not supplied. Outside project-pinned Python 3.12; E031 native Windows/Python 3.12.16
+and Ruff remain authoritative. No compatibility changes/pin widening/filters or new
+execution claims. Original vendor brief unavailable; synthetic profile limits kept.
+
+One T3-001/T3-002 implementation/acceptance commit authorized. Initial HEAD 7e37045,
+aligned 0 ahead/0 behind recorded origin/main, empty index; five tracked docs plus
+new requirements/15 Task 3 files/local review ZIP. All 11 Python hashes match E031;
+config/pins/lock inspected unchanged, no test rerun needed. Capture 99 file hashes,
+retain ZIP locally excluded, inspect/stage only 21 approved paths, staged whitespace
+check, one descriptive commit and SHA/manifest/clean-tree/branch verification.
+Preserve Tasks 1/2/4; TASK-3 IN_PROGRESS/T3-003 NOT_STARTED. No push or further code.
