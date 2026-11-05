@@ -220,3 +220,39 @@ support/config/lock/README/governance; exclude envs/DB/WAL/caches/credentials/re
 archives. Inspect full diff/index, run git diff --cached --check, commit once,
 verify SHA/clean tree/ahead-behind and stop. No test/Ruff rerun absent unexpected
 implementation changes; no T4-006, Task 3, feature work or push. TASK-4 IN_PROGRESS.
+
+## T4-006 current audit authorization (2026-11-04 America/Los_Angeles)
+
+Latest user authorizes final verification/documentation only over 6eaccaf. Fresh
+complete Task 1/2/4 pytest and Ruff in separate environments, clean Task 4 locked
+installation, traceability, recovery/routing/HTTP/source/history security audit.
+Preserve accepted production code/tests/config/locks. Documentation corrections
+allowed; reproduce/document any blocking implementation defect and stop. No Task 3,
+feature work, commit/push, or T4-006/TASK-4 DONE before independent approval.
+
+T4-006 local outcome: audit complete, READY within documented scope, independent
+approval PENDING. Read TASK4_FINAL_AUDIT.md, ADR-021 and E028. Fresh native suites
+149/452/427 pass; six Ruff checks pass, new locked Task 4 install and deterministic
+primary/fallback fixtures plus stock CLI 503 verified. No accepted code/test/config/
+lock changes; Task 1/2 DONE preserved. Crash/power/disk/remote billing and real
+vendor/tokenizer/deployment limitations explicit. T4-006/TASK-4 IN_PROGRESS; next
+is independent review, no feature work/stage/commit/push or automatic DONE claim.
+
+## T4-006 final acceptance / Git checkpoint (2026-11-05 America/Los_Angeles)
+
+Latest user confirms independent ChatGPT engineering APPROVAL: Task 4 is
+assessment-ready within documented requirements, supported Windows/SQLite and
+trusted-adapter policies. TASK-4/T4-006 DONE; all seven traceability rows, named
+test references, E028 results, docs, limitations and submission findings reviewed
+and consistent. Read final audit, E029 and ADR-021 acceptance provenance. Preserve
+E028 actual 2026-11-04 executions and all historical review/environment qualifications;
+no new test result or native Linux/real-provider/deployment guarantee is inferred.
+
+Supersedes historical pending/no-commit gates only for ONE final docs-only commit:
+AGENTS.md, root/Task 4 README, TASK4_FINAL_AUDIT.md, TASK4_REQUIREMENTS.md, ledger,
+build log, decisions and test evidence. Preserve all source/tests/configuration/
+dependencies/locks and Tasks 1/2. Inspect complete diff/new audit/exact staged
+inventory, exclude envs/caches/DB/WAL/SHM/credentials/generated artifacts/review ZIPs,
+run git diff --cached --check, commit once and verify SHA/manifest/clean tree/
+ahead-behind. No tests/Ruff/install unless unexpected code/config changes found.
+No Task 3, push or further implementation; stop after reporting Git checkpoint.

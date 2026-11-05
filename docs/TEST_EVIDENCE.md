@@ -1603,3 +1603,217 @@ history is intact. git diff --cached --check exits 0; LF/CRLF advisories do not
 represent implementation changes/test warnings. No tests/Ruff/install rerun.
 Proceed with one authorized commit; Git history/final report record identity and
 clean-tree/branch verification. No fetch/push or T4-006 implementation.
+
+## E028 - 2026-11-04: T4-006 fresh final assessment audit
+
+America/Los_Angeles; clock probes 2026-11-05 06:21:49 and 06:32:55 UTC are Nov 4
+locally. Actual native Windows executions during THIS checkpoint, not reused E026
+or independent review results. HEAD 6eaccafb52c4780892b311ea763aef6c62bc43c4;
+initially clean index/tree, main ahead 4/behind 0 recorded origin/main (no fetch).
+All three interpreters report Python 3.12.16 (Oct 26 2026 build, MSC v.1944 AMD64)
+and SQLite 3.53.1. Supported Task 4 storage remains fixed-local-drive Windows.
+Known sandbox restrictions require these native tests/install/socket probes outside
+the sandbox; no platform gates, test skips or warning filters were changed.
+
+### Full suites and Ruff: exact commands actually executed
+
+| Cwd | Command | Actual result | Exit |
+| --- | --- | --- | --- |
+| repo root | `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4006-task1` | 149 passed in 36.06s | 0 |
+| `task2/` | `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4006-task2` | 452 passed in 13.26s | 0 |
+| `task4/` | `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4006-task4` | 427 passed in 40.44s | 0 |
+| repo root | `.\.venv\Scripts\python.exe -m ruff check task1 tests` | All checks passed | 0 |
+| repo root | `.\.venv\Scripts\python.exe -m ruff format --check task1 tests` | 17 files already formatted | 0 |
+| `task2/` | `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed | 0 |
+| `task2/` | `.\.venv\Scripts\python.exe -m ruff format --check src tests` | 16 files already formatted | 0 |
+| `task4/` | `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed | 0 |
+| `task4/` | `.\.venv\Scripts\python.exe -m ruff format --check src tests` | 22 files already formatted | 0 |
+
+Each pytest run: zero failures, errors, skips, warnings, xfails/xpasses. Three fresh
+complete suites total 1,028 passes; targeted clean-env repeats below are separate.
+Task 4 full run: 324 accepted + 74 ASGI/config/lifecycle + 29 real wire cases.
+Sanitized receipts read after completion and copied into ignored root .cache BEFORE
+targeted reruns overwrote the common receipt: t4006_native_http_wire_summary.json
+and t4006_native_sqlite_process_summary.json. Native full suite wire: 28 children
+reaped, 27 exit 0/one EXPECTED failed-startup exit 3, zero forced. Storage: 15 exit
+0, zero live/forced. Total 43 reaped. All 21 local rejection receipts have provider
+delta 0 AND new reservation delta 0. Per-mode charges/calls are in final audit.
+Task 2 full-suite receipt: 12 children, alive/forced cleanup/reader threads all 0;
+intentional upstream termination/startup-failure scenarios include nonzero child
+exit codes while their enclosing tests pass. No false all-child-exit-0 claim.
+
+### Runtime/package inspection (not extra test cases)
+
+Each own interpreter executed `-c` imports of sys/sqlite3/importlib.metadata and
+printed sys.version, sqlite3.sqlite_version and installed distribution versions;
+exit 0. Full installed package inventories inspected with:
+
+```powershell
+.\.venv\Scripts\python.exe -c "import importlib.metadata as m,json; print(json.dumps(dict(sorted((d.metadata['Name'],d.version) for d in m.distributions())),indent=2))"
+```
+
+Task 1 inventory (38 installed distributions, including project):
+ai-solutions-engineer-assessment 0.1.0; mcp/mcp-types 2.3.0; pydantic 2.12.5;
+pydantic_core 2.41.5; pytest 9.2.0; pytest-asyncio 1.4.1.post1; ruff 0.17.3;
+PyJWT 2.15.1; Pygments 2.21.0; annotated-types 0.8.0; anyio 4.16.0; attrs 26.1.0;
+cffi 2.1.1; click 8.5.0; colorama 0.4.6; cryptography 50.0.2; h11 0.16.0;
+httpcore2/httpx2 2.16.0; idna 3.20; iniconfig 2.3.1; jsonschema 4.26.0;
+jsonschema-specifications 2025.9.1; opentelemetry-api 1.45.2; packaging 26.3;
+pluggy 1.7.0; pycparser 3.12; python-multipart 0.0.33; pywin32 312;
+referencing 0.37.0; rpds-py 2026.9.1; sse-starlette 3.6.0; starlette 1.10.0;
+truststore 0.10.5; typing-inspection 0.4.4; typing_extensions 4.16.0; uvicorn 0.54.0.
+
+Task 2 inventory / Task 4 locked installed inventory (27 distributions each):
+respective assessment-task2-proxy / assessment-task4-accounting 0.1.0;
+annotated-doc 0.0.5; annotated-types 0.8.0; anyio 4.16.0; asgi-lifespan 2.1.0;
+certifi 2026.10.23; click 8.5.0; colorama 0.4.6; fastapi 0.162.0; h11 0.16.0;
+httpcore 1.0.9; httpx 0.28.1; idna 3.20; iniconfig 2.3.1;
+opentelemetry-api 1.45.2; packaging 26.3; pluggy 1.7.0; pydantic 2.14.2;
+pydantic_core 2.50.2; Pygments 2.21.0; pytest 9.2.0; ruff 0.17.3; sniffio 1.3.1;
+starlette 1.10.0; typing-inspection 0.4.5; typing_extensions 4.16.0; uvicorn 0.54.0.
+Build requirement remains setuptools 82.0.1 (not an installed runtime distribution
+claim). Direct pins and each full transitive lock remain unchanged.
+
+### NEW environment: locked installation and deterministic reproduction
+
+From task4/, absent path checked before first command. Temporary process variables:
+
+```powershell
+$env:UV_PROJECT_ENVIRONMENT = '.cache/t4006-clean-env'
+$env:UV_CACHE_DIR = '..\.cache\uv'
+..\.tools\bin\uv.exe sync --locked --extra dev --extra serve --python .venv/Scripts/python.exe --offline
+```
+
+Actual first result: exit 1, resolved 27 packages/created new environment but failed
+to download Ruff 0.17.3 because the offline cache lacked its wheel. This is a setup
+cache miss, not a product/test failure. Same environment variables, online retry:
+
+```powershell
+..\.tools\bin\uv.exe sync --locked --extra dev --extra serve --python .venv/Scripts/python.exe
+```
+
+Exit 0: resolved 27, prepared 7, installed 27 packages in 1.26s; downloaded Ruff
+and Pygments. uv --version: 0.13.7 (316c827e0, 2026-11-03, Windows x86_64).
+Clean interpreter imports task4_limiter.app/service/storage and inspects versions:
+exit 0, Python 3.12.16/SQLite 3.53.1/project 0.1.0 and versions above. Editable
+installation from current checkout, not a clean wheel packaging/other-OS proof.
+
+Exact targeted commands in clean environment, task4/ cwd:
+
+```powershell
+.\.cache\t4006-clean-env\Scripts\python.exe -m pytest -q tests/test_http.py::test_routing_status_accounting_and_no_prompt_or_secret_leak --tb=short --basetemp=.cache/t4006-clean-asgi
+.\.cache\t4006-clean-env\Scripts\python.exe -m pytest -q tests/test_http_wire.py::test_wire_content_length_chunked_and_success_privacy tests/test_http_wire.py::test_wire_routing_and_conservative_accounting --tb=short --basetemp=.cache/t4006-clean-wire
+```
+
+Actual results: **6 passed in 0.81s** and **7 passed in 16.61s**, each exit 0,
+zero failures/skips/warnings/xfails. Fourteen real-wire children reaped, all exit 0,
+zero forced. Primary success, HTTP 429/real 3 s fallback, backup failure/429,
+transport error and unknown usage are reproducible without real credentials or
+provider endpoint. Synthetic trusted adapters only. README adds these selectors.
+
+Manual CLI/socket probe (NOT pytest): tool-inline Python helper launched clean
+interpreter with `-m uvicorn task4_limiter.app:create_app --factory --host 127.0.0.1
+--port 61736 --no-access-log --no-proxy-headers --log-level warning
+--limit-max-requests 1`. Generated temporary key/identity, absolute ignored DB path,
+backup 1000 ms/reservation 10000 ms supplied in child environment, never printed.
+Bounded TCP readiness, one authenticated POST /generate with synthetic prompt:
+HTTP 503/code service_unavailable as intended for stock unconfigured providers.
+Child graceful exit 0; stdout/stderr 0 bytes, no forced cleanup. Helper exit 0.
+Readiness chosen dynamic port; one-request limit is audit-only shutdown control,
+not a new production policy. Real vendor/tokenizer and public deployment NOT tested.
+
+### Source, accounting, recovery, security and Git inspections (not pytest)
+
+Read original available attachment (Task 1-only), R1-R7/P1-P4/H1-H8, READMEs,
+ADRs 016-020, implementation and accounting/storage/service/ASGI/wire test sources.
+Requirements traceability and uncovered physical/OS-crash/remote-billing scenarios
+are explicit in TASK4_FINAL_AUDIT.md; no invented crash/power-loss certification.
+Native multiprocess races, graceful restart, transaction abort/COMMIT denial,
+clock/identity mismatch, settlement and conservative recovery are exercised above.
+No production defect identified; no extra feature/fault test created.
+
+Git inspected with status/diff/log/rev-parse/rev-list/ls-files. Read all local
+reachable objects using `git rev-list --objects --all` and `git cat-file --batch`,
+tool-inline Python pattern scan with redacted contexts/fingerprints: 14 commits,
+238 objects, 163 unique text blobs, no binaries; 81 initial tracked paths. No tracked
+current/historical DB/WAL/SHM/env/cache/egg-info/ZIP/.env artifact. 141 candidate
+occurrences: 139 Bearer documentation/grammar/RFC/invalid-fixture references, one
+frozen-settings mutation sentinel, one deliberately rejected credentialed .test URL.
+Manual classification found no actual secret. No private-key/common provider-key
+candidate; origin URL has no embedded credential. No raw candidate value published.
+Bounded heuristic/context review is not universal secret-format/unreachable-history,
+dependency-CVE, CI/hosting-log or real-model semantic privacy certification.
+
+Portable ignore rules cover actual .cache/.venv/.env/egg-info; local review ZIP
+exclusions are .git/info/exclude only. Arbitrary DB/ZIP files outside ignored paths
+still require explicit stage inspection. This is a documented publication risk,
+not a tracked leak; no ignore/config changes made. No real credentials installed.
+No Task 1/2 source/test/pin differences from recorded origin/main; no shared imports
+or environment dependency changes. Root .cache/t4006_baseline.json holds 81 initial
+tracked hashes for final docs-only comparison. Latest final integrity/whitespace/
+status checks are appended after completion below. T4-006/TASK-4 IN_PROGRESS,
+READY recommendation pending independent acceptance. No stage/commit/push/fetch.
+
+Final inspection results (not additional tests): initial 81-path SHA256 comparison
+finds exactly eight changed Markdown files and NO non-document change; 73 other
+initial tracked files byte-identical. New TASK4_FINAL_AUDIT.md is the ninth docs-only
+path. All matrix test references resolve to actual Python test definitions; all
+relative links in changed/new docs exist. Current 82-file working-content scan
+(81 tracked plus new audit) for private keys/common provider keys/credentialed URLs
+finds only the previously classified deliberately rejected .test URL fixture,
+no actual secret. git diff --check exits 0; index empty. git status shows eight
+modified docs/one new audit only. HEAD remains 6eaccafb52c4780892b311ea763aef6c62bc43c4,
+main ahead 4/behind 0 recorded origin/main. git diff --name-only origin/main --
+task1 tests task2 pyproject.toml uv.lock manual_validation_lab.py manual_refund_lab.py
+returns no paths. No accepted implementation/pins/test modification, staged files,
+commit/push/fetch or DONE transition. Future publication needs independent approval
+and separately authorized explicit docs-only staging/whitespace/secret review.
+
+## E029 - 2026-11-05: T4-006 independent acceptance / final documentation Git checkpoint
+
+America/Los_Angeles (client date). User reports independent ChatGPT engineering
+review APPROVED: Task 4 assessment-ready within documented requirements, supported
+Windows/SQLite environment and trusted-adapter policies. Reported review, NOT new
+Codex test execution: seven traceability rows checked against previously submitted
+source/test evidence; all named automated references verified; fresh E028 results,
+documentation, limitations and submission findings consistent. No review command
+lines, extra pass counts/timings or new runtimes supplied. T4-006/TASK-4 DONE.
+
+E028 preserves actual 2026-11-04 149/452/427 native test passes, six Ruff checks,
+clean installation and deterministic/stock CLI probes. No pytest/Ruff/install/
+provider/SQLite execution in THIS acceptance checkpoint; no implementation/config
+change warrants reruns. Historical independent Linux review substitutions, split
+passes/combined teardown stall and supported native Windows/Python 3.12.16/SQLite
+3.53.1 qualification remain unchanged. No new native Linux, real-vendor/tokenizer,
+physical-crash or production-deployment verification claim.
+
+Actual initial inspections (not tests): git status --short --branch, git diff --stat,
+git diff --cached --name-status, git rev-parse HEAD and git rev-list --left-right
+--count HEAD...origin/main exit 0. HEAD 6eaccafb52c4780892b311ea763aef6c62bc43c4,
+main ahead 4/behind 0 recorded origin/main; empty index. Eight modified docs, new
+TASK4_FINAL_AUDIT.md and local task4_final_audit_review.zip. SHA256 comparison with
+E028 81-path baseline finds only eight Markdown changes, zero non-document changes.
+Capture 83 hashes (tracked files/new audit/archive) in ignored acceptance baseline.
+
+One authorized final nine-file documentation commit: AGENTS.md, root README,
+task4/README.md, docs/TASK4_FINAL_AUDIT.md, docs/TASK4_REQUIREMENTS.md,
+docs/TASK_LEDGER.md, docs/BUILD_LOG.md, docs/DECISIONS.md and this evidence file.
+No accepted source/test/dependency/configuration/lock or Task 1/2 modification.
+Retain review ZIP locally excluded, inspect complete diff and exact staged blobs,
+exclude env/cache/DB/WAL/SHM/credential/generated/archive paths, run staged
+whitespace check, commit once and verify final SHA/parent/inventory/clean status/
+branch counts. These are Git/source inspections, not extra automated test passes.
+No fetch/push or Task 3. Git history/final report record resulting commit identity.
+
+Completed precommit inspections (not tests): entire tracked diff plus all 232 lines
+of new audit reviewed; exact nine-file explicit index (eight modifications/one new
+Markdown). git diff --cached --check exits 0; all staged blobs match reviewed
+working files after Git EOL normalization. Targeted staged private-key/provider-key/
+credentialed-URL/quoted-credential scan has zero candidates; only Markdown allowlist
+paths, no env/cache/DB/WAL/SHM/credentials/generated/archive artifacts staged. All
+74 captured non-allowlist files, including every accepted source/test/config/lock
+and local review ZIP, unchanged. ZIP retained with .git/info/exclude rule, not
+tracked ignore/config change. No unstaged or unignored leftovers. New audit's
+LF/CRLF Git advisory is not an implementation change or test warning. No tests
+rerun. Final checkpoint: one docs-only commit; verify parent/manifest/SHA, clean
+tree and recorded-origin branch counts, report and stop without push.

@@ -11,11 +11,20 @@ This repository contains independently executable Python assessment projects:
   [final audit / requirements traceability](docs/TASK2_FINAL_AUDIT.md).
   T2-006 evidence: 452 passing tests, including 52 real HTTP wire cases; final
   independent approval confirmed 2026-11-04. No tests rerun for the acceptance commit.
-- **Task 4: IN_PROGRESS.** T4-001 through T4-005 are independently accepted.
+- **Task 4: DONE; independently approved, assessment-ready within its documented
+  requirements, supported Windows/SQLite environment and trusted-adapter policies.**
   Native Windows full-suite evidence remains authoritative; Linux review used
   split runs/compatibility substitutions, with a combined wire teardown stall
   explicitly recorded. See [Task 4 setup/contract](task4/README.md).
-  T4-006 is not started; Task 3 remains unimplemented.
+  T4-006 independent approval confirmed 2026-11-05 (America/Los_Angeles).
+  See [final audit / requirements traceability](docs/TASK4_FINAL_AUDIT.md).
+  E028 native audit suites (2026-11-04): Task 1 **149**, Task 2 **452**, Task 4 **427** passing
+  tests; all Ruff lint/format checks pass ([E028](docs/TEST_EVIDENCE.md)).
+  Clean locked Task 4 setup and deterministic primary/fallback fixtures verified.
+  Stock Task 4 intentionally returns 503 without trusted provider/bounds adapters;
+  no real LLM/tokenizer or production deployment is certified. Task 3 unimplemented.
+  E029 records independent acceptance and the documentation-only Git checkpoint;
+  tests were not rerun for acceptance. No GitHub push is authorized.
 
 Tasks 1 and 2 passed Ruff lint and formatting checks on 2026-11-04
 (America/Los_Angeles). [E017](docs/TEST_EVIDENCE.md) records actual commands/results.
@@ -216,6 +225,8 @@ ai-solutions-engineer-assessment/
     TASK1_REQUIREMENTS.txt
     TASK2_REQUIREMENTS.md
     TASK2_FINAL_AUDIT.md
+    TASK4_REQUIREMENTS.md
+    TASK4_FINAL_AUDIT.md
     TASK_LEDGER.md
     DECISIONS.md
     BUILD_LOG.md
@@ -246,6 +257,12 @@ ai-solutions-engineer-assessment/
     pyproject.toml
     uv.lock
     src/task2_proxy/
+    tests/
+  task4/
+    README.md
+    pyproject.toml
+    uv.lock
+    src/task4_limiter/
     tests/
   manual_validation_lab.py
   manual_refund_lab.py

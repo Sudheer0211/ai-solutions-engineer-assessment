@@ -1,5 +1,24 @@
 # Task 4: token accounting, SQLite storage and injectable LLM routing
 
+## Final independent acceptance
+
+**TASK-4 and T4-006 are DONE and independently APPROVED**, confirmed by the user
+2026-11-05 (America/Los_Angeles), within documented requirements, supported
+Windows/SQLite storage and trusted-adapter policies. All seven traceability rows,
+named test references, E028 results, documentation and limitations were reviewed
+and found consistent. E029 records reported acceptance, not new test executions.
+[Final audit](../docs/TASK4_FINAL_AUDIT.md) and E028 record actual 2026-11-04
+native Windows/Python 3.12.16/SQLite 3.53.1 verification:
+**427 passed in 40.44s**, zero failures/skips/warnings/xfails, Ruff lint/format
+pass (22 files); fresh Task 1/2 regressions also pass 149/452 without changes.
+A new locked 27-package installation/import check, six deterministic ASGI cases,
+seven wire cases and the stock CLI's intended authenticated 503/graceful exit pass.
+No accepted implementation/test/config/lock changes or real-provider certification.
+This acceptance supersedes historical pending-review/no-T4-006 gates below; all
+historical evidence/environment qualifications remain intact. One final docs-only
+acceptance commit is authorized, no test rerun absent unexpected code/config changes.
+Preserve source/tests/dependencies/configuration/lock; no Task 3 or push.
+
 **T4-005 is independently ACCEPTED**, confirmed by the user 2026-11-04.
 E026: **427 passed in 40.81s** (324 accepted + 74 ASGI/config/lifecycle + 29 wire),
 zero failures/skips/warnings/xfails; Ruff lint/format pass (22 files). Native
@@ -246,6 +265,29 @@ cover billable categories. Credentials remain private to that adapter. No caller
 model/URL/cap/token estimate override, guessed tokenizer, hidden retry or redirect.
 Tests use synthetic counters/adapters, not real-model guarantees. Deploy the trusted
 module's factory through Uvicorn once its provider contract is verified.
+
+### Reproduce primary success and fallback without a real provider
+
+After the locked `dev` AND `serve` setup above, run from `task4/` on supported
+Windows fixed-local-drive storage with SQLite >=3.51.3:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_http.py::test_routing_status_accounting_and_no_prompt_or_secret_leak --tb=short
+.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py::test_wire_content_length_chunked_and_success_privacy tests/test_http_wire.py::test_wire_routing_and_conservative_accounting --tb=short
+```
+
+The first selector runs six ASGI cases (success, unknown usage, primary 429,
+primary failure, backup failure and missing bounds). The second runs seven cases
+over actual loopback HTTP: primary success, primary 429 and real 3,000 ms timeout
+fallback, backup failure/429, transport failure and unknown usage. Fixtures create
+temporary strong credentials/SQLite files, inject trusted deterministic adapters,
+start Uvicorn plus an independent synthetic upstream on dynamic loopback ports,
+assert routing/accounting and reap their children. No manual key/provider setup or
+external inference service is needed. These fixtures are test-only adapters, not
+a vendor integration or a production launch factory. E028 repeats both selectors
+in a NEW locked environment: six/seven passed; all 14 wire children exit 0.
+
+### Authenticated stock request
 
 With a registered key already supplied in your environment, an authenticated request
 can be made without writing the key into an example file:

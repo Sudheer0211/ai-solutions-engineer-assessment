@@ -888,3 +888,88 @@ history intact, no Linux review substitutions included. git diff --cached --chec
 passes; environments/DB/WAL/cache/review ZIP excluded. Create the one authorized
 commit, verify parent/SHA/manifest/clean tree/branch counts, then stop. No tests,
 accepted implementation changes, T4-006 or push.
+
+## M044 - 2026-11-04 (America/Los_Angeles): T4-006 final local audit
+
+Baseline 6eaccaf, initially clean/main ahead 4 behind 0 recorded origin. Captured
+81 tracked hashes; no accepted production/test/config/dependency/lock edits.
+Read Task 4 recovered contract, prior ADRs/evidence and source/test modules; the
+available original attachment is Task 1-only, so no vendor-specific Task 4 contract
+was inferred. R1-R7 traceability now in docs/TASK4_FINAL_AUDIT.md, engineering
+choices P1-P4/H1-H8 separate. Recommendation READY within documented scope,
+INDEPENDENT ACCEPTANCE PENDING; T4-006/TASK-4 remain IN_PROGRESS.
+
+Fresh native Python 3.12.16/SQLite 3.53.1 executions (E028): Task 1 149 passed
+36.06s; Task 2 452 passed 13.26s; Task 4 427 passed 40.44s; zero failures/skips/
+warnings/xfails, six Ruff lint/format commands exit 0 (17/16/22 formatted files).
+Task 4 full-run 43 children reaped/no forced cleanup, 21 local rejection journals
+zero provider/new-reservation deltas. Multiprocess SQLite admission/settlement,
+graceful restart, conservative unknown usage, exact quota/window and monotonic
+timeout/cleanup tests pass. No blocking source defect found.
+
+NEW ignored clean env locked installation: offline attempt exit 1 because Ruff
+wheel absent; online locked retry exit 0/27 packages installed. Installed imports
+and versions verified. Deterministic ASGI six cases pass 0.81s; primary-success/
+six-routing-mode wire selectors seven cases pass 16.61s, 14 children exit 0/no
+forced cleanup. Stock Uvicorn factory CLI receives expected authenticated 503
+without trusted bounds; one-request budget permits graceful exit 0/no output.
+No real LLM/tokenizer/public deployment certification. README adds executable
+fixture selectors and clears obsolete current no-audit gate while retaining history.
+
+Current/reachable Git history inspection: 14 commits/238 objects/163 text blobs,
+81 current tracked paths; no actual secrets or tracked runtime/archive artifacts.
+141 pattern candidates classified as documentation/negative fixtures, with redacted
+contexts; limits stated. ZIP local ignores and arbitrary DB paths are publication
+hygiene risks; require explicit stage inventory, no config change this checkpoint.
+Abrupt OS kill, power/disk/WAL corruption, real lost-commit acknowledgement,
+backup restoration and remote billing not verified; fault/restart evidence scoped.
+
+Affected docs: AGENTS.md, root/Task 4 READMEs, TASK4_REQUIREMENTS.md,
+TASK4_FINAL_AUDIT.md, TASK_LEDGER.md, DECISIONS.md (ADR-021), this log and
+TEST_EVIDENCE.md (E028). No remaining test/lint or assessment-blocking defect;
+deployment/trusted adapter/clock/filesystem and publication limits remain. Next:
+independent ChatGPT review of final audit/evidence before DONE or any Git checkpoint.
+No Task 3/features/stage/commit/push; preserve baseline and docs-only working tree.
+
+Final integrity/links/reference/whitespace inspections pass: eight changed tracked
+Markdown files plus one new final audit; no non-document hash change, 73 original
+tracked paths byte-identical. No Task 1/2 implementation/pin/test diff from recorded
+origin/main. Current 82-file targeted content scan has only the known negative-test
+URL candidate, no actual secret. Index empty; HEAD still 6eaccaf, main ahead 4/
+behind 0 recorded origin, docs-only uncommitted state. No implementation changes
+or new test rerun needed after documentation edits. Await independent final review.
+
+## M045 - 2026-11-05 (America/Los_Angeles): final Task 4 acceptance / Git checkpoint
+
+User confirms independent ChatGPT engineering APPROVAL: Task 4 assessment-ready
+within documented requirements, supported Windows/SQLite and trusted-adapter
+policies. Seven traceability rows reviewed against prior source/test evidence;
+all named automated references verified; E028/documentation/limitations/submission
+findings consistent. TASK-4 and T4-006 DONE. This is reported acceptance, not new
+execution: actual E028 native 149/452/427/Ruff/clean-setup evidence preserved,
+as are qualified Linux review-only split passes and combined teardown stall.
+No new architecture/provider/tokenizer/deployment/crash guarantee claimed.
+
+Affected paths: AGENTS.md, README.md, task4/README.md, docs/TASK4_FINAL_AUDIT.md,
+docs/TASK4_REQUIREMENTS.md, docs/TASK_LEDGER.md, docs/DECISIONS.md (ADR-021
+acceptance provenance), this log and docs/TEST_EVIDENCE.md (E029). Exactly nine
+authorized documentation paths; retain audit traceability/history/limitations.
+All accepted source/tests/dependencies/configuration/locks/Tasks 1/2 preserved.
+
+Initial Git inspection: HEAD 6eaccaf, ahead 4/behind 0 recorded origin/main, empty
+index. Eight tracked docs modified, one new audit and task4_final_audit_review.zip.
+All original non-document bytes match E028 baseline; no unexpected code/config
+change, so no pytest/Ruff/install execution. Captured 83 file hashes including
+archive/new audit in ignored .cache/t4006_acceptance_baseline.json. Keep archive
+unchanged/local-only. Next: complete diff/index/secret/artifact inspection, explicit
+nine-file stage, git diff --cached --check, one descriptive final acceptance commit,
+verify SHA/parent/manifest/clean working tree/branch counts and stop. No blocker,
+Task 3, feature development, fetch or push; publication remains separately gated.
+
+Full diff/new audit and exact nine-file staged content reviewed. Staged whitespace
+check exits 0, credential-pattern scan zero candidates, staged blobs match working
+files. All 74 non-allowlist snapshot files (code/tests/pins/config/archive included)
+unchanged. Local ZIP retained/excluded; no unstaged/unignored leftovers or generated
+artifacts staged. No tests/Ruff rerun or architecture changes. Create the one final
+docs-only acceptance commit, verify identity/parent/inventory/clean tree/ahead-behind,
+then stop. Resulting identity is retained by Git history and the session report.

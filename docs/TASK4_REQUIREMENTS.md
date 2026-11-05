@@ -5,8 +5,21 @@ requirements and explicit clarifications supplied in this session. No separate
 verbatim original Task 4 document/provider specification was attached. This record
 preserves the confirmed requirements separately from proposed engineering choices.
 
-Current status (2026-11-04 America/Los_Angeles): T4-001 through T4-005 are
-independently ACCEPTED; TASK-4 remains IN_PROGRESS. E026 native Windows/Python
+Current status (2026-11-05 America/Los_Angeles): T4-001 through T4-006 independently
+ACCEPTED; **TASK-4 and T4-006 DONE**. User confirms final assessment-readiness
+approval within documented requirements, supported Windows/SQLite environment and
+trusted-adapter policies. All seven traceability rows, named automated references,
+E028 evidence and limitations were reviewed and found consistent. E029 records
+reported independent acceptance; no new tests. [TASK4_FINAL_AUDIT.md](TASK4_FINAL_AUDIT.md)
+and E028 preserve actual 2026-11-04 149/452/427 regressions, Ruff, clean locked setup,
+deterministic adapter reproduction and security/recovery findings. One final
+documentation-only acceptance commit authorized, superseding historical pending/
+no-commit gates; preserve source/tests/configuration/dependencies/locks unchanged.
+No reruns absent unexpected implementation/config changes, Task 3 or push.
+Original R1-R7/P1-P4 and all limitations remain unchanged.
+
+Historical T4-005 checkpoint qualification (2026-11-04):
+E026 native Windows/Python
 3.12.16/SQLite 3.53.1 full-suite verification remains authoritative. E027 records
 qualified independent review: 427 cases across separate runs, 29 wire cases in
 split groups with review-only Linux compatibility substitutions. One combined
@@ -130,19 +143,21 @@ no imports from Task 1/2 and no changes to their dependency configurations.
 
 | Module | Responsibility |
 | --- | --- |
-| settings.py | Validate external identity secret, fixed primary/backup configuration, DB path and finite deadlines; no secret defaults or import-time I/O |
-| tenant.py | Resolve validated opaque API keys to stable tenant identifiers; no caller-controlled tenant override |
-| models.py | Immutable request, reservation, attempt, usage, outcome and sanitized error types |
+| settings.py | Validate external identity secret, registered keys, DB path and finite HTTP/routing budgets; no secret defaults or import-time I/O |
+| settings.py / storage.py | TenantCredentials.authenticate validates keys; SQLiteStore._tenant derives stable HMAC identity. No separate tenant.py was needed; no caller-controlled tenant override |
+| models.py / storage.py / service.py | Immutable pure accounting, stored request/attempt and service outcome types respectively; generic errors at their owning boundaries |
 | accounting.py | Pure token-bound policy and exact sliding-window calculations with injected clocks |
 | storage.py | Explicit schema initialization/versioning, transactional admission, phase transitions, settlement and bounded recovery |
-| providers.py | Typed asynchronous provider interface and separate primary/backup adapters; tokenizer/HTTP mapping selected after provider clarification |
+| providers.py | Typed asynchronous provider/attempt interfaces; trusted primary/backup adapters are injected, with no selected real vendor/tokenizer |
 | service.py | One owner per request; orchestrate reservation, primary deadline, one fallback and final settlement |
-| app.py | Candidate HTTP factory/lifespan, strict request validation and standardized public errors; no provider/accounting duplication |
+| app.py | Implemented HTTP factory/lifespan, strict prompt-only validation and standardized errors; no provider/accounting duplication |
 
-T4-002 uses Python 3.12.16 with a standard-library-only runtime, setuptools 82.0.1
+Historical T4-002 foundation used Python 3.12.16 with a standard-library-only runtime, setuptools 82.0.1
 for builds, pytest 9.2.0/Ruff 0.17.3 for development and its own eight-package lock.
-FastAPI/Uvicorn/HTTPX and sqlite3 operations remain later-checkpoint candidates;
-no HTTP/provider dependency was installed.
+At that checkpoint FastAPI/Uvicorn/HTTPX and sqlite3 operations were deferred;
+no HTTP/provider dependency was installed then. Current accepted T4-003 through
+T4-005 implementations and isolated HTTP dependency additions are described below;
+E028 verifies the current 27-package lock and complete implementation.
 No provider SDK or tokenizer is invented. HTTPX transports would disable retries
 and redirects; endpoints/credentials are operator-configured, never supplied by
 callers. Tenant API keys are never forwarded as model-provider credentials.

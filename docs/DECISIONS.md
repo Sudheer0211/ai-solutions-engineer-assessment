@@ -619,3 +619,56 @@
   E027 records only the provided evidence and Git/source inspection. Accepted
   design/tradeoffs unchanged. One approved T4-005 commit; no code/test/config edits,
   test rerun absent unexpected implementation changes, T4-006 or push.
+
+## ADR-021 - 2026-11-04: T4-006 scoped assessment-readiness evidence
+
+- Status: **independently ACCEPTED**, user confirmation 2026-11-05; provenance below.
+  T4-001 through T4-006 accepted; TASK-4/T4-006 DONE. No production
+  architecture change. Affects AGENTS/root README, Task 4 README, requirements,
+  final audit, ledger, build log and E028/E029 only.
+- Context: user authorizes verification/documentation over 6eaccaf, not feature
+  development. R1-R7 come from the user's recovered original brief; P1-P4 and H1-H8
+  are independently approved choices. Stock factory intentionally has no real
+  provider/tokenizer. Earlier Linux compatibility review is qualified and must
+  not become native Linux support or an invented combined wire pass.
+- Decision: recommend READY within approved accounting and supported Windows/local
+  SQLite/trusted-adapter contract, pending independent review. Execute all three
+  complete suites and six Ruff commands fresh; new lockfile environment/imports,
+  deterministic ASGI/socket selectors and stock Uvicorn CLI 503/start/exit probe.
+  Add explicit deterministic reproduction commands to README rather than invent a
+  vendor integration to make stock execution appear successful.
+- Alternatives: reuse prior evidence as fresh (invalid); require an unstated real
+  vendor/production deployment or add crash infrastructure during audit (scope
+  expansion); label all crash recovery verified from WAL/FULL/restart tests alone
+  (unsupported). Keep current code and evidence gaps visible instead.
+- Tradeoffs/consequences: local quota is the approved admission-time invariant,
+  conditional on trustworthy model bounds/caps and UTC clock. Upfront combined
+  reservation can deny early. Real vendor billing/tokenization, abrupt OS kill,
+  physical power/disk/WAL faults, load/public ingress/TLS and arbitrary resistant
+  resources remain unverified; graceful restart and injected fault tests are
+  narrower evidence. Local-only archive ignores require explicit future staging.
+- Evidence: E028 actual 149/452/427 fresh passes, all Ruff checks, clean 27-package
+  install, 6/7 selector passes and controlled stock CLI. Current/reachable-history
+  review found no actual secret/tracked runtime artifact, with scan limits stated.
+  No code/tests/config/locks modified; no new feature, commit/push or DONE claim.
+  Next: independent review of TASK4_FINAL_AUDIT.md/E028; separately authorize any
+  corrective work or final acceptance/Git checkpoint.
+
+### T4-006 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User reports final independent engineering APPROVAL: Task 4
+assessment-ready within documented requirements, supported Windows/SQLite and
+trusted-adapter policies. All seven traceability rows reviewed against previously
+submitted source/test evidence, all named automated references verified; E028,
+documentation, limitations and submission findings consistent. No new review
+command lines, runtime versions, test counts/timings or extra executions supplied;
+this is acceptance provenance, not a new test pass. E028 native audit evidence
+and all earlier Linux review-only/split-run/stalled-teardown qualifications remain
+unchanged. No new provider/tokenizer/production-deployment or physical-crash claim.
+
+TASK-4/T4-006 DONE. Accepted architecture/tradeoffs unchanged. Latest user authorizes
+one final documentation-only acceptance commit, exact nine-file allowlist, staged
+whitespace/artifact/secret inspection and final SHA/status verification. Preserve
+all implementation/tests/config/dependencies/locks and Tasks 1/2. E029 records
+reported acceptance and actual Git/document inspections; no tests/Ruff rerun absent
+unexpected implementation/config changes. No Task 3/push; stop at Git checkpoint.

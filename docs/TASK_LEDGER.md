@@ -1,13 +1,13 @@
 # Persistent task ledger
 
-Last updated: 2026-11-04 (America/Los_Angeles).
+Last updated: 2026-11-05 (America/Los_Angeles).
 
 ## Task registry
 
 | ID | Description | Priority | Status | Acceptance / evidence | Blocker / next action |
 | --- | --- | --- | --- | --- | --- |
 | GOV-001 | Establish persistent engineering governance before implementation | P0 | DONE | G1-G5 verified in E002 | Maintain records at every milestone |
-| TASK-1 | Strict MCP server assessment | P0 | DONE | A1-A15/E007; fresh 149 passes/Ruff E017 | Approach C preserved; no implementation/test/dependency changes |
+| TASK-1 | Strict MCP server assessment | P0 | DONE | A1-A15/E007; fresh 149 passes/Ruff E028 | Approach C preserved; no implementation/test/dependency changes |
 | T1-001 | Confirm runtime, SDK/public APIs, dependency versions | P0 | DONE | Python 3.12.16/MCP 2.3.0/Pydantic 2.12.5; E003/E004; uv.lock | Maintain verified pins |
 | T1-002 | Strict schemas and mock refund domain | P0 | DONE | Strict schemas, parity and exact mock state verified; E004 | No open domain defect |
 | T1-003 | MCP tool dispatch and protocol errors | P0 | DONE | All error codes/IDs and business separation verified; E007 | B3 resolved by SDK-preserving boundary adapter |
@@ -16,7 +16,7 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T1-006 | Reproducibility, lint, README and final evidence | P1 | DONE | Setup/lock and README verified; final lint/format/evidence E007 | Maintain evidence on future changes |
 | T1-007 | Read-only STDIO blocker remediation investigation | P0 | DONE | R1-R5 verified; investigation report; E006 | Proposed candidate implemented and verified under T1-008 |
 | T1-008 | Controlled Approach C implementation and adoption | P0 | DONE | C1-C7 verified; E007; ADR-006/007 | Adopt; rerun boundary contract tests before any SDK upgrade |
-| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | DONE | T2-001 through T2-006 independently accepted; E017/E018 | Assessment-ready within documented requirements; final docs commit only, no push |
+| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | DONE | T2-001 through T2-006 independently accepted; fresh 452 passes/Ruff E028 | Accepted implementation/config/tests preserved; no push |
 | T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Preserve committed baseline e828729b |
 | T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Preserve accepted behavior; original tests unchanged in T2-003 |
 | T2-003 | HTTPX upstream adapter | P0 | DONE | U1-U8/E011; 300 tests/Ruff; independently accepted, user confirmation 2026-11-04 | Preserve committed baseline 0b2e0b7 |
@@ -24,13 +24,13 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
-| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001 through T4-005 independently accepted; E026/E027 | T4-005 Git checkpoint only; T4-006 NOT_STARTED/not authorized |
+| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | DONE | T4-001 through T4-006 independently accepted; final APPROVED 2026-11-05/E029; actual audit E028 | Assessment-ready within supported Windows/SQLite/trusted-adapter scope; preserve implementation, no push |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
 | T4-003 | SQLite atomic admission, persistence and settlement | P0 | DONE | Independently ACCEPTED within supported Windows/SQLite scope; E022/E023 | Preserve accepted storage baseline ebc226a |
 | T4-004 | Primary/backup provider routing | P0 | DONE | Independently ACCEPTED in supported environment; native E024/qualified review E025 | Preserve accepted orchestration baseline c889236 |
-| T4-005 | Authenticated HTTP and real-wire verification | P1 | DONE | Independently ACCEPTED; native E026 / qualified split-review E027, H1-H8 | One approved HTTP/wire commit; preserve implementation, no T4-006/push |
-| T4-006 | Final Task 4 assessment audit | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
+| T4-005 | Authenticated HTTP and real-wire verification | P1 | DONE | Independently ACCEPTED; native E026 / qualified split-review E027, H1-H8 | Preserve committed baseline 6eaccaf |
+| T4-006 | Final Task 4 assessment audit | P1 | DONE | Independently APPROVED 2026-11-05/E029; seven traceability rows/test references/E028/docs/limitations reviewed | One final documentation-only acceptance commit authorized; no implementation changes or push |
 
 ## GOV-001 mandatory acceptance criteria
 
@@ -705,3 +705,55 @@ HEAD c889236, empty index, ahead 3/behind 0 recorded origin/main; ten tracked fi
 modified, seven new Python files and one review ZIP. Capture 82 hashes, retain/
 locally exclude archive, inspect full diff/index and whitespace, commit once,
 verify SHA/manifest/clean tree/branch counts and stop. No T4-006, Task 3 or push.
+
+## T4-006 audit start - 2026-11-04 (America/Los_Angeles)
+
+Accepted baseline 6eaccaf, initially clean, main ahead 4/behind 0 recorded origin.
+Acceptance: fresh complete Task 1/2/4 suites and Ruff, Task 4 clean locked setup and
+deterministic success/fallback reproduction, R1-R7 traceability distinct from P1-P4,
+SQLite/concurrency/recovery/HTTP findings, current/reachable-history security audit,
+README/submission checklist and justified READY/CHANGES REQUIRED recommendation.
+Document actual evidence only. No accepted code/tests/dependency edits or features;
+reproduce/document and stop for blocking production defect. No Task 3/commit/push;
+T4-006/TASK-4 remain IN_PROGRESS until independent approval.
+
+## T4-006 local audit handoff - 2026-11-04 (America/Los_Angeles)
+
+Local audit complete, recommendation **READY within documented assessment scope**;
+independent ChatGPT approval PENDING. T4-006 and TASK-4 remain IN_PROGRESS, not DONE.
+R1-R7 PASS under approved P1-P4/H1-H8: docs/TASK4_FINAL_AUDIT.md, ADR-021, E028.
+Fresh native full suites: Task 1 149, Task 2 452, Task 4 427 passes; six Ruff checks
+pass, zero failures/skips/warnings/xfails. Tasks 1/2 remain DONE/preserved.
+New clean locked Task 4 install/imports, six ASGI/seven wire fixture repeats and
+stock CLI intended 503/start/exit verified. Full native Task 4 43 children reaped,
+zero forced; 21 local rejection receipts zero provider calls/new reservations.
+No blocking production defect or actual tracked/history credential leak found.
+
+Not verified: real provider/tokenizer/billing-time cap/production deployment, abrupt
+OS kill/power/disk/WAL faults, restore, load/public ingress, unsupported platforms.
+Portable ignores do not globally exclude arbitrary DB/ZIP paths; explicit staging
+required. Provider reliability/UTC/local filesystem remain assumptions. No new
+source/tests/config/locks, Task 3, stage/commit/push. HEAD preserved 6eaccaf; docs-only
+recoverable work pending review. Next authorized step: independent engineering
+review of audit/E028, not new implementation or automatic final acceptance.
+
+## T4-006 independent acceptance / final Git checkpoint - 2026-11-05
+
+America/Los_Angeles. User confirms APPROVED: assessment-ready within documented
+requirements, supported Windows/SQLite environment and trusted-adapter policies.
+All seven traceability rows reviewed against previously submitted source/test
+evidence; all named references verified. E028 results, documentation, limitations
+and submission findings consistent. **T4-006 and TASK-4 DONE**, all mandatory
+assessment criteria verified and independently accepted. E029 records reported
+acceptance, not new tests; E028 actual 2026-11-04 149/452/427 and Ruff evidence
+preserved. No architecture/limitation expansion, real vendor/tokenizer/production
+deployment certification or reinterpretation of qualified Linux review.
+
+One final documentation-only commit authorized. Initial HEAD 6eaccaf, main ahead
+4/behind 0 recorded origin/main, empty index; eight modified docs/new final audit
+and local review ZIP. All original non-doc bytes match audit baseline; no unexpected
+implementation/config changes or reason for test reruns. Preserve Tasks 1/2 and
+all accepted Task 4 source/tests/configuration/dependencies/locks. Retain/exclude ZIP,
+inspect full nine-file documentation diff/index, staged whitespace and artifacts,
+commit once and verify SHA/inventory/clean tree/branch counts. No push/Task 3 or
+further implementation. Future work/publication requires separate authorization.
