@@ -576,3 +576,90 @@ investigations and material changes; Git remains the line-level code history.
   staged secret-pattern scan found no candidates; no ZIP/environment/cache/egg-info/
   credential/generated files staged. git diff --cached --check passes. Proceed
   with the authorized single final acceptance commit, then verify tree/ref status.
+
+## 2026-11-04 — M031: T4-001 recovered contract and revised design
+
+- Read governance/current ledger/decisions; clean HEAD 6904b1f, Task 1/2 DONE.
+  User supplies recovered Task 4 requirements and permits documentation/design only.
+  Created docs/TASK4_REQUIREMENTS.md; updated current gate/ledger and ADR-016.
+- Correct interpretation: primary HTTP 429 OR primary 3,000 ms total deadline
+  routes to backup; local tenant-quota 429 never does. No Retry-After comparison.
+- Available root Python metadata probe (E019): Python 3.12.16, SQLite 3.53.1,
+  threadsafety 3; no DB opened. WAL/FULL is proposed subject to isolated runtime,
+  local storage and PRAGMA verification; no database/installation created here.
+- Design: isolate modules/env/lock, tenant-scoped persistent identity, atomic combined
+  primary/backup reservation, exact sliding-window charges/holds, short SQLite
+  transactions and sequential provider state machine. Document conservative quota
+  admission cost/unknown usage, bounded lazy recovery and remote cancellation limits.
+- A1-A10 distinguish choices from brief. Provider/tokenizer/output bounds, credential
+  transport/rotation, HTTP schema and backup/overall deadlines remain review inputs.
+  T4-Q1-Q12 define future coverage, not passing tests. Independent review PENDING.
+- Affected: six documentation/governance files only; no application source/tests,
+  Task 4 environment/dependencies/T4-002, Task 3, commit or push. Tasks 1/2 preserved.
+  Next: verify docs/preservation, present revised design and stop for review.
+- Documentation checks passed (E019): five tracked docs/one new requirement/design
+  record, 49 byte-identical baseline files, completed-task rows/historical prefixes
+  preserved, links/contract IDs valid, whitespace clean. No task4/ source, staged
+  files, commit or push; HEAD 6904b1f unchanged. Stop for independent design review.
+
+## 2026-11-04 — M032: T4-001 conditions finalized / T4-002 baseline
+
+- User confirms independent architecture APPROVED WITH CONDITIONS and authorizes
+  isolated pure-accounting implementation. Finalize P1 timestamps/holds, P2 reliable
+  model bounds/fail-closed behavior, P3 monotonic primary deadline/bounded 500 ms
+  cleanup, P4 idempotent conservative settlement/recovery policy. These engineering
+  assumptions remain distinct from original R1-R7. Mark T4-001 DONE; T4-002 active.
+- Captured 55 existing-file hashes including prior untracked Task 4 design record;
+  preserve all accepted Tasks 1/2 and existing uncommitted documentation.
+- Record K1-K7 before source work. Scope: new task4 package/env/lock, immutable
+  records, pure sliding calculations/reservation math, deterministic tests/Ruff.
+  No SQLite, provider/timeout execution, HTTP, recovery infrastructure or T4-003.
+- Next: implement/test pure accounting and record actual verification; no commit/push.
+
+## 2026-11-04 — M033: T4-002 isolated pure accounting verified
+
+- Created task4 project/Python pin/lock/README, immutable typed models and pure
+  calculate_usage/assess_admission; two focused test modules. No runtime dependency.
+  Combined model bounds, signed-64-bit integer validation, exact 60s expiration,
+  unexpired-by-age holds, duplicate/future/regressed-clock rejection and tenant-ID
+  separation. Pure decisions do not mutate, authenticate keys or reserve capacity.
+- Offline uv lock/sync succeeds with eight packages in task4/.venv; editable imports
+  and exact locked versions/pip compatibility pass. Python 3.12.16, SQLite metadata
+  3.53.1 only; no SQLite operations. Root/Task 2 configurations/envs preserved.
+- Ruff formatter reformatted two test files, left three sources unchanged; lint
+  and format checks passed. First pytest: 169 passes/one Windows sandbox cache
+  permission warning. Same command outside sandbox: 169 passed in 0.12s, no failures/
+  skips/warnings/xfails. No assertions or warning filters changed; details E020.
+- T4-001 DONE after conditional review/P1-P4 finalization. T4-002 DONE for local
+  implementation/verification, independent acceptance PENDING; TASK-4 IN_PROGRESS.
+  ADR-017 records the pure boundary; current contract/README/AGENTS/ledger updated.
+- Remaining: actual provider/tokenizer/output caps, HTTP and other configuration
+  details deferred. No SQL admission, provider/fallback/deadline execution, HTTP,
+  recovery infrastructure, Task 3/T4-003, commit or push. Next: integrity/docs checks
+  and independent T4-002 engineering review; do not proceed automatically.
+- Integrity checks passed: six intended docs changed/nine new Task 4 files; 49
+  existing files unchanged, accepted Tasks 1/2/evidence preserved. Package imports
+  only pure standard-library/local modules, no targeted new-file secrets; local
+  links and whitespace pass. Environment/cache/egg-info ignored; HEAD/index unchanged.
+  Stop for independent review, preserving uncommitted checkpoint files.
+
+## 2026-11-04 - M034: T4-001/T4-002 independent acceptance and Git checkpoint
+
+- User independently approves T4-002: 169 existing tests/12,000 differential checks/
+  six targeted invariants passed, no blocking defect. Ruff evidence is E020's local
+  execution, not a new independent run. Record acceptance without new executions.
+- Update current ledger/restart gate/ADR-017/requirements/README to ACCEPTED.
+  T4-001 remains DONE, T4-002 DONE/ACCEPTED, TASK-4 IN_PROGRESS. Preserve P1-P4,
+  all source/tests/configuration/locks and accepted Tasks 1/2. No architecture change.
+- Initial HEAD 6904b1f, ahead 0/behind 0 local origin/main, empty index; five tracked
+  docs modified, new requirements/nine Task 4 files and review ZIP. Capture 65 file
+  hashes; keep/archive bytes unchanged and locally exclude task4_t4002_review.zip.
+- Stage exactly 15 approved foundation/project/requirements/governance files; inspect
+  full diff/index/whitespace and artifact/secret/preservation checks. No tests rerun,
+  installations, T4-003, Task 3 or push. Next: commit once, verify clean state/counts
+  and report the Git checkpoint; later work requires separate authorization.
+- Staged checks passed: exact 15-file allowlist, staged bytes match worktree with
+  Git EOL normalization, no unstaged/unignored leftovers. Source/tests/config/locks
+  and retained archive hashes unchanged; Tasks 1/2 rows/history preserved. No
+  targeted staged secret candidates or environment/cache/egg-info/ZIP artifacts.
+  git diff --cached --check exits 0. Proceed with the single authorized commit.

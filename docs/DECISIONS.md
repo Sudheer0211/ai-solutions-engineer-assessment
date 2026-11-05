@@ -338,3 +338,112 @@
 - Affected: audit/traceability report, README/contract and governance documentation
   only. Evidence: E017; 452 Task 2/149 Task 1 passes, both Ruff checks per task,
   fresh locked install/imports, CLI startup/shutdown and bounded publication scan.
+
+## ADR-016 — Task 4 transactional reservations and sequential provider fallback
+
+- Date: 2026-11-04 (America/Los_Angeles); status: APPROVED WITH CONDITIONS following
+  independent review, confirmed by the user; conditions finalized as P1-P4 below.
+  Source: docs/TASK4_REQUIREMENTS.md R1-R7. T4-002 pure implementation authorized.
+- Confirmed: primary HTTP 429 OR primary 3,000 ms timeout triggers backup; local
+  tenant-quota 429 never does. No Retry-After comparison, retry loop or hedging.
+  Tenant-key quota and SQLite usage survive concurrent requests/process restarts.
+- Proposed architecture: isolated task4 package/environment/lock; tenant resolution,
+  pure accounting/types, SQLite store, provider adapters, orchestration and HTTP
+  boundary. Do not import/change Tasks 1/2. Provider APIs/tokenizers are unspecified.
+- Accounting proposal A1-A5: input+output across both attempts; reliable model-specific
+  bounds and enforced output caps; reserve primary+backup together before dispatch.
+  Normal charges use admission-time rolling (now-60s,now], active holds stay counted.
+  Reconcile known usage; unknown usage consumes the bound. This is conservative and
+  can reject a primary-only request that would fit; original brief does not mandate
+  this counting/reservation policy. Independent acceptance is required.
+- Transactions: BEGIN IMMEDIATE for check-and-reserve; separate short expected-state
+  transitions/settlement, no network inside transactions. A DB-owning worker per
+  process, bounded busy waits, one on-disk store and tenant-scoped keys/queries.
+  No SQLite-in-Python thread-safety shortcut or process-local-lock correctness claim.
+- Runtime evidence E019: available CPython 3.12.16 uses SQLite 3.53.1/threadsafety 3;
+  no DB opened. Propose WAL/FULL on verified local storage, rechecking the future
+  Task 4 environment and PRAGMA results. SQLite documents the WAL-reset fix in
+  3.51.3/later and patched backports; WAL still has one writer and is same-host only.
+  Sources: [WAL](https://www.sqlite.org/wal.html),
+  [transactions](https://www.sqlite.org/lang_transaction.html),
+  [FULL synchronization](https://www.sqlite.org/pragma.html#pragma_synchronous).
+- Fallback: durable single-owner phase change after primary 429 or total-exchange
+  deadline; await cancellation/close primary before one backup. At most one call
+  per model, no hidden retries/redirects/parallel local calls. Remote work/billing
+  after timeout cannot be proven stopped; reservations cover uncertainty.
+- Recovery: persistent holds/intent, finite overall reservation deadline, lazy
+  abandoned-hold conversion to full conservative charges; never clear holds on
+  another worker's startup or replay an uncertain remote call. Stable external
+  identity secret/verifier prevents accidental tenant namespace reset. No broker,
+  distributed lock/lease service, response cache or automatic billing reconciliation.
+- Alternatives: post-response-only counting (oversubscription); reserve primary
+  only then re-admit backup (can prevent required fallback); hedge/retry (duplicate
+  execution); hold DB lock during LLM call (writer starvation); distributed services
+  (unnecessary assessment scope). Rollback journaling remains an alternative if
+  WAL prerequisites cannot be met; journal selection must be verified, not assumed.
+- Tradeoffs/open decisions: conservative availability/overcharging, local writer
+  throughput, trusted clock/storage; exact providers/token categories/output caps,
+  API-key transport/rotation, HTTP schema and backup/overall deadlines need approval.
+  No exactly-once provider execution or multi-host SQLite promise. A1-A10 are not
+  silently promoted to assessment requirements. Proposed tests: T4-Q1 through Q12.
+- Affected now: documentation/governance only. No application source/dependencies,
+  T4-002, Task 3, commit/push. Preserve accepted Tasks 1/2 and stop for design review.
+
+### Finalized conditional-approval policies / T4-002 authorization
+
+- P1: reservation timestamp is the admission UTC sample; normal settlement replaces
+  holds at that same timestamp. Settled interval (t-60,000,t], exact quota allowed;
+  ALL unresolved holds count regardless of age. Reject future target-tenant entries/
+  regressed clock/duplicate identities; do not double count settlement and holds.
+- P2: reliable model-specific input bound + enforced output cap required for each
+  model before dispatch; exact nonnegative signed-64-bit integers, positive model
+  total, no overflowing combined total. No caller estimates or boolean attestations.
+  Missing/unreliable bounds fail closed before I/O; pure internal record validation
+  is arithmetic, not provider/tokenizer certification. Actual adapters deferred.
+- P3: monotonic start+3,000 ms total primary exchange deadline, tie means timeout;
+  one extra 500 ms total cancellation/close grace. Never wait indefinitely for a
+  cancellation-resistant task. Backup only after confirmed primary termination/close;
+  otherwise sanitized unavailable, no backup, conservative usage retained. The
+  500 ms grace/measurement scope are engineering policies, not brief requirements.
+- P4: one tenant-scoped identity/expected-state settlement; identical repeat no-op,
+  conflicting/stale update fails closed. Unknown usage keeps its bound; only proven
+  unsent capacity is released. Holds survive restart; lazy transactional conversion
+  at/after overall deadline uses full bounds/deadline timestamp once. No silent
+  release/replay or old-worker overwrite. No recovery execution in T4-002.
+- These policies are engineering assumptions finalized under the user's request;
+  only R1-R7/confirmed clarifications are the assessment contract. Prior proposed
+  restrictions above are historical and superseded only for authorized T4-002.
+- T4-002: independent project/environment/lock, immutable typed internal records,
+  pure injected-clock snapshots/admission decisions and combined reservation math.
+  No state mutation, SQLite/provider/HTTP/recovery execution or concurrent-permit
+  guarantee. Preserve Tasks 1/2; verify new pytest/Ruff and stop for review.
+
+## ADR-017 — Pure typed accounting snapshots before transactional admission
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T4-002; status: ACCEPTED following
+  independent engineering review, confirmed by the user. Accepted Tasks 1/2 preserved.
+- Decision: standard-library-only task4_limiter models/accounting package, isolated
+  Python 3.12.16 project/lock/env. Pin tested pytest 9.2.0/Ruff 0.17.3 dev and
+  setuptools 82.0.1 build; do not add unused HTTP/provider/database dependencies.
+- Frozen typed model bounds and combined plan; settled/outstanding entries share
+  tenant-scoped identity but cannot coexist under the same ID in a valid snapshot.
+  Exact integer/range checks reject coercions/overflow; zero known usage is valid,
+  zero bound is insufficient. Model and counting-policy metadata required, but
+  metadata is not a proof that a tokenizer or output limit is trustworthy.
+- calculate_usage implements P1's exact interval plus all holds. assess_admission
+  samples an injected UTC clock once, rejects regression/future target entries,
+  computes combined demand and denies existing overage. Records/inputs are immutable
+  or unmodified; pure decisions are not admission permits or stored reservations.
+- Alternatives: mutable in-process quota store (wrong checkpoint/concurrency claim),
+  inspect tokens through a made-up tokenizer (unreliable provenance), auto-expire
+  old holds (silent loss of uncertain usage), implement SQLite early (scope breach).
+- Consequences: deterministic arithmetic and strict internal contracts now verified;
+  T4-003 still must atomically sample/check/reserve with one persistent snapshot.
+  Actual model/tokenizer enforcement, tenant key resolution, idempotent settlement,
+  bounded cleanup and recovery remain future integration work, not passing claims.
+- Affected: task4 config/lock/README, models.py/accounting.py and two focused test
+  files; governance/status updates. Evidence E020: 169 passes, both Ruff checks,
+  eight-package locked install/import/pip checks. E021 records reported independent
+  approval: 169 tests, 12,000 differential checks and six invariants passed, no blocking
+  defect. No new local tests/Ruff or architecture/logic changes. One foundation commit
+  authorized; no T4-003, Task 3 or push. Preserve all pure-boundary limitations.

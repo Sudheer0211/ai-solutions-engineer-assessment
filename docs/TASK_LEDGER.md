@@ -24,7 +24,13 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
-| TASK-4 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
+| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001/T4-002 independently accepted; E020/E021 | Foundation Git checkpoint only; no T4-003 authorization |
+| T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
+| T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation; one commit, no T4-003 or push |
+| T4-003 | SQLite transactional accounting and concurrency | P0 | NOT_STARTED | Proposed milestone only | T4-002 accepted; explicit implementation authorization still required |
+| T4-004 | Primary/backup provider routing | P0 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
+| T4-005 | HTTP and real-wire verification | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
+| T4-006 | Final Task 4 assessment audit | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
 
 ## GOV-001 mandatory acceptance criteria
 
@@ -437,3 +443,89 @@ traceability/checklist and documentation diff; no new implementation authorizati
 - No push or new implementation authorized. After the commit, verify clean status
   and branch counts against the existing origin/main ref, report SHA/files and stop.
   Any later publication or Tasks 3/4 work requires separate authorization.
+
+## T4-001 recovered contract and design checkpoint (2026-11-04)
+
+User authorizes documentation/design only, superseding earlier reserved Task 4
+status. Confirmed requirements/clarifications: docs/TASK4_REQUIREMENTS.md R1-R7.
+Architecture is ADR-016 PROPOSED; accounting assumptions A1-A10 require review.
+
+- [x] D1: Record confirmed 50,000-token/sliding-minute tenant-key quota, on-disk
+  SQLite/concurrency, primary-429 and 3,000 ms timeout fallback, sanitized errors;
+  distinguish local 429 (zero provider calls) from upstream 429 (automatic backup).
+- [x] D2: Inspect actual SQLite runtime before proposing WAL; E019 metadata probe
+  gives SQLite 3.53.1/Python 3.12.16. No DB/WAL behavior claim or installed Task 4 env.
+- [x] D3: Propose isolated modules, tenant identity, schema/transactions, sliding
+  accounting, sequential routing and bounded crash recovery without extra services.
+- [x] D4: Identify chosen accounting/reservation/timing/provider/HTTP assumptions,
+  conservative admission/unknown-usage tradeoffs and remote cancellation limits.
+- [x] D5: Define T4-Q1-Q12 future tests and staged acceptance milestones; preserve
+  Tasks 1/2/3, source/tests/dependencies/locks; no installs, implementation or Git writes.
+- [x] D6: Independent architecture review APPROVED WITH CONDITIONS; P1-P4 finalized
+  under subsequent user authorization. Provider/HTTP details remain deferred.
+
+Outcome: T4-001/TASK-4 IN_PROGRESS; design documented, review PENDING, no T4-002
+authorization. No application tests/Ruff executed; only runtime metadata and
+documentation/preservation checks. Historical Task 1/2 evidence/status unchanged.
+Open inputs: provider/model/tokenizer/usage fields and enforceable output caps;
+accept combined reservation/clock/recovery conventions; backup/overall deadlines;
+tenant-key provisioning/transport/identity-secret rotation and exact HTTP schemas.
+Next: independent design review and resolve these inputs before any implementation.
+No commit/push or Task 3 work authorized; leave only this checkpoint's docs diff.
+
+## T4-002 acceptance baseline (2026-11-04)
+
+User reports independent T4-001 architecture APPROVED WITH CONDITIONS. Finalized
+P1-P4 in docs/TASK4_REQUIREMENTS.md / ADR-016 complete those design conditions;
+T4-001 DONE. Implementation is authorized for pure accounting only.
+
+- [x] K1: Isolated task4 project/environment/lock and installed package; preserve
+  root/Task 1/Task 2 source/tests/configuration/dependencies/lockfiles.
+- [x] K2: Immutable typed settled/outstanding/bounds/decision records; integer,
+  identifier, model and overflow validation; unavailable bounds fail closed.
+- [x] K3: Exact 50,000 invariant: window-settled + ALL outstanding + new combined
+  primary/backup bounds <= quota; no double counting/duplicate snapshot identities.
+- [x] K4: Inject accounting clock, deterministic exact expiry/weighted expiration,
+  clock regression/future entry, tenant isolation and conservative hold coverage.
+- [x] K5: Primary+backup reservation math and insufficient/invalid bound rejection;
+  pure decisions only, no state writes/concurrent-admission claim/provenance shortcut.
+- [x] K6: Execute Task 4 pytest and Ruff lint/format; record actual counts/exits,
+  environment versions and failures. No invented or reused test results.
+- [x] K7: Update governance/status/remaining limitations; no SQLite/provider/HTTP/
+  recovery execution, T4-003, Task 3, commit/push; stop for independent review.
+
+### T4-002 checkpoint outcome
+
+T4-001 DONE after reported conditional architecture approval and finalized P1-P4.
+T4-002 DONE for implementation/unit verification; independent review PENDING, not
+accepted. TASK-4 remains IN_PROGRESS. E020: 169 passed in 0.12s, zero failures/
+skips/warnings/xfails; Ruff lint and format pass (5 Python files). Initial sandbox
+run also passed 169 but warned about cache permissions; identical outside-sandbox
+rerun resolved the warning without test/warning-filter changes. Eight locked
+packages installed in task4/.venv and imports/version/pip checks pass.
+
+No concurrent admission, persistence, real token provenance, provider fallback,
+HTTP or recovery compliance claim. Pure results do not mutate/reserve capacity.
+No source/test/config/dependency/lock changes to accepted Tasks 1/2; no rerun needed
+because shared code/environments remain unchanged. No Task 3/T4-003, commit/push.
+Next: independent T4-002 review; approve real model/provider/HTTP specifics at their
+later checkpoints and authorize T4-003 separately. Resume from AGENTS/contract/E020.
+
+## T4-001/T4-002 independent acceptance and Git checkpoint (2026-11-04)
+
+- User independently APPROVES T4-002: 169 existing tests, 12,000 randomized
+  differential checks and six targeted invariants passed; no blocking defect.
+  Ruff checks are supported by recorded Codex E020 evidence, not a newly reported
+  independent command. E021 distinguishes reported review from local executions.
+- T4-002 is DONE and independently ACCEPTED, resolving the historical review gate
+  above. T4-001 remains DONE with finalized P1-P4. Whole TASK-4 IN_PROGRESS;
+  T4-003 NOT_STARTED and not authorized. Tasks 1/2/3 statuses/implementation preserved.
+- Initial Git state: HEAD 6904b1f, empty index, five tracked docs modified, new Task 4
+  requirements/nine project files and task4_t4002_review.zip; ahead 0/behind 0 local
+  origin/main. Capture existing hashes and retain/exclude the review ZIP locally.
+- Authorize one descriptive foundation commit: exactly 15 project/requirements/
+  governance files. Preserve accepted code/tests/pyproject/lock bytes; no tests/Ruff
+  rerun or dependency installation. Inspect complete diff/index and whitespace;
+  exclude environments, caches, bytecode, egg-info, credentials and review artifacts.
+- Next: one approved commit, verify SHA/clean tree/ahead-behind against existing
+  origin/main and stop. No push, Task 3 work or T4-003 implementation authorized.

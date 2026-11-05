@@ -862,3 +862,169 @@ No pytest/Ruff/install/service probes rerun during this documentation checkpoint
   and final audit report; no unexpected changes. No test/Ruff rerun needed or made.
   Proceed with the one approved documentation commit; resulting identity/inventory
   is the Git source-of-truth record and final session report. No push.
+
+## E019 — 2026-11-04: T4-001 design/runtime inspection, not test verification
+
+Date/timezone: America/Los_Angeles. Read governance/ledger/decisions, inspected
+clean Git state at 6904b1f; captured 54 tracked-file hashes before documentation
+edits. User authorizes T4-001 docs/design only; no implementation or installations.
+
+Actual metadata probe from repository root:
+
+```powershell
+@'
+import sys,sqlite3,json
+print(json.dumps({'python':sys.version,'sqlite_runtime':sqlite3.sqlite_version,'threadsafety':sqlite3.threadsafety,'probe':'import metadata only; no database opened'},indent=2))
+'@ | .\.venv\Scripts\python.exe -
+```
+
+Exit 0: CPython 3.12.16 (MSC v.1944 Windows AMD64); SQLite runtime **3.53.1**;
+threadsafety **3**. No sqlite3.connect call, database file, WAL PRAGMA, transaction
+or concurrency test. The interpreter belongs to existing Task 1; it was not changed
+and is not a new Task 4 environment. Re-probe the eventual isolated environment.
+
+Read official SQLite transaction/WAL/synchronization documentation, including the
+documented WAL-reset fix in 3.51.3/later and backports. These support proposed
+WAL/FULL on verified local storage, not a claimed DB runtime verification pass.
+References and chosen/alternative designs: ADR-016 and TASK4_REQUIREMENTS.md.
+
+No pytest/Ruff/install/provider/service command executed. Task 1's 149 and Task 2's
+452 passing counts remain historical E017 evidence, not rerun T4 results. Planned
+T4-Q1-Q12 cases are NOT EXECUTED. T4-001 independent design review PENDING.
+
+Actual documentation verification: Python stdin SHA256/allowlist/history-prefix/
+ledger-row/local-link/contract-ID assertions exited 0. Exactly five tracked docs
+changed and one new docs/TASK4_REQUIREMENTS.md; 49 of 54 baseline files byte-identical.
+All Task 1/2 source/tests/dependencies/locks and Task 1/2/3 ledger rows preserved;
+prior decision/build/evidence content retained as exact text prefixes. No task4/
+source directory created. HEAD 6904b1f unchanged; index empty. git diff --check
+exited 0. These are read-only documentation checks, not application test results.
+
+## E020 — 2026-11-04: T4-002 isolated project and pure accounting verification
+
+Date/timezone: America/Los_Angeles; HEAD 6904b1f. User reports independent T4-001
+architecture APPROVED WITH CONDITIONS and authorizes T4-002 after finalizing P1-P4.
+That review is reported evidence, not a new execution. Policies/ADR-016 now distinguish
+engineering assumptions from R1-R7; ADR-017 records the pure implementation boundary.
+Captured 55 existing file hashes including untracked prior Task 4 requirements.
+
+### Locked installation and environment probes
+
+Actual commands from repository root (uv 0.13.7):
+
+```powershell
+$env:UV_CACHE_DIR = Join-Path (Get-Location) '.cache'
+$env:UV_PYTHON_INSTALL_DIR = Join-Path (Get-Location) '.runtime'
+$env:UV_PROJECT_ENVIRONMENT = Join-Path (Get-Location) 'task4/.venv'
+.\.tools\bin\uv.exe --version
+.\.tools\bin\uv.exe lock --offline --project task4 --python 3.12.16
+.\.tools\bin\uv.exe sync --locked --offline --project task4 --extra dev --python 3.12.16
+```
+
+Exit 0 for each: eight packages resolved/installed, editable project built. Sync
+executed outside Windows sandbox due the previously observed setuptools temporary
+directory permission constraint; no installation failure occurred this checkpoint.
+No root/Task 2 environment sync or dependency/lock change.
+
+Task 4 interpreter: Python 3.12.16 (MSC v.1944 64-bit AMD64). importlib.metadata/
+tomllib stdin assertions through `.\.venv\Scripts\python.exe -` from task4 exit 0:
+all eight installed distribution versions exactly equal task4/uv.lock selections;
+models/accounting import from task4/src/task4_limiter. No mcp/httpx/FastAPI installed.
+sqlite3.sqlite_version is 3.53.1 (metadata only; no DB connection/operation).
+
+| Installed distribution | Version |
+| --- | --- |
+| assessment-task4-accounting | 0.1.0 |
+| colorama | 0.4.6 |
+| iniconfig | 2.3.1 |
+| packaging | 26.3 |
+| pluggy | 1.7.0 |
+| pygments | 2.21.0 |
+| pytest | 9.2.0 |
+| ruff | 0.17.3 |
+
+Setuptools 82.0.1 is pinned isolated build tooling, not a runtime distribution.
+From task4, `$env:UV_CACHE_DIR = Join-Path (Get-Location) '../.cache'` then
+`..\.tools\bin\uv.exe pip check --python .venv/Scripts/python.exe`: exit 0,
+eight packages checked, all compatible.
+
+### Actual tests and Ruff (cwd task4/)
+
+| Command / context | Actual outcome | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` | Two test files reformatted, three files unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short` (sandbox) | 169 passed in 0.13s; ONE PytestCacheWarning, WinError 5 creating nodeids cache temporary directory | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` | Five files already formatted | 0 |
+| Same pytest command outside sandbox | **169 passed in 0.12s**, zero failures/skips/warnings/xfails | 0 |
+
+The warning justified the identical rerun; no test assertions, markers, cache
+configuration or warning filters were changed. No implementation/test changes
+after Ruff checks/final test run; subsequent edits are documentation only.
+
+### Verified scope and limits
+
+- T4-Q1/Q2 arithmetic: 49,999/50,000/50,001 combined capacity, weighted expiration,
+  exact lower-excluded/upper-included 60s boundary, no fixed-minute reset, immutable
+  primary+backup plans, invalid/missing/zero/overflow bounds and exact integer checks.
+- T4-Q3 pure tenant-ID isolation only: exact opaque IDs, independent same entry names;
+  no API-key authenticator/HMAC resolver, secret provisioning or restart verification.
+- Conservative reservations: all old holds remain counted, both-state/duplicate IDs
+  rejected (even expired settled IDs), future target timestamps/watermark regression
+  fail closed, known zero differs from unknown holds, existing overage denies new work.
+- Pure snapshot projections demonstrate original timestamp after settlement and
+  conservative unknown charges; no settlement/recovery operation is implemented.
+  Generators/permutations/repeated evaluations preserve input state and make no
+  concurrent-admission guarantee. Model/counter names do not prove real token bounds.
+- No SQLite persistence/transactions/concurrency, provider APIs/fallback/timeout
+  execution, HTTP endpoints or crash-recovery infrastructure tested or implemented.
+  Those remain later checkpoints; no new Task 1/2 pass claim or rerun.
+
+T4-002 independent review PENDING. TASK-4 IN_PROGRESS, no T4-003, commit or push.
+
+Final read-only integrity checks: Python stdin SHA256/allowlist/AST/link assertions
+exit 0; 49 of 55 existing-file baselines unchanged, six intended governance/contract
+docs modified, nine new Task 4 project/source/test files. All accepted Task 1/2
+source/tests/configuration/dependency/lock files and completed-task ledger rows
+remain byte-identical/unchanged; historical build/test evidence prefixes retained.
+Source imports are limited to dataclasses, enum, collections.abc, typing and the
+local models module. Targeted new-file private-key/provider-token/credential-URL
+inspection finds no candidates. git diff --check exits 0; check-ignore confirms
+Task 4 environment/cache/egg-info excluded. HEAD 6904b1f and empty index unchanged;
+only intended docs/task4 paths are uncommitted. No application changes after checks.
+
+## E021 - 2026-11-04: T4-002 independent acceptance and foundation Git checkpoint
+
+Reported independent evidence supplied by the user: T4-002 APPROVED; 169 existing
+unit tests, 12,000 additional randomized differential accounting checks and six
+additional targeted invariants passed; no blocking defect. Review commands/seeds/
+versions/timings were not supplied and are not invented. Ruff checks are supported
+by previously recorded Codex E020 pinned-environment results, not a new reported
+independent execution. No pytest/Ruff/install/provider/DB commands run here.
+
+- Read AGENTS/ledger/decisions/contract/project README and inspect status/diff/index/
+  log/counts. Initial HEAD 6904b1f, empty index, five modified tracked docs, new
+  requirements/nine project files and review ZIP; ahead 0/behind 0 local origin/main.
+- Capture SHA256 baseline for 65 existing tracked/untracked files, retaining the
+  archive. Add local-only info/exclude rule for task4_t4002_review.zip; no deletion.
+- Update acceptance records only. T4-001 and T4-002 are DONE/accepted; whole TASK-4
+  IN_PROGRESS. Original acceptance contract, P1-P4, approved accounting logic/tests/
+  project configuration/lock and Tasks 1/2 remain unchanged. No T4-003 authorization.
+- One descriptive commit of exactly 15 approved Task 4/project/requirements/governance
+  files is authorized. Exclude environments/cache/bytecode/egg-info/credentials/ZIPs.
+  Staged preservation/content/whitespace evidence follows; identity is recorded by
+  Git and the final session report. No push or new implementation.
+- Actual Python stdin SHA256/allowlist/link/history-prefix/tomllib checks exit 0:
+  seven acceptance docs changed this session, 58 baseline files (including all
+  accepted code/tests/config/locks and ZIP) unchanged; eight lock selections retained.
+  Completed-task rows and historical execution prefixes preserved; local links valid.
+- Explicit staging yields exactly 15 approved paths (five modified tracked docs,
+  new requirements and nine Task 4 files). Staged content matches worktree after
+  Git EOL normalization. Full content/diff/stat/name-status inspected; no unignored
+  leftovers, unexpected paths or targeted private-key/provider-token/credential-URL
+  candidates. check-ignore confirms environments, bytecode, egg-info, cache, .env,
+  credential-history reports and retained review ZIP excluded.
+- git diff --cached --check exits 0. LF/CRLF conversion advisories are Git notices,
+  not test results or source edits. No tests/Ruff rerun. Create the one authorized
+  foundation commit, then verify its parent/inventory/clean status/branch counts;
+  identity is recorded in Git history and final report. No push/T4-003.

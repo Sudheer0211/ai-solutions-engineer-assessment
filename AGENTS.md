@@ -20,6 +20,8 @@ The user's project governance instructions and the ledger supplement each task's
 supplied requirements.
 Do not modify another task without explicit authorization.
 Use stable IDs: GOV-001, T1-001 through T1-006, TASK-1, TASK-2, TASK-3, TASK-4.
+Task 4 checkpoints use T4-001 through T4-006; contract/assumption/test IDs are
+defined in `docs/TASK4_REQUIREMENTS.md`.
 Use those IDs in implementation/test documentation and milestone entries.
 
 Keep changes scoped; preserve Git history as the code audit trail. Do not
@@ -55,6 +57,35 @@ T2-003 is verified in E011 (300 Task 2 passes and Ruff); E012 records acceptance
 and commit inspection. Preserve all accepted implementation/components/tests.
 Future production corrections require authorization and a documented reproduction.
 Do not start Tasks 3/4 or publish without authorization.
+
+## Task 4 current checkpoint
+
+The user authorizes T4-001 documentation/design only (2026-11-04), superseding
+the historical Task 2 no-Task-4 gate for this scope. Read
+`docs/TASK4_REQUIREMENTS.md`, ADR-016/017, E019/E020/E021, task4/README.md and the ledger.
+Confirmed: 50,000 tokens/sliding 60s per tenant API key, persistent SQLite,
+concurrency, automatic backup on primary HTTP 429 or 3,000 ms primary timeout,
+sanitized errors. Local quota 429 never triggers fallback. Distinguish confirmed
+requirements from proposed accounting/reservation/provider/HTTP choices.
+T4-001 is independently APPROVED WITH CONDITIONS; finalized engineering policies
+P1-P4 in the requirements record satisfy the requested design conditions.
+T4-002 is independently ACCEPTED, confirmed by the user on 2026-11-04: 169
+existing tests, 12,000 randomized differential checks and six targeted invariants
+passed independently; no blocking defect. Ruff evidence remains the actual E020
+local execution record, not a newly supplied independent command.
+One descriptive T4-001/T4-002 foundation commit is authorized, containing only
+approved project/source/tests/configuration/lock/requirements and governance docs.
+Do not change accepted logic or rerun tests. Exclude environments/caches/egg-info/
+credentials/review ZIPs. No SQLite/provider/HTTP/recovery work, T4-003, Task 3 or push.
+Pure arithmetic is not an atomic admission permit or tokenizer provenance proof.
+Preserve completed Task 1/2 implementation/tests/config/dependencies/locks.
+T4-002 is implemented and unit-verified (E020): 169 passes, Ruff lint/format pass,
+isolated Python 3.12.16 environment/eight-package lock. E021 records reported
+independent acceptance and Git inspection without new tests. TASK-4 IN_PROGRESS;
+no T4-003 implementation authorized. SQLite 3.53.1 is metadata-only in root and
+Task 4 interpreters; no WAL/database/concurrency verification or provider integration.
+After the authorized commit, verify SHA/clean status/ahead-behind and stop. Preserve
+the accepted pure API; future implementation/publication needs separate authorization.
 
 ## Task 1 engineering standards
 
