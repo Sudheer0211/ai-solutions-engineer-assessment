@@ -27,10 +27,10 @@ duplicate line-level diffs in Markdown. Do not rewrite existing history.
 
 ## Task 2 checkpoint restart gate
 
-Read `docs/TASK2_REQUIREMENTS.md`, `task2/CONTRACT.md`, ADR-008 through ADR-014,
-and E008/E009/E011/E012/E013/E014/E015/E016.
+Read `docs/TASK2_REQUIREMENTS.md`, `task2/CONTRACT.md`, ADR-008 through ADR-015,
+E008/E009/E011/E012/E013/E014/E015/E016/E017/E018 and `docs/TASK2_FINAL_AUDIT.md`.
 T2-001/T2-002, including the Decimal correction, were independently reviewed and
-accepted as confirmed by the user on 2026-11-04. Task 2 remains IN_PROGRESS.
+accepted as confirmed by the user on 2026-11-04. Task 2 is DONE.
 Foundation baseline: e828729b; accepted T2-003 adapter baseline: 0b2e0b7.
 T2-004 FastAPI/ASGI integration is independently ACCEPTED, confirmed by the user
 on 2026-11-04 (400 tests and additional zero-upstream rejection probes). E013
@@ -38,13 +38,23 @@ contains local execution evidence; E014 records reported review and Git inspecti
 Accepted T2-004 baseline: be9ddd8. T2-005 is independently ACCEPTED, confirmed by
 the user on 2026-11-04: 400 prior/52 wire passes, 33 zero-forwarding cases and
 12 reaped children without forced cleanup. E015 is local evidence; E016 records
-reported independent acceptance and Git inspection. One T2-005 commit authorized;
-no push or T2-006 work.
+reported independent acceptance and Git inspection. Accepted T2-005 baseline:
+aa343b3. T2-006 and TASK-2 are DONE following independent ChatGPT engineering
+approval, confirmed by the user on 2026-11-04: assessment-ready within documented
+requirements. All eight traceability rows, test references and final evidence/docs
+were reviewed. E017 preserves actual audit executions (452 Task 2/149 Task 1
+passes and both Ruff checks per task, locked setup/CLI/security inspection).
+E018 records reported independent acceptance and documentation/Git inspection,
+not new tests. One final documentation-only acceptance commit is authorized.
+Preserve all implementation/tests/configuration/dependencies/lockfiles; no test
+rerun unless unexpected code/config changes appear. No push or Tasks 3/4.
+After the Git checkpoint, stop; future implementation/publication needs separate
+authorization. Retain documented limitations and explicit staging precautions.
 Preserve the accepted guard behavior and Task 1 implementation/tests/root pins.
 T2-003 is verified in E011 (300 Task 2 passes and Ruff); E012 records acceptance
 and commit inspection. Preserve all accepted implementation/components/tests.
 Future production corrections require authorization and a documented reproduction.
-Do not start T2-006 or Tasks 3/4, or push without authorization.
+Do not start Tasks 3/4 or publish without authorization.
 
 ## Task 1 engineering standards
 

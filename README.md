@@ -1,4 +1,23 @@
-# Task 1 — Customer/refund MCP server
+# AI Solutions Engineer assessment
+
+This repository contains two independently executable Python projects:
+
+- **Task 1: DONE.** Official MCP STDIO customer/refund server; setup and architecture
+  are documented below. Fresh T2-006 regression: 149 passing tests.
+- **Task 2: DONE; independently approved, assessment-ready within documented
+  requirements.** Secure HTTP/JSON-RPC
+  reverse proxy with FastAPI and HTTPX; isolated environment and lockfile. Start with
+  [Task 2 setup and examples](task2/README.md), [contract](task2/CONTRACT.md), and
+  [final audit / requirements traceability](docs/TASK2_FINAL_AUDIT.md).
+  T2-006 evidence: 452 passing tests, including 52 real HTTP wire cases; final
+  independent approval confirmed 2026-11-04. No tests rerun for the acceptance commit.
+- Tasks 3 and 4 have not been implemented and are outside the authorized scope.
+
+Both tasks passed Ruff lint and formatting checks on 2026-11-04
+(America/Los_Angeles). [E017](docs/TEST_EVIDENCE.md) records actual commands/results.
+Use each task's own environment; Task 2 does not run through Task 1's STDIO server.
+
+## Task 1 — Customer/refund MCP server
 
 Runnable assessment implementation using Python **3.12.16**, official
 **mcp 2.3.0**, and **Pydantic 2.12.5**. Exactly two tools use the official STDIO
@@ -191,6 +210,8 @@ ai-solutions-engineer-assessment/
   uv.lock
   docs/
     TASK1_REQUIREMENTS.txt
+    TASK2_REQUIREMENTS.md
+    TASK2_FINAL_AUDIT.md
     TASK_LEDGER.md
     DECISIONS.md
     BUILD_LOG.md
@@ -215,13 +236,20 @@ ai-solutions-engineer-assessment/
     boundary_server.py
     test_stdio_boundary.py
     test_stdio_boundary_wire.py
+  task2/
+    README.md
+    CONTRACT.md
+    pyproject.toml
+    uv.lock
+    src/task2_proxy/
+    tests/
   manual_validation_lab.py
   manual_refund_lab.py
 ```
 
 Ignored local environments/caches are omitted. Read AGENTS.md and the ledger
 at every session start.
-Tasks 2–4 are outside the scope of this Task 1 implementation and have not yet been implemented.
+Task 2 is implemented separately under `task2/`; Tasks 3 and 4 remain unimplemented.
 FastAPI, HTTP proxies, OAuth/JWT, SQLite, rate limiting, inference APIs,
 SSE, PII streaming, Docker/Kubernetes and optional CI/performance/property-testing
 extras are intentionally excluded from this Task 1 implementation. Some HTTP

@@ -7,7 +7,7 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | ID | Description | Priority | Status | Acceptance / evidence | Blocker / next action |
 | --- | --- | --- | --- | --- | --- |
 | GOV-001 | Establish persistent engineering governance before implementation | P0 | DONE | G1-G5 verified in E002 | Maintain records at every milestone |
-| TASK-1 | Strict MCP server assessment | P0 | DONE | A1-A15 verified; E007; 149 normal passes | Adopted Approach C; retain pinned boundary regression tests |
+| TASK-1 | Strict MCP server assessment | P0 | DONE | A1-A15/E007; fresh 149 passes/Ruff E017 | Approach C preserved; no implementation/test/dependency changes |
 | T1-001 | Confirm runtime, SDK/public APIs, dependency versions | P0 | DONE | Python 3.12.16/MCP 2.3.0/Pydantic 2.12.5; E003/E004; uv.lock | Maintain verified pins |
 | T1-002 | Strict schemas and mock refund domain | P0 | DONE | Strict schemas, parity and exact mock state verified; E004 | No open domain defect |
 | T1-003 | MCP tool dispatch and protocol errors | P0 | DONE | All error codes/IDs and business separation verified; E007 | B3 resolved by SDK-preserving boundary adapter |
@@ -16,12 +16,13 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T1-006 | Reproducibility, lint, README and final evidence | P1 | DONE | Setup/lock and README verified; final lint/format/evidence E007 | Maintain evidence on future changes |
 | T1-007 | Read-only STDIO blocker remediation investigation | P0 | DONE | R1-R5 verified; investigation report; E006 | Proposed candidate implemented and verified under T1-008 |
 | T1-008 | Controlled Approach C implementation and adoption | P0 | DONE | C1-C7 verified; E007; ADR-006/007 | Adopt; rerun boundary contract tests before any SDK upgrade |
-| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | T2-005 loopback TCP verification only; stop for review |
+| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | DONE | T2-001 through T2-006 independently accepted; E017/E018 | Assessment-ready within documented requirements; final docs commit only, no push |
 | T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Preserve committed baseline e828729b |
 | T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Preserve accepted behavior; original tests unchanged in T2-003 |
 | T2-003 | HTTPX upstream adapter | P0 | DONE | U1-U8/E011; 300 tests/Ruff; independently accepted, user confirmation 2026-11-04 | Preserve committed baseline 0b2e0b7 |
 | T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
-| T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted, user confirmation 2026-11-04: 400+52 passes/33 zero-forwarding cases/12 reaped children | Approved milestone commit only; no T2-006 or push |
+| T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
+| T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 | TASK-4 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 
@@ -79,7 +80,8 @@ normally after controlled removal of only the obsolete XFAIL decorator.
   remains unchanged. Broken-output termination can be nonzero.
 - Resume by reading AGENTS.md and this ledger and inspecting Git status.
   Next recommended action: adopt/review the implementation; retain this suite
-  before any future SDK upgrade. Tasks 2-4 await separate requirements.
+  before any future SDK upgrade. Task 2 has separate requirements/checkpoints
+  below; Tasks 3/4 still await supplied requirements and authorization.
 
 ## T1-007 investigation acceptance criteria
 
@@ -378,3 +380,60 @@ T2-006 scope and any commit/push require explicit authorization.
   files and task2_t2005_review.zip; ahead 3/behind 0 versus local origin/main.
 - Next: stage/inspect exact 12-file allowlist, commit, verify clean status/counts
   and stop. TASK-2 remains IN_PROGRESS; no tests rerun for this Git checkpoint.
+
+## T2-006 audit acceptance baseline (2026-11-04)
+
+User authorizes verification/documentation only against clean aa343b3, initially
+ahead 4/behind 0 local origin/main. No accepted production/test/config changes,
+Tasks 3/4, commit or push. A discovered production defect must be reproduced/logged
+and work stopped for independent review; TASK-2 cannot be DONE before audit acceptance.
+
+- [x] F1: Original requirements mapped to functions/tests/actual checkpoint evidence,
+  PASS/FAIL/NOT VERIFIED; implementation choices clearly distinguished.
+- [x] F2: Execute complete Task 2 and Task 1 suites in separate pinned environments,
+  plus both Ruff checks per task; record versions/counts/warnings/exits exactly.
+- [x] F3: Verify locked Task 2 installation, installed imports, documented CLI,
+  trusted configuration, example calls and actual startup/shutdown.
+- [x] F4: Inspect current project files/relevant reachable Git history and ignore
+  rules for credentials/generated/sensitive artifacts; classify false positives.
+- [x] F5: Verify task independence/Task 1 preservation and accepted authorization/
+  response contracts; correct public README/governance documentation if needed.
+- [x] F6: Produce durable traceability, regression/security/publication results,
+  submission checklist, remaining limitations and READY/CHANGES REQUIRED decision.
+- [x] F7: Preserve all accepted code/config/tests; leave recoverable ledger and
+  uncommitted documentation-only changes, pending independent final audit review.
+
+Local outcome: READY within supplied scope; F1-F7 verified, independent final audit
+review PENDING. T2-006/TASK-2 remain IN_PROGRESS. Fresh E017: Task 2 452 passed in
+13.87s, Task 1 149 passed in 38.44s, no failures/skips/warnings/xfails; both Ruff
+checks per task pass. Fresh Task 2 install has all 27 locked packages/imports and
+no Task 1 distribution; default-settings Uvicorn CLI startup/shutdown and six real
+loopback smoke probes pass. All eight original requirement rows PASS; excluded
+vendor/full-session/TLS/DNS/load/other-OS behavior is NOT VERIFIED, not implied.
+
+No production defect/implementation blocker found. Local archive exclusions are
+not portable; retain explicit staging precautions for later publication. Changed
+files are documentation only, no staging/commit/push; HEAD aa343b3, ahead 4/behind 0
+local origin/main, not fetched. Task 1 source/tests/root dependencies/manual labs
+remain preserved; Tasks 3/4 NOT_STARTED. Next: independent review of final audit,
+traceability/checklist and documentation diff; no new implementation authorization.
+
+## T2-006 independent acceptance and final Git checkpoint (2026-11-04)
+
+- User confirms independent ChatGPT engineering verdict APPROVED: Task 2 is
+  assessment-ready within documented requirements. All eight traceability rows,
+  references to previously reviewed source/tests and final evidence/submission
+  docs were reviewed and found consistent. Reported review, not new execution.
+- T2-006 and TASK-2 are DONE, resolving the historical review-pending gate above.
+  Task 1 remains DONE; Tasks 3/4 remain NOT_STARTED. Existing architecture/security
+  contracts and documented operational limitations are unchanged.
+- E017 retains actual 452 Task 2/149 Task 1 passes and Ruff evidence; E018 records
+  this acceptance/Git checkpoint. No tests/Ruff rerun: no unexpected source/config
+  change exists. All accepted implementation/tests/dependencies/lockfiles preserved.
+- Initial state: HEAD aa343b3, nine modified tracked docs, one new audit report,
+  one untracked review ZIP, empty index; ahead 4/behind 0 local origin/main.
+  Review ZIP retained and excluded locally. Stage only the exact ten-document
+  allowlist, inspect full staged diff and whitespace, create one descriptive commit.
+- No push or new implementation authorized. After the commit, verify clean status
+  and branch counts against the existing origin/main ref, report SHA/files and stop.
+  Any later publication or Tasks 3/4 work requires separate authorization.

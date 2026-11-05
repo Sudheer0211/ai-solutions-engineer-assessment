@@ -312,3 +312,29 @@
   zero protocol receipts. Cleanup: 12 children reaped, zero forced/live readers;
   two deliberate nonzero exits accounted for. Independent acceptance recorded in
   E016; T2-006 remains unauthorized.
+
+## ADR-015 — Evidence provenance and final audit acceptance gate
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T2-006; status: ACCEPTED following
+  independent ChatGPT engineering review, confirmed by the user. T2-006/TASK-2 DONE.
+- Decision: preserve accepted architecture/code/tests/configuration at aa343b3;
+  audit with fresh complete suites in separate environments, an isolated locked
+  Task 2 installation, CLI/real-loopback smoke probes, current-file/reachable-Git
+  inspection and an explicit requirements-to-test matrix. Original user-supplied
+  requirements are distinct from approved implementation choices and excluded work.
+- Alternatives: rely only on earlier passing counts (no fresh regression evidence);
+  combine environments (hides task isolation/dependency drift); add features or
+  redesign accepted components during audit (outside authorization).
+- Consequences: no new production architecture. Documentation-only corrections
+  remove stale current-status claims while preserving historical records. Pattern
+  matches require context review; a clean scoped scan is not universal secret/CVE
+  assurance. Local-only archive excludes are disclosed as publication hygiene risk.
+- Accepted verdict: APPROVED, assessment-ready within documented requirements.
+  Independent review confirmed eight traceability rows, source/test references and
+  evidence/docs consistency. E018 records reported acceptance; E017 executions are
+  unchanged and not rerun. Authorize one documentation-only final acceptance commit;
+  no implementation/config changes, push or Tasks 3/4. No architecture redesign.
+  Existing operational limits and bounded security-audit scope remain applicable.
+- Affected: audit/traceability report, README/contract and governance documentation
+  only. Evidence: E017; 452 Task 2/149 Task 1 passes, both Ruff checks per task,
+  fresh locked install/imports, CLI startup/shutdown and bounded publication scan.

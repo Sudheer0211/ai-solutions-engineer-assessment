@@ -4,13 +4,16 @@ This project integrates accepted T2-001/T2-002 guards and the T2-003 HTTPX adapt
 with a T2-004 FastAPI factory and POST /mcp endpoint.
 See [CONTRACT.md](CONTRACT.md) for exact requirements, choices and deferred work.
 
-Checkpoint verification (2026-11-04): 452 Task 2 cases passed, including 52 real
-loopback wire cases; Ruff lint and format pass. See docs/TEST_EVIDENCE.md E015.
-Independent engineering review accepted T2-001/T2-002, including the Decimal fix,
-as confirmed by the user on 2026-11-04. The user also confirmed independent
-acceptance of T2-003 and T2-004 on 2026-11-04. Whole Task 2 remains IN_PROGRESS.
-T2-005 wire verification was independently accepted, confirmed by the user on
-2026-11-04. One approved milestone commit is authorized; no T2-006 work or push.
+Current verification (T2-006, 2026-11-04 America/Los_Angeles): **452 passed**,
+including 52 real loopback wire cases; Ruff lint/format pass. Task 1 independently
+reran with 149 passes and no implementation changes. See E017 in
+[TEST_EVIDENCE.md](../docs/TEST_EVIDENCE.md) and the
+[final audit / traceability matrix](../docs/TASK2_FINAL_AUDIT.md).
+T2-001 through T2-006 are independently accepted. **Task 2 is DONE**, with final
+ChatGPT engineering approval confirmed by the user on 2026-11-04: assessment-ready
+within the documented requirements. E018 records this reported review and the
+final documentation-only Git checkpoint; no tests were rerun for acceptance.
+One final documentation commit is authorized; no push or Tasks 3/4.
 
 From task2/ with uv installed:
 
@@ -46,11 +49,12 @@ Pure entry points:
 Viewer protected requests receive code -32001, message Unauthorized Tool Call
 and their original ID. Batches are rejected entirely. Notifications cannot return
 permits; their names are still inspected/authorized and no RPC reply is fabricated.
-Authentication errors remain transport-neutral pending HTTP status decisions.
+Pure authentication errors are transport-neutral; the HTTP endpoint maps them to
+401 with a Bearer challenge, as specified below and in CONTRACT.md.
 
 Task 1 source/tests/dependencies/lockfile and historical evidence are preserved.
-Passing these unit tests does not prove transparent HTTP forwarding or downstream
-non-delivery: those require the later independent HTTP integration/wire checkpoint.
+Guard unit tests are supplemented by accepted ASGI integration and real-wire
+verification of transparent discovery and zero delivery on local rejection.
 
 Upstream API (asyncio):
 
@@ -84,7 +88,10 @@ documented local launch command from task2/ is:
 .\.venv\Scripts\python.exe -m uvicorn task2_proxy.app:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-This launch command was not used for socket testing in T2-004. POST raw UTF-8 JSON
+T2-006 exercised the Uvicorn module CLI entry point with these options and port 0
+for an ephemeral loopback audit listener; startup/shutdown and authenticated calls
+passed against an independent local fixture. See E017 for the Windows supervisor
+and exact evidence boundary. POST raw UTF-8 JSON
 to /mcp with application/json and one Bearer Authorization header. Default body
 limit is 1 MiB, enforced while reading; body deadline is 10 seconds. Auth failures
 return 401, viewer admin_ denials return 403/-32001 with the exact Unauthorized Tool
@@ -104,3 +111,60 @@ The peer journal remains in memory and redacts auth values. The ignored sanitize
 reaped with zero forced cleanups/live readers. No real external service is contacted.
 Production modules, prior 400 tests and dependency versions remain unchanged.
 See CONTRACT.md for exact process settings, journal results and Windows-only limits.
+
+## Configuration and authenticated examples
+
+Required **server** environment variables, provided by the trusted operator:
+
+| Variable | Meaning |
+| --- | --- |
+| TASK2_ROLE_TOKENS | JSON object with exact admin/viewer keys, each a nonempty list of distinct opaque Bearer tokens |
+| TASK2_UPSTREAM_URL | Fixed absolute HTTPS URL, or HTTP to a literal loopback IP such as 127.0.0.1; no userinfo, query or fragment |
+| TASK2_UPSTREAM_BEARER_TOKEN | Optional separate upstream credential; never an inbound token fallback |
+
+The service loads these during startup, not import. No .env loader, default
+credentials, dynamic upstream selection or public TLS listener is supplied. Keep
+credentials in the process environment/approved secret provisioning, outside Git,
+command arguments and logs. The launch command above binds loopback; use Ctrl+C
+for graceful shutdown. A compatible upstream must accept stateless single-JSON POST
+requests; this does not implement full MCP Streamable HTTP/session negotiation.
+
+For an entirely local, deterministic reviewer check with temporary random credentials,
+run these existing examples from task2/ (each launches and cleans up its own real
+proxy/fixture peer; no manual secrets or external service required):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py -k 'authorized_calls_preserve_request_and_response_bytes or discovery_is_transparent_including_admin_tools or viewer_denial_preserves_id_and_zero_journal'
+```
+
+For a separately configured running service, this client example reads the same
+operator-provided role configuration in a client shell; it does not print tokens.
+Use a service-owned admin_ tool name in place of admin_reset when checking against
+another compatible upstream. Discovery must expose protected definitions to both roles.
+
+```powershell
+@'
+import json, os
+import httpx
+
+roles = json.loads(os.environ["TASK2_ROLE_TOKENS"])
+headers = {"Authorization": "Bearer " + roles["viewer"][0]}
+with httpx.Client(base_url="http://127.0.0.1:8000", trust_env=False) as client:
+    discovery = client.post("/mcp", headers=headers,
+        json={"jsonrpc": "2.0", "id": "list-1", "method": "tools/list"})
+    assert discovery.status_code == 200
+    denial = client.post("/mcp", headers=headers,
+        json={"jsonrpc": "2.0", "id": "deny-1", "method": "tools/call",
+              "params": {"name": "admin_reset"}})
+    assert denial.status_code == 403
+    assert denial.json() == {"jsonrpc": "2.0", "id": "deny-1",
+        "error": {"code": -32001, "message": "Unauthorized Tool Call"}}
+    print("Discovery HTTP 200; protected viewer call HTTP 403 / -32001")
+'@ | .\.venv\Scripts\python.exe -
+```
+
+JSON errors and IDs are preserved according to CONTRACT.md. Notifications and whole
+batches are rejected; viewer does not mean read-only for non-admin_ tools. No SSE,
+OAuth/JWT, compression or retries. Windows/h11 loopback is verified; real vendor MCP,
+TLS/DNS/public deployment, other OSes and load qualification are not. Review archives
+are locally ignored only; explicitly inspect staged files before any later publication.

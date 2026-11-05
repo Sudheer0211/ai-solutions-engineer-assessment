@@ -1,10 +1,24 @@
-# T2-001 / T2-002 acceptance contract
+# Task 2 acceptance contract
 
 Date: 2026-11-04 (America/Los_Angeles). Source:
 [supplied requirements](../docs/TASK2_REQUIREMENTS.md). IDs below distinguish
 mandatory requirements from chosen behavior; none relaxes the supplied prefix rule.
 
-## Explicit requirements and checkpoint acceptance
+## Current status and reading order
+
+T2-001 through T2-005 are independently ACCEPTED at aa343b3. T2-006 and TASK-2
+are DONE following independent ChatGPT engineering approval, confirmed by the user
+on 2026-11-04: assessment-ready within documented requirements. E017 preserves
+452 Task 2/149 Task 1 passes and both Ruff checks per task from the audit; E018
+records reported acceptance without new executions. Current traceability,
+reproducibility/security results, exclusions and submission checklist are in
+[TASK2_FINAL_AUDIT.md](../docs/TASK2_FINAL_AUDIT.md), execution record E017.
+The dated sections below preserve historical checkpoint scope and earlier test
+counts; later authorized sections supersede earlier no-HTTP/no-wire restrictions.
+They do not imply those earlier restrictions still govern the implemented service.
+No production behavior or assessment requirement changes during this audit.
+
+## T2-001 / T2-002: explicit requirements and checkpoint acceptance
 
 | ID | Requirement / verification |
 | --- | --- |
@@ -391,3 +405,23 @@ independent passes for the 400 existing and 52 wire tests, 33 zero-forwarding ca
 and all 12 children reaped without forced cleanup. E016 distinguishes this reported
 independent evidence from local E015 executions. T2-005 is ACCEPTED; T2-006 still
 requires separate authorization. No push is authorized.
+
+## T2-006 final audit (2026-11-04)
+
+Verification and documentation only, preserving aa343b3. E017 records fresh full
+regressions, isolated locked installation/imports and Uvicorn CLI/loopback examples,
+security/current-file/reachable-history inspection and Task 1 preservation. No new
+features, accepted code/tests/configuration changes, commit/push or Tasks 3/4.
+The HTTP/status/header/security choices above are retained. The final audit requires
+independent acceptance before Task 2 can be marked DONE. See the audit report and
+ADR-015; earlier no-T2-006 scope statements are historical checkpoint restrictions.
+
+## Final independent acceptance and Git checkpoint (2026-11-04)
+
+The user confirms T2-006 APPROVED: eight traceability rows, test references,
+final evidence and submission documentation are consistent. T2-006/TASK-2 are
+DONE within the unchanged documented requirements and limitations. This resolves
+the earlier review gate and supersedes the audit's no-commit restriction only for
+one final documentation/acceptance commit. No production/test/config/dependency/
+lock changes, test rerun, push or Tasks 3/4. E018 distinguishes reported acceptance
+from actual E017 verification; the final commit is identified in Git history.

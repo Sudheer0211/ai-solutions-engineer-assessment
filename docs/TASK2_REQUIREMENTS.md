@@ -143,3 +143,26 @@ commit of approved wire tests, pytest marker and related engineering docs only.
 Exclude environments/caches/credentials/review ZIPs. Do not push, begin T2-006 or
 change Task 1/accepted implementation. This supersedes only the prior no-commit
 restriction for this Git checkpoint; no additional implementation scope is granted.
+
+## Subsequent T2-006 final audit authorization (2026-11-04)
+
+User authorizes an evidence-based verification/documentation checkpoint against
+accepted aa343b3: trace original requirements separately from choices; execute
+complete Task 2/Task 1 suites and both Ruff checks in their own environments;
+verify locked Task 2 setup/imports/CLI/config/examples/lifespan; inspect current
+files/relevant Git history, secrets/artifacts/ignore rules and public documentation.
+Deliver traceability, actual counts/versions/commands/exits, publication audit,
+submission checklist, limitations and READY/CHANGES REQUIRED recommendation.
+Documentation-only corrections are allowed. Reproduce/document a production defect
+then stop for review; no accepted code changes, new features, Tasks 3/4, commit or
+push. TASK-2 must remain IN_PROGRESS until independent final audit acceptance.
+
+## T2-006 independent acceptance and final documentation commit (2026-11-04)
+
+User confirms independent verdict APPROVED: Task 2 assessment-ready within its
+documented requirements; eight traceability rows, test references and final evidence/
+submission docs consistent. Mark T2-006/TASK-2 DONE and authorize one final docs-only
+acceptance commit, after complete diff/staging/preservation/whitespace inspection.
+This supersedes the earlier review/no-commit gate for this checkpoint only. Preserve
+all implementation/tests/dependencies/locks; no test reruns unless an unexpected
+code/config change appears, no push or Tasks 3/4. No assessment requirement changes.

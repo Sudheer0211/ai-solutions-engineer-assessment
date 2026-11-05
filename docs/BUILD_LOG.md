@@ -495,3 +495,84 @@ investigations and material changes; Git remains the line-level code history.
   checks, no targeted secret candidates or local artifacts. Reviewed wire tests,
   marker, production/prior tests and dependencies unchanged; no tests rerun. Proceed
   with the one approved milestone commit, then verify tree/status and stop.
+
+## 2026-11-04 — M027: T2-006 final audit baseline
+
+- Read original supplied Task 2 requirement record, current contract and governance;
+  clean HEAD aa343b3, ahead 4/behind 0 local origin/main. Captured 53 tracked hashes.
+- User authorizes fresh complete regressions for both isolated tasks, Ruff,
+  reproducibility/launch/config verification and security/publication/history audit.
+  Record F1-F7; no accepted source/tests/config edits, commit/push or Tasks 3/4.
+- Initial documentation inspection found stale root README claim that Task 2 is
+  unimplemented and stale Task 2 README statements about pending HTTP/wire work.
+  These require documentation-only corrections after current verification.
+- Next: execute actual tests/versions/setup, inspect traceability and sanitized
+  history candidates; if a production defect is found, reproduce/log and stop.
+
+## 2026-11-04 — M028: T2-006 fresh verification and publication inspection
+
+- Complete Task 1 suite: 149 passed in 38.44s; complete Task 2: 452 passed in
+  13.87s. No failures/skips/warnings/xfails; Ruff lint/format pass for both tasks
+  (17/16 files formatted). Both use CPython 3.12.16, distinct pinned environments.
+- Wire cases: 33 dedicated rejection cases each assert zero peer calls; all 12
+  children reaped, zero forced cleanup/live readers. No accepted test/code changed.
+- Fresh ignored Task 2 environment installs all 27 locked selections offline and
+  imports app/security/adapter without Task 1. uv pip check passes. Initial wrong
+  offline cache and sandbox temporary-build/cache denials are recorded in E017;
+  correct cache and authorized outside-sandbox execution resolve them, no lock edits.
+- Default-settings Uvicorn CLI entry point tested over actual loopback against an
+  independent peer: 401/403 local rejections yield zero calls; four permitted calls
+  preserve request/response bytes and upstream-only auth. Both processes exit 0,
+  startup/shutdown complete, no forced cleanup/live readers or credential output.
+- Inspected 53 baseline files/nine commits/98 reachable unique blobs; 16 sanitized
+  candidate groups are descriptive wording or invalid synthetic test fixtures, not
+  real credentials. No tracked generated/private artifacts or embedded remote auth.
+  Local-only ZIP excludes are not portable; document explicit staging precautions.
+- Task 1/root pins/manual labs match published 6056bc7. No production defect found;
+  no Task 3/4, commit/push. Next: finish documentation/traceability and integrity
+  checks, leave T2-006 and TASK-2 pending independent final audit acceptance.
+
+## 2026-11-04 — M029: T2-006 submission documentation and review handoff
+
+- Added docs/TASK2_FINAL_AUDIT.md: original eight-requirement matrix, later contract
+  coverage, fresh commands/versions/results, locked setup/CLI evidence, security/Git
+  scope, checklist and known limitations. Recommendation READY within supplied scope;
+  this is not independent acceptance or a DONE decision.
+- Corrected root README's stale claim that Task 2 is unimplemented; added isolated
+  Task 2 links/tree/status while preserving Task 1 architecture/evidence. Task 2
+  README now documents current status, external configuration and authenticated
+  examples; contract labels historical checkpoints and links current audit.
+- Updated AGENTS.md, requirements authorization, ledger, ADR-015 and E017. No
+  accepted code/tests/config/lock changes. Historical execution records retained.
+- Remaining limitations: Windows/h11/stateless JSON fixture scope; no real vendor
+  MCP/TLS/DNS/HTTP2/load/full-session verification. No unresolved implementation
+  blocker found. Independent final review and later publication remain pending.
+- Next: independent review of this audit and documentation-only diff. Do not mark
+  TASK-2 DONE, add features, commit or push before subsequent authorization.
+- Final integrity checks: 44 baseline files byte-identical, nine tracked docs
+  modified and one new audit report; accepted source/tests/config/dependencies and
+  historical record prefixes preserved. Empty index/unchanged aa343b3/ahead 4-behind 0.
+  README example command passes ten cases (42 deselected); its two children exit 0
+  without forced cleanup/live readers. Local links/matrix names/client syntax and
+  diff whitespace pass. No additional testing or production changes needed.
+
+## 2026-11-04 — M030: T2-006 independent acceptance and final documentation checkpoint
+
+- User reports final independent ChatGPT engineering approval: Task 2 assessment-
+  ready within documented requirements; eight traceability rows, reviewed source/
+  test references and final evidence/submission documentation found consistent.
+- Mark T2-006/TASK-2 DONE; update current gates, root/Task 2 READMEs, contract,
+  final audit report and ADR-015. E018 records acceptance without new executions;
+  retain all E017 results and architecture/security choices/limits unchanged.
+- Initial status: aa343b3, nine tracked docs modified, new audit report and review
+  ZIP; empty index, ahead 4/behind 0 local origin/main. Locally exclude the retained
+  review ZIP. Exact ten-document staging scope; no accepted implementation/tests/
+  config/dependency/lock changes. No unexpected code changes, so no tests rerun.
+- Next: inspect entire diff/index, run git diff --cached --check and preservation/
+  secret/artifact checks, then create one authorized final documentation commit.
+  Verify commit/clean status/branch counts and stop. No push or Tasks 3/4.
+- Staged inspection complete: exact ten-document inventory, index matches worktree,
+  local links/DONE rows valid, protected hashes and review ZIP unchanged. Targeted
+  staged secret-pattern scan found no candidates; no ZIP/environment/cache/egg-info/
+  credential/generated files staged. git diff --cached --check passes. Proceed
+  with the authorized single final acceptance commit, then verify tree/ref status.

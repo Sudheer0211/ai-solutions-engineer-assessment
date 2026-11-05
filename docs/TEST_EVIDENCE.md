@@ -691,3 +691,174 @@ test, wire service, or Ruff command was rerun during this Git checkpoint.
 - Only acceptance documentation changed this session; ADR-014's accepted design
   and limits are unchanged. One descriptive T2-005 commit is authorized; identity
   is recorded in Git history/session report. No push or T2-006 scope authorized.
+
+## E017 — 2026-11-04: T2-006 final audit, fresh local execution
+
+Date/timezone: America/Los_Angeles. Baseline aa343b3, main initially clean/index
+empty, ahead 4/behind 0 versus existing local origin/main; no fetch. These are
+fresh executions, not the user's earlier independent review results.
+
+Both task interpreters report Python 3.12.16, MSC v.1944 64-bit AMD64. Full
+installed version inventory and traceability: [TASK2_FINAL_AUDIT.md](TASK2_FINAL_AUDIT.md).
+Task 1 MCP 2.3.0/Pydantic 2.12.5; Task 2 HTTPX 0.28.1/FastAPI 0.162.0/Pydantic
+2.14.2/Uvicorn 0.54.0. Both pytest 9.2.0/Ruff 0.17.3. Task 2 dev asgi-lifespan
+2.1.0; separate root pytest-asyncio 1.4.1.post1. uv 0.13.7.
+
+### Complete regression and static checks
+
+| Cwd | Exact command | Actual result / exit |
+| --- | --- | --- |
+| Repository root | `.\.venv\Scripts\python.exe -m pytest -q -o cache_dir=.cache/pytest --tb=short` | 149 passed in 38.44s; exit 0 |
+| Repository root | `.\.venv\Scripts\python.exe -m ruff check task1 tests` | All checks passed; exit 0 |
+| Repository root | `.\.venv\Scripts\python.exe -m ruff format --check task1 tests` | 17 files already formatted; exit 0 |
+| task2/ | `.\.venv\Scripts\python.exe -m pytest -q --tb=short` | 452 passed in 13.87s; exit 0 |
+| task2/ | `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed; exit 0 |
+| task2/ | `.\.venv\Scripts\python.exe -m ruff format --check src tests` | 16 files already formatted; exit 0 |
+
+Both suites: zero failures/skips/warnings/xfails. Task 1 executes outside the
+Windows sandbox for official MCP named-pipe access. Task 2 includes all 400 prior
+and 52 wire cases, not 452 plus another 52. No tests/markers/assertions changed.
+
+Read-only Python/JSON inspection of task2/.cache/http_wire_summary.json: 12 child
+processes, zero alive/forced cleanups/live reader threads; ten normal exits 0,
+intentional killed peer 1, invalid-config proxy 3. All 33 dedicated local rejection
+cases journal zero protocol calls. Concurrent repeated IDs remain isolated: two
+denials, ten approved held calls across 12 independent clients. Process settings,
+failure/journal assertions and exclusions remain ADR-014/CONTRACT.md.
+
+### Installation/import and CLI probes (not additional pytest passes)
+
+From repository root, actual successful clean-install command and environment:
+
+```powershell
+$env:UV_CACHE_DIR = Join-Path (Get-Location) 'task2/.cache/uv'
+$env:UV_PYTHON_INSTALL_DIR = Join-Path (Get-Location) '.runtime'
+$env:UV_PROJECT_ENVIRONMENT = Join-Path (Get-Location) 'task2/.cache/t2006-venv'
+.\.tools\bin\uv.exe sync --locked --offline --project task2 --extra dev --extra serve --python 3.12.16
+```
+
+Exit 0; built editable assessment-task2-proxy and installed 27 packages into this
+new ignored environment, not either accepted task environment. Python stdin
+importlib.metadata/tomllib assertions with `.\.cache\t2006-venv\Scripts\python.exe -`
+from task2/: all 27 versions exactly match uv.lock; app/security/upstream imports
+succeed; Task 1 distribution absent. The original task2/.venv import probe also
+passes and has no Task 1 distribution. Root-cwd metadata initially sees root local
+egg-info through sys.path; checking from task2/ resolves this harmless cwd artifact.
+
+```powershell
+# From task2/
+$env:UV_CACHE_DIR = Join-Path (Get-Location) '.cache/uv'
+..\.tools\bin\uv.exe pip check --python .cache/t2006-venv/Scripts/python.exe
+```
+
+Exit 0; 27 packages checked, all compatible. Initial setup diagnostics: `Get-Command
+uv` found no global uv; repository `.tools/bin/uv.exe --version` succeeded. First
+offline sync using root .cache exited 1 (missing cached Pydantic wheel); second
+using task2/.cache/uv exited 1 (Windows sandbox denied setuptools temporary egg-info).
+Same sync outside sandbox succeeded offline. Initial pip check with default user
+cache printed access-denied; explicit writable cache rerun above exited 0. These
+are recorded setup/environment failures, not passing tests or production defects.
+
+Python stdin audit probe through fresh `.\.cache\t2006-venv\Scripts\python.exe -`
+executes Uvicorn module CLI using runpy and arguments:
+`task2_proxy.app:create_app --factory --host 127.0.0.1 --port 0 --no-access-log`.
+A daemon stdin supervisor raises SIGINT for graceful hidden Windows shutdown;
+no ASGI app wrapper/injected transport/settings. Actual defaults/environment loaders
+run. Separate existing stdlib test peer binds 127.0.0.1:0. Ephemeral random inbound,
+upstream and peer-control credentials exist only in process env/memory.
+
+- Missing credential 401 and protected viewer 403 preserve expected challenge and
+  -32001/exact Unauthorized Tool Call/id=audit-deny. Journal remains exactly empty.
+- Viewer tools/list (including admin definitions), admin admin_reset, admin/viewer
+  read each 200; exactly four entries match original request/response bytes and
+  upstream auth, with no client-token/cookie/spoofed-role presence.
+- Startup/shutdown complete; CLI and peer exit 0, zero forced cleanup/live readers,
+  zero captured credential leaks. Probe exit 0. Six manual smoke cases are not added
+  to the 452 pytest count. Port 0 replaces documented port 8000 only for isolation.
+- Sanitized probe summaries/version metadata remain ignored cache artifacts, not
+  required submission evidence or stored journals/credentials.
+
+### Security/publication and preservation inspection
+
+Python stdin subprocess/regex scan of `git rev-list --objects --all` and `git
+cat-file` inspected 98 unique reachable blobs across nine commits, plus current
+tracked files. Private-key/provider-token/credential-assignment/Bearer/credential-URL
+patterns produced 16 path/rule/fingerprint groups; context review classified all
+as descriptive text or invalid synthetic test credentials/URLs. No actual secret
+or sensitive customer-data finding. No raw secret candidates printed. This is a
+scoped inspection, not an external secret-scanner/CVE certification.
+
+`git ls-files`, historical path inventory, `git status --short --ignored`, `git
+check-ignore -v` and remote URL inspection show no tracked environment/cache/egg-info/
+ZIP/.env/private-key/generated artifact or embedded remote credential. ZIP/report
+rules are local info/exclude, not portable .gitignore; publication precaution is
+documented. Ignored-tree enumeration warned about inaccessible stale sandbox cache
+directories; all tracked files/reachable blobs were still inspected. No deletion.
+
+Read-only SHA256 baseline and `git diff --exit-code 6056bc7 HEAD -- task1 tests
+pyproject.toml uv.lock .python-version manual_refund_lab.py manual_validation_lab.py`
+exit 0 verify published Task 1 preservation. Final tracked hash/diff/index checks
+are required after documentation updates. No source/test/dependency/configuration
+change, commit/push or Task 3/4 work; Task 2 final independent audit review PENDING.
+
+New README reviewer command executed after the full run, from task2/:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py -k 'authorized_calls_preserve_request_and_response_bytes or discovery_is_transparent_including_admin_tools or viewer_denial_preserves_id_and_zero_journal'
+```
+
+Exit 0: **10 passed, 42 deselected in 1.51s**, no failures/skips/warnings. This
+subset verifies the newly documented command, not a replacement for the 452-case
+full run; deselected cases are not skips. The cached summary is regenerated by
+each invocation, so the 12-child full-run result above was read before this subset.
+Python stdin documentation checks exit 0: local Markdown links resolve; every
+explicit matrix test reference exists in AST; embedded README client code compiles
+(syntax check, not a second execution of that exact client snippet). CLI smoke
+evidence above exercises the same discovery/denial behavior with an ephemeral port.
+`git diff --check` exits 0; Git emits only LF/CRLF conversion advisories, distinct
+from the zero pytest warnings. No accepted implementation/test changes followed.
+
+Final Python stdin SHA256/allowlist/history-prefix assertions exit 0: 44 of 53
+baseline files byte-identical; exactly nine tracked documentation modifications
+and one new docs/TASK2_FINAL_AUDIT.md. Every accepted source/test/configuration/
+dependency/lock/manual-lab file is unchanged; historical build/decision/evidence/
+requirements prefixes retained. HEAD aa343b3 unchanged, index empty, ahead 4/behind
+0 local origin/main. Current 54 submission files pass targeted provider-key/private-
+key rescan. Full tracked diff reviewed; local-link/test-reference checks passed.
+Latest README subset cleanup separately reports two children, both exit 0, zero
+alive/forced cleanup/live readers; this does not replace the full run's 12-child
+evidence. No production defect or unresolved implementation blocker discovered.
+
+## E018 — 2026-11-04: T2-006 independent acceptance and final Git checkpoint
+
+Reported independent evidence from the user: final verdict APPROVED; Task 2 is
+assessment-ready within documented requirements. All eight traceability rows,
+references to previously reviewed source/tests, final evidence and submission
+documentation were reviewed and found consistent. No new execution commands,
+versions or timings were supplied with this review; none are invented here.
+E017 remains the actual local 452 Task 2/149 Task 1 and Ruff execution record.
+No pytest/Ruff/install/service probes rerun during this documentation checkpoint.
+
+- Read governance, ledger, audit report and current docs. Initial Git status/diff/
+  index/log/count inspection: HEAD aa343b3, nine modified tracked docs, new audit
+  report, untracked task2_final_audit_review.zip, empty index, ahead 4/behind 0 local
+  origin/main. No fetch or live remote-state claim.
+- Python stdin SHA256/allowlist assertions confirm only the expected documentation
+  differs from HEAD; captured 53 tracked-file hashes, new report and archive hash.
+  Added local-only info/exclude entry for the review ZIP; retained its bytes.
+- Record independent acceptance and DONE statuses in current docs; preserve actual
+  E017 commands/results, original requirements and accepted architecture/limitations.
+  Stage only ten approved documentation files; no implementation/tests/configuration/
+  dependencies/lockfiles or local environments/caches/credentials/generated artifacts.
+- One descriptive final documentation/acceptance commit authorized; no push, test
+  rerun or Tasks 3/4. Staged inspection and resulting commit identity are recorded
+  below/in Git history, separately from historical automated verification.
+- Actual staged inspections: Python stdin SHA256/allowlist/history-prefix/link/
+  status assertions pass; exactly ten documentation files, staged bytes match
+  worktree with Git EOL normalization. All protected source/tests/config/dependency/
+  lockfiles and retained review ZIP unchanged. Targeted staged private-key/provider-
+  token/credential-URL patterns find zero candidates; no local artifacts staged.
+- git diff --cached --check exits 0. Reviewed complete diff, staged stat/name-status
+  and final audit report; no unexpected changes. No test/Ruff rerun needed or made.
+  Proceed with the one approved documentation commit; resulting identity/inventory
+  is the Git source-of-truth record and final session report. No push.
