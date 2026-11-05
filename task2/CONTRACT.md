@@ -297,3 +297,97 @@ push or T2-005 work is authorized. E014 distinguishes reported from local eviden
 Primary references: [FastAPI lifespan](https://fastapi.tiangolo.com/advanced/events/),
 [ASGI tests](https://fastapi.tiangolo.com/advanced/async-tests/),
 [Starlette request streaming](https://starlette.dev/requests/).
+
+## T2-005 — Real HTTP wire verification (2026-11-04)
+
+Scope: test-only loopback TCP harness against accepted be9ddd8. No production
+module, dependency version, prior test, HTTP policy or lifecycle redesign. Only
+pytest marker metadata changes in pyproject.toml. No T2-006, sessions/SSE/OAuth,
+Tasks 3/4 or push. Independent acceptance of T2-005 was confirmed by the user on
+2026-11-04; one approved milestone commit is now authorized. No test or production
+implementation changes are authorized by this Git checkpoint.
+
+### Reproduction and process configuration
+
+Use the existing dev + serve extras and run the full suite from task2/:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+`tests/http_wire_server.py` launches either a stdlib ThreadingHTTPServer fixture
+or Uvicorn serving the real create_app. `http_wire_support.py` owns subprocesses,
+event readers, TCP clients/control and cleanup; `test_http_wire.py` supplies 52
+wire cases, marked http_wire. No ASGITransport/MockTransport is used by these cases.
+
+- Every listener is 127.0.0.1 with child-owned port 0. The proxy passes its bound
+  socket to public uvicorn.Server.run(sockets=...), avoiding positive-service
+  free-port probe/rebind races. There are no public listeners/external RPC targets.
+- Proxy process: pinned Python 3.12.16/Uvicorn 0.54.0, one worker, no reload,
+  asyncio loop, h11 HTTP, lifespan on, access logs off, proxy headers off,
+  2-second graceful shutdown, 1-second keepalive. The observer only relays ASGI
+  messages and emits lifecycle/completion events; app headers/body remain unchanged.
+- Trusted test settings: 4096-byte input bound, 0.5s body deadline, 3s connect,
+  1s write/pool, normally 0.5s read/4s total. The dedicated concurrency pair uses
+  5s read/6s total to hold all ten approved requests until explicit release.
+- Independent peer: stdlib HTTP/1.1 ThreadingHTTPServer, loopback, backlog 128;
+  deterministic synthetic discovery/results/errors. Protocol calls are journaled
+  in memory before responding. Token-protected control/reset/wait/release operations
+  and health requests are excluded from the protocol-call count.
+- Fresh synthetic tokens exist only in process memory/environment. Journal header
+  fields are booleans/names (expected upstream auth, forbidden client token seen,
+  cookie/spoofed-header presence); raw credentials are never journaled. Synthetic
+  request/response bytes are available in memory for exact comparisons, not files.
+  Child output is checked against all fixture secrets before cleanup completes.
+- Readiness: bounded child bound/startup events plus real GET /health or /mcp
+  probes. Event/startup deadlines are 10s; readiness poll waits are not timing
+  assertions. Test request deadlines are 5s (7s for concurrency); journal wait/
+  completion uses a Condition and 5s predicate deadline. No sleep-based assertions.
+- Cleanup sends stdin stop/EOF, waits up to 6s per child, with terminate/kill
+  fallbacks bounded at 2s each; process waits, pipe closure and reader joins are
+  explicit. Failure during enter and exceptions inside a test use the same finally
+  path. Proxy stdin shutdown exercises actual lifespan cleanup; no worker descendants.
+
+### Observed results and boundaries
+
+E015: full suite **452 passed in 13.14s**, 0 failures/skips/warnings; Ruff passes,
+16 Python files formatted. Existing 400 cases unchanged. All production modules,
+dependency versions and Task 1 are unchanged; Task 1 tests were not rerun.
+
+- 33 dedicated local-rejection cases each record exactly zero upstream calls:
+  Bearer failures (7), viewer protected IDs (5), encoded-name/duplicate/malformed/
+  invalid-ID/batch cases (10), notifications (3), oversize length/chunked (2),
+  media/encoding (3), non-POST methods (2) and incomplete-body deadline (1).
+- Independent connections concurrently reuse ID=1: 12 calls, 2 viewer denials,
+  exactly 10 permitted calls held simultaneously in the peer journal before gate
+  release. Each result matches its owner and upstream auth context; no client
+  tokens/cookies/spoofed role headers reach the peer.
+- Admin/ordinary calls, unfiltered discovery, raw length/chunked bytes, response
+  bodies/errors/IDs/status and safe headers pass. Slow peer gives 504 and one
+  attempted/journaled call; drop/malformed/redirect gives 502 with one call/no retry.
+  Peer kill after confirmed receipt gives controlled 502. Connection refusal uses
+  a reserved bound non-listening loopback socket, yielding controlled 502 and no
+  peer protocol receipt; this differs from a pre-forward authorization rejection.
+- A partial-body client disconnect completes the observed app handler with an
+  attempted 400 and zero upstream delivery; the disconnected client cannot receive
+  that response. A subsequent normal request succeeds. Body deadline returns 408.
+- Sanitized .cache/http_wire_summary.json reports 12 child processes (6 pairs),
+  0 alive, 0 forced cleanups, 0 live reader threads. Ten normal exits are 0; the
+  intentionally killed peer exits 1 and invalid-config proxy exits 3 on Windows.
+  The artifact is ignored and contains no journal bodies or credentials.
+- Initial refusal test expected 502 with only 0.5s connect timeout and got a valid
+  504 instead. Direct Windows probing produced timeout at 0.5s, actual refusal
+  WinError 10061 at a 3s deadline (about 2.03s). Only test settings were corrected;
+  no production defect, assertion weakening or exception-policy change.
+
+Verified on this Windows/Python/Uvicorn/h11 loopback setup only. This is independent
+fixture interoperability, not a real vendor MCP service, TLS/DNS, HTTP/2, load/rate
+qualification or full Streamable HTTP/session support. Application-rejected requests
+and controlled failures are covered; arbitrary malformed-wire/smuggling behavior or
+all disconnect/OS half-open cases are not exhaustively proven. The user reports
+independent passes for the 400 existing and 52 wire tests, 33 zero-forwarding cases,
+and all 12 children reaped without forced cleanup. E016 distinguishes this reported
+independent evidence from local E015 executions. T2-005 is ACCEPTED; T2-006 still
+requires separate authorization. No push is authorized.

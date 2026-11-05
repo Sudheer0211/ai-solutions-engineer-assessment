@@ -4,12 +4,13 @@ This project integrates accepted T2-001/T2-002 guards and the T2-003 HTTPX adapt
 with a T2-004 FastAPI factory and POST /mcp endpoint.
 See [CONTRACT.md](CONTRACT.md) for exact requirements, choices and deferred work.
 
-Checkpoint verification (2026-11-04): 400 Task 2 cases passed; Ruff lint and format
-checks passed. See root docs/TEST_EVIDENCE.md entries E008/E009/E011/E013 for actual results.
+Checkpoint verification (2026-11-04): 452 Task 2 cases passed, including 52 real
+loopback wire cases; Ruff lint and format pass. See docs/TEST_EVIDENCE.md E015.
 Independent engineering review accepted T2-001/T2-002, including the Decimal fix,
 as confirmed by the user on 2026-11-04. The user also confirmed independent
 acceptance of T2-003 and T2-004 on 2026-11-04. Whole Task 2 remains IN_PROGRESS.
-One approved T2-004 milestone commit is authorized; no T2-005 work or push.
+T2-005 wire verification was independently accepted, confirmed by the user on
+2026-11-04. One approved milestone commit is authorized; no T2-006 work or push.
 
 From task2/ with uv installed:
 
@@ -71,7 +72,7 @@ failure kinds, credential isolation, cookie rejection and lifecycle responsibili
 
 No redirects/retries, SSE, compressed requests/responses, OAuth or MCP session
 negotiation. ASGI/mock integration verifies endpoint/guard/adapter composition;
-actual socket interoperability belongs to separately authorized T2-005.
+actual loopback socket verification is now recorded in T2-005/E015.
 
 HTTP application: create_app() loads trusted settings during lifespan startup and
 owns one pooled adapter per app/event loop. Optional settings/transport arguments
@@ -92,3 +93,14 @@ HTTP media/size/deadline failures return 415/413/408 before parsing. Batches fai
 closed; recognized notifications get empty 400/403 responses. Upstream failures
 map to generic 502/503/504 and -32603 with caller ID; valid upstream bodies/statuses
 are unchanged. See CONTRACT.md for the complete status/header/lifecycle matrix.
+
+T2-005 wire tests launch the exact factory through Uvicorn in a subprocess plus an
+independent stdlib HTTP peer, both on child-owned ephemeral 127.0.0.1 ports. Parent
+clients use real TCP; gates/events/journal counts coordinate faults and concurrency.
+Run only these cases with `python -m pytest -m http_wire -q`; full-suite setup above
+requires both dev and serve extras, without skips for unavailable Uvicorn/loopback.
+The peer journal remains in memory and redacts auth values. The ignored sanitized
+.cache/http_wire_summary.json records child cleanup outcomes. All 12 children were
+reaped with zero forced cleanups/live readers. No real external service is contacted.
+Production modules, prior 400 tests and dependency versions remain unchanged.
+See CONTRACT.md for exact process settings, journal results and Windows-only limits.

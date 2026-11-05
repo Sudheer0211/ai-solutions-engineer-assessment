@@ -280,3 +280,35 @@
   optional serve extra. Only Task 2 environment/lock changes; no sockets started.
 - Evidence: E013, 400 passes and both Ruff checks; all prior 300 cases/modules retained.
   Affected: app.py/test_app.py, Task 2 config/lock/docs and governance records.
+
+## ADR-014 — Independent loopback processes, redacted journal and event-driven faults
+
+- Date: 2026-11-04 (America/Los_Angeles); task: T2-005; status: ACCEPTED after
+  independent engineering review, confirmed by the user. Production baseline
+  be9ddd8 and approved wire tests unchanged.
+- Decision: test-only stdlib ThreadingHTTPServer peer and real Uvicorn/HTTPX proxy
+  subprocesses, parent http.client/raw-socket clients. Each child binds 127.0.0.1:0;
+  proxy supplies its socket to public Server.run. Existing create_app is wrapped
+  only by a relaying ASGI event observer; no parser/runner/production monkeypatch.
+- Synchronization: JSON stdout bound/lifespan/request-finished events, readiness
+  HTTP probes, peer Condition/Event gates and bounded parent requests/waits. The
+  concurrency test confirms 10 permitted receipts pending before releasing them;
+  no sleep-duration assertions. Cleanup uses stdin graceful exit then bounded
+  terminate/kill fallbacks, explicit waits/pipe closure and reader joins.
+- Evidence: in-memory request/response byte journal with auth/cookie/role booleans
+  and header names; no stored raw auth. Synthetic tokens are process-local/env only.
+  Authenticated peer control/health operations do not count as protocol requests.
+  Only sanitized child outcome metadata is persisted in an ignored cache artifact.
+- Alternatives: ASGI/mock-only tests (cannot expose real framing/connect behavior),
+  external MCP peer (uncontrolled/network scope), parent free-port probe then child
+  rebind (race). Independent stdlib peer avoids using the same ingress framework.
+- Tradeoffs: test-only mock protocol/tools, Windows/h11 evidence, OS-specific
+  refused-connect delay and no TLS/DNS/HTTP2/session/load proof. Refusal probe showed
+  0.5s was a timeout; raising only fixture connect timeout to 3s exposes actual
+  WinError 10061. Production mapping already distinguished timeout/refusal correctly.
+- Affected: tests/http_wire_server.py, http_wire_support.py, test_http_wire.py;
+  pytest marker only in pyproject; no new dependency or production-source change.
+- E015: 452 total passes/52 wire cases, Ruff pass; 33 local-rejection cases have
+  zero protocol receipts. Cleanup: 12 children reaped, zero forced/live readers;
+  two deliberate nonzero exits accounted for. Independent acceptance recorded in
+  E016; T2-006 remains unauthorized.

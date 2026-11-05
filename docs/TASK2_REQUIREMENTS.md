@@ -107,3 +107,39 @@ one descriptive commit of approved T2-004 source/tests/dependencies and relevant
 documentation only. Exclude environments, caches, egg-info, credentials and ZIP
 review artifacts. Do not alter the accepted implementation, push or begin T2-005.
 This supersedes only the preceding no-commit restriction for this Git checkpoint.
+
+## Subsequent T2-005 authorization (2026-11-04)
+
+User authorizes real HTTP wire verification against accepted be9ddd8/400 tests:
+
+- Launch existing proxy through Uvicorn and an independent mock HTTP/JSON-RPC peer
+  in separate processes; use real loopback TCP clients, dynamic ports, deterministic
+  fixtures, explicit readiness, bounded startup and reliable cleanup. No public
+  listeners or external RPC services.
+- Verify missing/invalid/malformed/duplicate Bearer credentials, viewer protected
+  denial HTTP 403/-32001/exact message/applicable ID, zero journaled upstream calls
+  for local rejection, admin access, ordinary calls for both roles and transparent
+  discovery including admin definitions. Verify escaped names/duplicate keys and
+  isolation of inbound tokens/cookies/spoofed role headers from upstream.
+- Verify original request/response/error bytes and IDs; Content-Length/chunked,
+  oversize/media/encoding, malformed RPC/IDs, notifications/batches, statuses/headers.
+- Test concurrent independent clients/repeated IDs, slow-peer deadlines, refusal,
+  unexpected process termination, disconnects, startup/shutdown and failed-test
+  cleanup using synchronization/bounded waits, not unreliable sleep assertions.
+- Prefer test fixtures/harness over production edits; reproduce and document any
+  defect before a narrow correction. Preserve Task 1/accepted Task 2 behavior.
+- Run full Task 2 suite and Ruff; Task 1 regressions only if shared code/environment
+  changes. Record actual counts, journal/process outcomes/failures/limits/docs.
+- Stop for independent review; do not claim acceptance, commit/push, start T2-006,
+  implement full MCP sessions/SSE/OAuth or Tasks 3/4. Earlier no-wire restrictions
+  are historical; new architecture choices are documented separately in the contract.
+
+## T2-005 independent acceptance and commit authorization (2026-11-04)
+
+User confirms independent acceptance: 400 prior/52 wire tests passed, 33 rejection
+cases prevent upstream delivery, 12 children reaped without forced cleanup, and
+production/prior tests match the T2-004 review snapshot. Authorize one descriptive
+commit of approved wire tests, pytest marker and related engineering docs only.
+Exclude environments/caches/credentials/review ZIPs. Do not push, begin T2-006 or
+change Task 1/accepted implementation. This supersedes only the prior no-commit
+restriction for this Git checkpoint; no additional implementation scope is granted.

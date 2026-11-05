@@ -419,3 +419,79 @@ investigations and material changes; Git remains the line-level code history.
   checks and no targeted secret candidates. Environments/caches/egg-info/credentials/
   ZIPs excluded; accepted source/tests/dependencies byte-identical. Proceed with
   the one authorized commit, then verify its tree/status and stop.
+
+## 2026-11-04 — M023: T2-005 real HTTP wire baseline
+
+- Read governance/accepted HTTP contract and modules. Clean at be9ddd8; captured
+  hashes for all 50 tracked files. Existing Task 2 evidence: 400 passes; Task 1
+  remains DONE with historical 149 passes. No implementation/environment changes.
+- Recorded W1-W8 before harness work. Plan child-owned ephemeral loopback ports,
+  real Uvicorn proxy and independent stdlib HTTP peer, in-memory redacted journal,
+  explicit startup/HTTP-completion/control events and bounded process cleanup.
+- Use exact existing create_app/settings/adapter; test-only launcher configures
+  smaller finite limits/timeouts. Do not persist tokens or raw auth headers.
+- Next: build/test harness, real TCP matrix and failure synchronization. Reproduce
+  and document defects before any narrow production fix. No T2-006/commit/push.
+
+## 2026-11-04 — M024: Initial wire run and refusal-fixture investigation
+
+- New test-only child server/support/wire matrix runs real loopback Uvicorn and
+  independent stdlib peer. First `pytest tests/test_http_wire.py -q -x --tb=short`:
+  45 passed, 1 failed in 5.27s. Refusal fixture got controlled 504, expected 502.
+- No production defect established: fixture reserves a bound non-listening port,
+  while its connect deadline is 0.5s. Investigate OS refusal/timeout behavior with
+  a direct loopback socket probe before adjusting test timing configuration.
+- Original source and tests untouched; no production fix. Next: choose a bounded
+  connect deadline that distinguishes actual refusal from configured read timeout,
+  then rerun all wire cases and full suite. Initial Ruff import-sort issue fixed.
+- Direct pinned-Python loopback probe: the bound non-listening endpoint produced
+  TimeoutError with a 0.5s deadline, but ConnectionRefusedError/WinError 10061 with
+  a 3s deadline (observed about 2.03s; diagnostic only, no timing assertion).
+  Increased only fixture connect timeout to 3s/total 4s; production unchanged.
+  Concurrency uses a separate 5s-read fixture and explicit peer gate: prove all
+  10 allowed calls are simultaneously journaled/pending before releasing them.
+
+## 2026-11-04 — M025: T2-005 full wire verification
+
+- Corrected only test refusal timing; wire-only rerun: 49 passed in 10.98s.
+  Added method/body-deadline cases, case-insensitive response-header verification,
+  child output redaction checks and sanitized cleanup metadata.
+- Final complete Task 2 run: **452 passed in 13.14s**, zero failures/skips/warnings.
+  Final Ruff lint/format pass (16 files). All prior 400 cases retained. E015.
+- 52 wire cases use actual TCP and independent processes. 33 dedicated local
+  rejection cases each journal zero protocol calls; disconnect also zero before
+  recovery. Concurrency holds 10 permitted requests before release, 2 viewer denials
+  never delivered, repeated IDs/owners isolated. Timed peer/refusal/kill/drop faults
+  produce controlled statuses; byte/error/discovery/header contracts pass.
+- Cleanup summary: 12 child processes, 0 alive, 0 forced cleanup, 0 live reader
+  threads; intentional peer kill exit 1 and invalid-config proxy exit 3 accounted
+  for, ten normal exits 0. Real lifespan shutdown observed; no secret output.
+- ADR-014 records dynamic loopback sockets, independent peer/journal, event gates,
+  resource ownership and Windows limits. No production code or dependencies changed;
+  no Task 1 rerun needed, no T2-006, commit or push. Independent review PENDING.
+- Affected: three new test harness/matrix files, pytest marker, Task 2 README/
+  contract/requirements and governance records. Next: integrity/diff checks, final
+  verified ledger status and stop for independent review, without acceptance claim.
+- Integrity/diff checks passed: 41 baseline files unchanged, 9 intended tracked
+  modifications/3 new test files; all production code/prior tests/root pins/lock
+  retained. Historical prefixes and Task 1/3/4 rows preserved. HEAD be9ddd8 unchanged,
+  index empty. W1-W8 verified; T2-005 DONE for verification, independent review
+  PENDING, not accepted. No further source/test changes after 452 passes. Stop here.
+
+## 2026-11-04 — M026: T2-005 independent acceptance and Git checkpoint
+
+- User confirms independent acceptance: 400 existing/52 wire passes, 33 zero-
+  forwarding rejection cases and 12 children reaped without forced cleanup;
+  production/prior tests match T2-004 snapshot. Reported evidence, not new local
+  commands. Updated ledger/current restart gate, ADR-014 and Task 2 docs to ACCEPTED.
+- Initial complete diff inspection: 9 tracked modifications, 3 new test files and
+  task2_t2005_review.zip; empty index, HEAD be9ddd8, ahead 3/behind 0 origin/main.
+- Scope: exact 12-file wire-test/marker/governance allowlist. Preserve production,
+  Task 1 and every accepted test; no tests rerun. Exclude local environments/caches/
+  credentials/ZIPs without deleting artifacts.
+- Next: staged content/preservation checks, one approved T2-005 commit and final
+  Git status verification. No push, T2-006 or other implementation is authorized.
+- Staged checks complete (E016): exact 12-file allowlist, clean whitespace/content
+  checks, no targeted secret candidates or local artifacts. Reviewed wire tests,
+  marker, production/prior tests and dependencies unchanged; no tests rerun. Proceed
+  with the one approved milestone commit, then verify tree/status and stop.

@@ -579,3 +579,115 @@ E013 retains the actual local pytest/Ruff record. No tests or Ruff rerun here.
 - Governance changes record acceptance only; ADR-013/HTTP policies and accepted
   implementation are unchanged. One descriptive T2-004 commit is authorized;
   its identity is recorded in Git history and the session report. No push or T2-005.
+
+## E015 — 2026-11-04: Real loopback HTTP wire verification (T2-005)
+
+Baseline be9ddd8, existing Task 2 Python 3.12.16 environment and already installed
+Uvicorn 0.54.0/FastAPI 0.162.0/Starlette 1.10.0/HTTPX 0.28.1. No installs or
+dependency/lock changes. Tests ran with real loopback TCP in the default sandbox;
+no ASGI/HTTPX mock transport in the new wire matrix. No external RPC target.
+
+| Actual command/check | Actual result |
+| --- | --- |
+| Read AGENTS/ledger/accepted HTTP modules/contracts; Git status/log; pinned-Python SHA256/signature probe | Clean at be9ddd8; 50 tracked hashes captured; public Server.run(sockets=...) confirmed |
+| `.\.venv\Scripts\python.exe -m ruff format src tests` from task2, initial | Exit 0; 3 new files reformatted, 13 unchanged |
+| `.\.venv\Scripts\python.exe -m ruff check src tests`, initial | Exit 1; one I001 import-order issue in new test file |
+| `.\.venv\Scripts\python.exe -m ruff check --fix tests/test_http_wire.py` | Exit 0; one import-order issue fixed, no assertion changes |
+| `.\.venv\Scripts\python.exe -m pytest tests/test_http_wire.py -q -x --tb=short`, first | Exit 1; **45 passed, 1 failed in 5.27s**; reserved non-listening endpoint produced 504 at the fixture's 0.5s connect deadline, rather than expected refusal/502 |
+| Python stdin direct socket probe via `.\.venv\Scripts\python.exe -B -` | Exit 0; same owned loopback non-listener: 0.5s deadline -> TimeoutError; 3s deadline -> ConnectionRefusedError/WinError 10061, observed 2.032s. Diagnostic only; no duration assertion |
+| Intermediate Ruff format/check after fixture connect deadline correction and concurrency gate | Exit 0 each; 16 files unchanged, all checks passed |
+| Same wire-only pytest command after fixture correction | Exit 0; **49 passed in 10.98s**, no failures/skips/warnings |
+| Ruff format/check after adding method/body-deadline coverage and cleanup summary | Exit 0 each; 2 files reformatted, 14 unchanged; all checks passed |
+| Final `.\.venv\Scripts\python.exe -m pytest -q --tb=short` from task2 | Exit 0; **452 passed in 13.14s**, **0 failures, 0 skips, 0 warnings**, no xfails |
+| Final `.\.venv\Scripts\python.exe -m ruff check src tests` | Exit 0; all checks passed |
+| Final `.\.venv\Scripts\python.exe -m ruff format --check src tests` | Exit 0; 16 files already formatted |
+| `Get-Content -Encoding UTF8 .cache/http_wire_summary.json` | 12 children, 0 alive, 0 forced cleanups, 0 live reader threads; ten exits 0, deliberately killed upstream exit 1, invalid-config proxy exit 3 |
+
+First failure was a fixture deadline mismatch, documented in M024 before changing
+it. Windows reported actual refusal after about 2s; the production timeout/refusal
+policy was correct. Only test configuration changed to 3s connect/4s total. No
+production defect/fix, weakened assertion, skipped test or baseline regression.
+
+Process configuration: six independent proxy/peer pairs (12 child processes) in the
+full run; dynamic child-owned 127.0.0.1 ports; hidden subprocesses on Windows, clean
+minimal child environments, no tokens in argv/files. Proxy runs actual create_app
+through public Uvicorn Server.run with its own socket, worker=1, asyncio/h11,
+lifespan=on, access_log=False, proxy_headers=False, no reload, 2s graceful shutdown,
+1s keepalive. A non-mutating ASGI observer emits lifecycle/request-finished events.
+Peer is independent stdlib ThreadingHTTPServer/HTTP1.1/backlog128. Parent clients
+use http.client and raw sockets; no fake network transports. Trusted fixture limits
+are 4096 bytes, 0.5s body/read (5s read for gated concurrency), 3s connect, 1s
+write/pool, total 4s (6s concurrency). Readiness/events 10s, journal predicates 5s,
+normal clients 5s/concurrency 7s, stop wait 6s then bounded 2s terminate/kill fallback.
+
+Actual journal evidence:
+
+- 33 dedicated rejection cases each assert exactly zero protocol receipts: auth 7,
+  viewer IDs 5, bypass/malformed/invalid-ID/batch 10, notifications 3, oversize 2,
+  media/encoding 3, methods 2, body deadline 1. Incomplete client disconnect also
+  records zero before a successful recovery request records exactly one.
+- Admin protected calls and both ordinary roles succeed; discovery still includes
+  admin tools. Request and upstream response/error bytes/IDs/status remain intact;
+  length/chunked bodies pass unchanged, forbidden headers/cookies are absent and
+  safe downstream headers/framing are observed over TCP.
+- Concurrent independent connections share ID=1: 12 requests, 2 viewer denials and
+  exactly 10 approved entries simultaneously held in the peer journal, then released
+  by control event. Every owner/result matches; upstream credential check succeeds
+  and client-token/cookie/role-header flags remain false.
+- Slow peer: observed receipt then configured 504 with caller ID, exactly one call
+  after gate release. Drop/malformed/redirect: controlled 502 and one call, no retry.
+  Process kill: one confirmed receipt before intentional peer termination, controlled
+  502. Refusal: actual 502 from unavailable reserved endpoint, zero peer receipts.
+- Partial-body disconnect waits for the handler-finished event (attempted 400,
+  not a response received by the disconnected client). Body deadline produces actual
+  408. Proxy recovers. Startup failure and raised test-body assertion clean up both
+  children. Normal proxy teardown includes observed lifespan.shutdown.complete.
+
+Peer control/health calls do not count as protocol requests. Journal bodies are
+synthetic and stay in memory; raw auth values are never recorded, only booleans/
+header names. Every harness checks child captured output against fixture tokens;
+none leaked. The ignored summary contains only child outcome metadata.
+
+Task 1 tests were not rerun: no shared code/environment changed. All prior 400 Task 2
+cases remain passing. This is Windows loopback fixture interoperability, not vendor
+MCP/TLS/DNS/HTTP2/load/full-session proof. Independent review PENDING; no T2-006,
+commit or push. Full boundary/configuration details: task2/CONTRACT.md and ADR-014.
+
+Final read-only integrity check: Python stdin SHA256/tomllib assertions confirm
+9 intended tracked modifications, 41 byte-identical baseline files and exactly
+3 new test files. Every production module, original Task 2 test, root/Task 1 code,
+dependency configuration/lock and historical documentation prefix is preserved;
+only pytest markers changed in Task 2 configuration. Task 1/3/4 ledger rows intact.
+New files pass whitespace and targeted secret-pattern inspection. Sanitized cached
+cleanup metadata matches 12 reaped children/zero live readers or forced cleanup.
+`git diff --check` exited 0; HEAD be9ddd8 and empty index unchanged. No source/test
+edits after the 452-pass run; final updates are documentation only. No commit/push.
+
+## E016 — 2026-11-04: T2-005 independent acceptance and Git checkpoint
+
+Reported independent evidence from the user: 400 existing tests and 52 wire tests
+passed independently; 33 rejection cases enforce zero upstream forwarding; all
+12 children reaped without forced cleanup; production/prior tests match T2-004's
+review snapshot. Commands/timings were not provided; these are reported results,
+not new local executions. E015 remains the actual local pytest/Ruff record. No
+test, wire service, or Ruff command was rerun during this Git checkpoint.
+
+- Read governance and inspected complete tracked diffs plus all three new wire
+  files. Git status/index/log/ahead-behind initially showed HEAD be9ddd8, empty
+  index, 9 modified tracked files, 3 new tests and task2_t2005_review.zip; ahead 3/
+  behind 0 versus the local origin/main ref.
+- Added local-only info/exclude entry for task2_t2005_review.zip, retaining the
+  archive. `git check-ignore` confirms virtual environments, cached cleanup summary,
+  egg-info, .env paths, review ZIPs and credential-history reports are excluded.
+- Explicit-path staging includes exactly 12 approved wire-test/marker/governance
+  files. `git diff --cached --check` passes; stat/name-status/protected-path checks
+  show no unexpected paths or whitespace errors. No environment/cache/credentials/
+  review archive is staged.
+- Python stdin allowlist/content/SHA256/tomllib inspection passed: index matches
+  worktree with Git EOL normalization; reviewed wire tests/marker, production/prior
+  tests, lock and archive unchanged since session start. Task 1/root dependencies,
+  Task 2 dependency/build configuration and historical record prefixes retained.
+  Targeted staged private-key/token/credential-URL scan found no secret candidates.
+- Only acceptance documentation changed this session; ADR-014's accepted design
+  and limits are unchanged. One descriptive T2-005 commit is authorized; identity
+  is recorded in Git history/session report. No push or T2-006 scope authorized.

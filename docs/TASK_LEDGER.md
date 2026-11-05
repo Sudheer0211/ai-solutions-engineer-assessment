@@ -16,12 +16,12 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T1-006 | Reproducibility, lint, README and final evidence | P1 | DONE | Setup/lock and README verified; final lint/format/evidence E007 | Maintain evidence on future changes |
 | T1-007 | Read-only STDIO blocker remediation investigation | P0 | DONE | R1-R5 verified; investigation report; E006 | Proposed candidate implemented and verified under T1-008 |
 | T1-008 | Controlled Approach C implementation and adoption | P0 | DONE | C1-C7 verified; E007; ADR-006/007 | Adopt; rerun boundary contract tests before any SDK upgrade |
-| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | T2-004 FastAPI/ASGI only; T2-005 sockets deferred |
+| TASK-2 | Secure HTTP/JSON-RPC MCP reverse proxy | P0 | IN_PROGRESS | docs/TASK2_REQUIREMENTS.md; task2/CONTRACT.md | T2-005 loopback TCP verification only; stop for review |
 | T2-001 | Task 2 isolated project and acceptance baseline | P0 | DONE | E008; independently reviewed and accepted, user confirmation 2026-11-04 | Preserve committed baseline e828729b |
 | T2-002 | Pure security and strict JSON-RPC guards | P0 | DONE | E009: 186 tests/Ruff pass; Decimal correction independently accepted 2026-11-04 | Preserve accepted behavior; original tests unchanged in T2-003 |
 | T2-003 | HTTPX upstream adapter | P0 | DONE | U1-U8/E011; 300 tests/Ruff; independently accepted, user confirmation 2026-11-04 | Preserve committed baseline 0b2e0b7 |
-| T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted, user confirmation 2026-11-04; reported 400 passes/zero-upstream probes | One approved milestone commit; no T2-005 or push |
-| T2-005 | Socket-level interoperability | P0 | NOT_STARTED | Separate authorization required | Do not begin during T2-004 |
+| T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
+| T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted, user confirmation 2026-11-04: 400+52 passes/33 zero-forwarding cases/12 reaped children | Approved milestone commit only; no T2-006 or push |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 | TASK-4 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
 
@@ -317,3 +317,64 @@ IN_PROGRESS; Task 1 remains DONE with 149 historical passes (not rerun).
   ACCEPTED with its existing HTTP contract/limits; no architecture redesign.
 - Next: stage/inspect the exact 12-file allowlist, create the approved commit and
   verify Git status/ahead-behind. Stop; TASK-2 IN_PROGRESS, T2-005 NOT_STARTED.
+
+## T2-005 acceptance baseline (2026-11-04)
+
+User authorizes real loopback TCP verification against independent Uvicorn proxy
+and mock upstream processes; preserve be9ddd8 and the existing 400 cases. No
+external services/public listeners, full MCP sessions/SSE/OAuth, Tasks 3/4,
+T2-006, commit or push. Prefer tests; reproduce/log defects before production edits.
+
+- [x] W1: Reproducible loopback processes, child-owned dynamic ports, explicit
+  readiness and bounded startup/cleanup, including startup/test failure paths.
+- [x] W2: Real credentials/roles/IDs/decoded-name/duplicate-key security; exactly
+  zero journaled upstream calls for each locally rejected request.
+- [x] W3: Approved requests, discovery/admin definitions, bytes/IDs/errors/statuses/
+  headers preserved; inbound tokens/cookies/spoofed roles never reach upstream.
+- [x] W4: Content-Length/chunked bodies, limits, media/encoding, malformed envelopes,
+  invalid IDs, batches and notification contract verified on real TCP.
+- [x] W5: Concurrent independent clients/roles/repeated IDs with synchronization
+  and bounded deadlines; no response/context mixing.
+- [x] W6: Slow-peer timeout, refusal, unexpected process termination, disconnects
+  and actual lifespan/shutdown/failed-test cleanup verified without timing sleeps.
+- [x] W7: Full Task 2 suite and Ruff executed; no Task 1 regressions needed unless
+  shared code/environment changes. Capture failures honestly; no invented passes.
+- [x] W8: Journal outcomes, process config, limitations, decisions, build/evidence
+  and recoverable status recorded; stop for independent review, not acceptance.
+
+Outcome: T2-005 DONE for verification only; independent engineering review PENDING,
+not independently accepted. E015: 452 passed in 13.14s, zero failures/skips/warnings;
+Ruff lint and format pass (16 files). Original 400 cases/production modules untouched.
+
+33 dedicated local-rejection cases each journal zero upstream calls. Concurrent
+12 independent connections/repeated IDs yield 2 viewer denials and exactly 10
+simultaneously held approved requests, all correlated correctly. Cleanup summary:
+12 child processes, zero alive/forced cleanup/live readers; deliberate kill and
+startup failure accounted for. Initial refusal fixture expected 502 with too-short
+0.5s connect budget; direct probing justified a 3s fixture budget, with no production
+defect/fix. See M024/E015 and ADR-014; Windows loopback fixture limits remain explicit.
+
+Recovery: HEAD be9ddd8 unchanged; index empty; 9 intended tracked modifications
+and 3 new test files. No dependency/lock/root config or Task 1 changes. Task 1 stays
+DONE with 149 historical passes, not rerun because no shared code/environment changed.
+No implementation blocker; stop for independent review. TASK-2 remains IN_PROGRESS;
+T2-006 scope and any commit/push require explicit authorization.
+
+## T2-005 independent acceptance and Git checkpoint (2026-11-04)
+
+- User confirms independent engineering approval: 400 existing and 52 real-wire
+  tests passed independently; 33 rejection cases enforce zero forwarding; all
+  12 children reaped without forced cleanup. Review also confirms production/
+  earlier tests match the T2-004 snapshot. These are reported independent results,
+  not new local executions; commands/timings were not supplied. Local record: E015.
+- T2-005 is DONE and independently ACCEPTED, resolving the historical review gate
+  above. No implementation/test change is needed. ADR-014 retains its existing
+  design, evidence boundaries and Windows-specific limits.
+- Authorize one descriptive commit containing only three approved wire-test files,
+  the pytest marker update and relevant engineering documentation. Exclude local
+  environments/caches/credentials/review ZIPs, retaining all artifacts. No push or
+  T2-006 scope is authorized; Task 1/accepted production implementation unchanged.
+- Initial Git state: be9ddd8, empty index, 9 tracked modifications, 3 new test
+  files and task2_t2005_review.zip; ahead 3/behind 0 versus local origin/main.
+- Next: stage/inspect exact 12-file allowlist, commit, verify clean status/counts
+  and stop. TASK-2 remains IN_PROGRESS; no tests rerun for this Git checkpoint.
