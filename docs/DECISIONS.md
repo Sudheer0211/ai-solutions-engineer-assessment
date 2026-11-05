@@ -1042,3 +1042,58 @@ No architecture/code/marker/dependency/lock change in acceptance. Supersedes pri
 pending/no-commit handoff only for one descriptive T3-005 wire/marker/README/
 governance commit. Preserve Tasks1/2/4, exclude archives/generated receipts; verify
 Git status and stop. No T3-006 or push; TASK-3 remains IN_PROGRESS.
+
+
+## ADR-027 - T3-006 final audit evidence boundary - 2026-11-05
+
+America/Los_Angeles. Status: adopted audit policy; local READY, independent final
+acceptance pending. No architecture/production behavior changes. Affected:
+docs/TASK3_FINAL_AUDIT.md, requirements/ledger/build/E039, AGENTS and root/Task3
+READMEs only. Baseline6b768780ace49c984d105b5ce558f69904f1076a.
+
+Decision: assess the approved synthetic R/P/L/I/H/W contract with an R/Q/policy
+traceability matrix, fresh native Windows suites in all four independent pinned
+environments, clean locked Task3 reproduction, contextual current/history security
+screen and accepted-file SHA/import checks. READY is restricted to that scope;
+T3-006/TASK-3 stay IN_PROGRESS pending independent review. Do not infer unavailable
+vendor requirements from our approved engineering choices.
+
+Rationale/evidence: E039 actual149/452/427/637 passes (1665), all8 Ruff checks0,
+zero failures/skips/warnings/xfails; clean25-package install and two real-TCP
+synthetic demos pass,401/401/200, progressive safe text, redaction/done/end and
+confirmed cleanup. Native wire proves representative progression/inactivity/
+flow control, deterministic tests prove exact10/120/1s budgets and resistant
+ownership. No blocking source defect; no accepted implementation/test/pin edit.
+History19 commits/234 blobs contextual screen finds no actual disclosure; synthetic
+matches and token-count false positives are not recorded as real secrets.
+
+Alternatives rejected: repeating historical test results as fresh evidence;
+claiming a clean637 Linux run from split assertion results; adding vendor adapters,
+config ignore changes or production instrumentation during an audit; declaring
+whole-process RSS/kernel send/TLS/remote execution guarantees from bounded
+application state or ASGI simulation; markingDONE before independent acceptance.
+
+Tradeoffs/consequences: exact supported PII grammar can overmask/reject benign
+long candidates and misses out-of-profile PII. Quarantine retains uncertain work
+and may need supervisor intervention. Arbitrary ZIP/DB paths are not universally
+ignored; explicit-path staging remains mandatory. Heuristic history screening is
+not exhaustive secret/PII/advisory certification. README now supplies an executable
+synthetic fixture recipe and fixes stale unimplemented status. Historical E038
+Linux import-path/split/stall qualifications remain; native Windows authoritative.
+No new feature, staging/commit/push or Task1/2/4 change. Next independent final review.
+
+
+### ADR-027 independent final acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User independently APPROVES T3-006/TASK-3; DONE and
+assessment-ready within accepted synthetic SSE/PII contract. Reported documentation
+review covers8 requirements/21 criteria,73 unique named tests checked against
+previous source archive, implementation-symbol/local-link validation, demo syntax
+and E039 consistency. No blocking documentation/traceability discrepancy. The
+review did NOT rerun native Windows tests, directly audit unpublished local Git
+history or validate unavailable vendor instructions. E039 actual local1665 passes/
+eight Ruff remain evidence, not newly executed here or independently rerun claims.
+No architecture change. Preserve original decisions/limits/environment and E038
+Linux split/stall qualifications. One final documentation-only acceptance commit
+authorized; preserve source/tests/config/deps/locks. E040 records review and actual
+Git inspection. No new tests/features/push; stop after SHA/inventory/status check.

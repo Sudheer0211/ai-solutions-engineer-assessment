@@ -11,11 +11,17 @@ This repository contains independently executable Python assessment projects:
   [final audit / requirements traceability](docs/TASK2_FINAL_AUDIT.md).
   T2-006 evidence: 452 passing tests, including 52 real HTTP wire cases; final
   independent approval confirmed 2026-11-04. No tests rerun for the acceptance commit.
-- **Task 3: IN_PROGRESS.** T3-001 through T3-005 independently accepted, user
+- **Task 3: DONE; independently approved within the accepted synthetic SSE/PII
+  contract.** T3-001 through T3-006 independently accepted, user
   confirmation 2026-11-05; Linux split-run/stall qualifications retained in
   [E038](docs/TEST_EVIDENCE.md). Native Windows verification remains authoritative:
   637 passing tests/Ruff, including 57 wire cases ([E037](docs/TEST_EVIDENCE.md)). See
-  [Task 3 setup and synthetic HTTP contract](task3/README.md). Original vendor
+  [Task 3 setup and synthetic HTTP contract](task3/README.md). T3-006 final audit
+  is independently **APPROVED**, confirmed 2026-11-05; T3-006/TASK-3 are DONE.
+  E040 records the qualified documentation review; E039 preserves actual fresh
+  native verification. No tests were rerun for acceptance. See
+  [final audit](docs/TASK3_FINAL_AUDIT.md). One documentation-only acceptance commit
+  is authorized; no push. Original vendor
   brief unavailable; loopback/RSS observations are qualified, no formal memory,
   real-vendor or deployment certification claimed.
 - **Task 4: DONE; independently approved, assessment-ready within its documented
@@ -36,6 +42,19 @@ This repository contains independently executable Python assessment projects:
 Tasks 1 and 2 passed Ruff lint and formatting checks on 2026-11-04
 (America/Los_Angeles). [E017](docs/TEST_EVIDENCE.md) records actual commands/results.
 Use each task's own environment; Task 2 does not run through Task 1's STDIO server.
+
+## Latest complete repository verification
+
+E039,2026-11-05 America/Los_Angeles: fresh native Windows/Python3.12.16 suites in
+four separate environments: Task1 **149**, Task2 **452**, Task4 **427**, Task3
+**637** passes (**1665 total**), zero failures/errors/skips/warnings/xfails/xpasses.
+All eight Ruff lint/format checks exit0. Accepted source/tests/configuration/pins
+and locks are unchanged. SQLite3.53.1 is the supported Task4 runtime; metadata
+only for the other tasks. A clean locked Task3 install and deterministic real-TCP
+progressive-redaction demo passed; [copyable assessor recipe](task3/README.md#reproduce-a-successful-synthetic-assessor-demo).
+[Final audit](docs/TASK3_FINAL_AUDIT.md) separates synthetic requirements, actual
+socket observations, deterministic deadlines and remaining limits. Original Task3
+vendor brief unavailable; no universal PII/real-vendor/deployment certification.
 
 ## Task 1 — Customer/refund MCP server
 
@@ -232,6 +251,8 @@ ai-solutions-engineer-assessment/
     TASK1_REQUIREMENTS.txt
     TASK2_REQUIREMENTS.md
     TASK2_FINAL_AUDIT.md
+    TASK3_REQUIREMENTS.md
+    TASK3_FINAL_AUDIT.md
     TASK4_REQUIREMENTS.md
     TASK4_FINAL_AUDIT.md
     TASK_LEDGER.md
@@ -265,6 +286,13 @@ ai-solutions-engineer-assessment/
     uv.lock
     src/task2_proxy/
     tests/
+  task3/
+    README.md
+    .python-version
+    pyproject.toml
+    uv.lock
+    src/task3_streaming/
+    tests/
   task4/
     README.md
     pyproject.toml
@@ -277,8 +305,9 @@ ai-solutions-engineer-assessment/
 
 Ignored local environments/caches are omitted. Read AGENTS.md and the ledger
 at every session start.
-Task 2 is implemented separately under `task2/`. Task 3 remains unimplemented;
-Task 4 has its own isolated project under `task4/` (status and review gate above).
+Task 2 is implemented separately under `task2/`. Task 3 has its own isolated
+project under `task3/`, with final independent audit acceptance complete. Task 4
+has its own isolated project under `task4/` (status and review gates above).
 FastAPI, HTTP proxies, OAuth/JWT, SQLite, rate limiting, inference APIs,
 SSE, PII streaming, Docker/Kubernetes and optional CI/performance/property-testing
 extras are intentionally excluded from this Task 1 implementation. Some HTTP

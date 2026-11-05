@@ -449,3 +449,49 @@ credentials/review ZIPs/generated receipts, inspect full diff/index, run staged
 whitespace check, commit once, verify full SHA/manifest/clean tree/recorded-origin
 counts and stop. No tests/Ruff/compile/install rerun absent unexpected functional
 change. TASK-3 IN_PROGRESS, T3-006 NOT_STARTED/not authorized; no push or audit.
+
+## T3-006 active audit authorization (2026-11-05 America/Los_Angeles)
+
+Latest user attachment authorizes verification/documentation only over 6b76878.
+Read approved Task3 contract/ADRs/evidence and all relevant source/tests. Fresh native
+Task1/2/4/3 complete pytest and Ruff in separate environments, clean locked Task3
+install and assessor synthetic demo, requirements matrix, privacy/lifecycle/security/
+history/whole-repo audit. Preserve all accepted source/tests/dependencies/config/
+locks; docs-only corrections allowed. Reproduce/document any blocking defect and
+STOP, no feature fix. Original brief unavailable; never infer vendor/universal PII
+compliance or clean combined Linux637 run. Retain E038 split-run/import-path/stall
+qualifications and kernel10s/TLS/formal RSS/provider limits. No commit/push or
+T3-006/TASK-3 DONE until independent acceptance. Stop after report/review handoff.
+
+T3-006 local outcome: READY within approved synthetic/Windows scope, independent
+acceptance PENDING; T3-006/TASK-3 IN_PROGRESS. Read docs/TASK3_FINAL_AUDIT.md,
+E039 and ADR-027. Fresh native suites149/452/427/637 (1665), all8 Ruff checks0,
+zero failures/skips/warnings/xfails; clean locked25-package Task3 install and two
+real-TCP synthetic demos passed. Current/reachable-history contextual scan found
+no actual disclosure; portable ignore/kernel/RSS/vendor limits retained. All
+accepted source/tests/config/dependencies/locks and Tasks1/2/4 preserved. Historical
+test evidence/qualified Linux review unchanged. Documentation-only corrections
+include stale root Task3 status and a self-contained assessor recipe. Do not rerun
+tests absent new functional concerns, stage, commit, push or markDONE; next is
+independent final engineering review. No new implementation authorized.
+
+
+## T3-006 independent acceptance / final Git checkpoint (2026-11-05 America/Los_Angeles)
+
+Latest user independently APPROVES final Task3 audit: T3-006/TASK-3 DONE within
+accepted synthetic SSE/PII contract; all four assessment tasks DONE in documented
+scopes. Read E040/ADR-027 acceptance provenance and final audit. Reported review:
+eight requirements/21 criteria/73 named tests against prior source archive,
+symbols/links/demo syntax and E039 consistency; no blocking discrepancy. Review
+did not rerun native Windows tests, directly audit unpublished local history or
+validate unavailable vendor requirements. E039 native1665/eight Ruff unchanged.
+Preserve all production/RSS/TLS/socket/PII/environment qualifications and history.
+
+Supersedes prior pending/no-commit gates only for ONE descriptive final nine-file
+documentation acceptance commit. Preserve all accepted source/tests/config/pins/
+locks and Tasks1/2/4; do not rerun tests absent unexpected functional change.
+Inspect entire diff, explicitly stage AGENTS/root&Task3 READMEs/requirements/
+ledger/decisions/build/evidence/new TASK3_FINAL_AUDIT.md; exclude/retain local ZIPs,
+cache/env/diagnostics/temporary scripts/DB/WAL/SHM/credentials/generated artifacts.
+Run git diff --cached --check, commit once, verify full SHA/inventory/clean status/
+recorded-origin counts, then STOP. No push, new feature or future work authorized.

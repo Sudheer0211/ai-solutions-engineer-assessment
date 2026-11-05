@@ -4,6 +4,12 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 
 ## Task registry
 
+Current T3-006 outcome: independently APPROVED within the accepted synthetic
+SSE/PII contract; T3-006/TASK-3 DONE, user confirmation 2026-11-05/E040. All four
+assessment tasks are DONE within their documented scopes. E039 actual native
+verification is unchanged; no tests rerun for acceptance. Latest acceptance below
+supersedes historical pending/no-commit gates for one documentation commit; no push.
+
 | ID | Description | Priority | Status | Acceptance / evidence | Blocker / next action |
 | --- | --- | --- | --- | --- | --- |
 | GOV-001 | Establish persistent engineering governance before implementation | P0 | DONE | G1-G5 verified in E002 | Maintain records at every milestone |
@@ -23,13 +29,13 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 | T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
-| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | IN_PROGRESS | T3-001 through T3-005 independently accepted; E031-E038 | T3-006 needs separate authorization; no final-audit/vendor/deployment certification |
+| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | DONE | T3-001 through T3-006 independently accepted; final APPROVED 2026-11-05/E040; E039 actual1665 repository passes/eight Ruff | Assessment-ready within accepted synthetic contract; preserve limitations/implementation, no push |
 | T3-001 | Requirements provenance, architecture and exact streaming contract | P0 | DONE | Independently APPROVED 2026-11-05 for documented synthetic profile; ADR-022 | Original vendor brief unavailable; preserve narrow approved scope |
 | T3-002 | Isolated project and pure SSE/redaction components | P0 | DONE | Independently APPROVED 2026-11-05; E031 native verification / qualified review E032; ADR-023 | Preserve accepted foundation 0a75587 |
 | T3-003 | Async upstream adapter, orchestration and lifecycle | P0 | DONE | Independently APPROVED 2026-11-05; native Q13-Q15/E033, qualified review E034; ADR-024 | Preserve accepted baseline e4bd001 |
 | T3-004 | FastAPI streaming HTTP integration | P0 | DONE | Independently APPROVED 2026-11-05; native Q16-Q18/E035, qualified review E036; ADR-025/T3-H policies | Preserve accepted baseline ecbd61c |
-| T3-005 | Independent-process real HTTP wire verification | P1 | DONE | Independently APPROVED 2026-11-05; native Q19-Q21/E037, qualified split-review E038; ADR-026 | Preserve accepted wire milestone; one Git checkpoint authorized; no T3-006 or push |
-| T3-006 | Final Task 3 assessment audit | P1 | NOT_STARTED | Future requirements traceability/fresh regression/privacy/reproducibility audit | Await separate audit authorization |
+| T3-005 | Independent-process real HTTP wire verification | P1 | DONE | Independently APPROVED 2026-11-05; native Q19-Q21/E037, qualified split-review E038; ADR-026 | Preserve accepted wire milestone 6b76878; T3-006 accepted; preserve all wire evidence and limitations, no push |
+| T3-006 | Final Task 3 assessment audit | P1 | DONE | Independently APPROVED 2026-11-05/E040; eight requirements/21 criteria/73 test refs/symbols/links/demo syntax reviewed; actual audit E039 | One final documentation-only acceptance commit authorized; no source/config changes or push |
 | TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | DONE | T4-001 through T4-006 independently accepted; final APPROVED 2026-11-05/E029; actual audit E028 | Assessment-ready within supported Windows/SQLite/trusted-adapter scope; preserve implementation, no push |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
@@ -118,7 +124,7 @@ normally after controlled removal of only the obsolete XFAIL decorator.
 - [x] A15: README covers setup, examples, limitations and state lifecycle;
   final report includes tree, versions, matrix, results and exclusions.
 
-## Current blockers and recovery
+## Task 1 closure, maintenance and historical handoff (E007)
 
 - No open TASK-1 blockers. B1/B2 resolved by the local pinned environment;
   B3 resolved by the verified Approach C boundary (E007).
@@ -883,3 +889,57 @@ config/pins/lock inspected unchanged, no test rerun needed. Capture 99 file hash
 retain ZIP locally excluded, inspect/stage only 21 approved paths, staged whitespace
 check, one descriptive commit and SHA/manifest/clean-tree/branch verification.
 Preserve Tasks 1/2/4; TASK-3 IN_PROGRESS/T3-003 NOT_STARTED. No push or further code.
+
+## T3-006 local final audit / independent review handoff - 2026-11-05
+
+America/Los_Angeles. Latest attachment authorizes audit/documentation over
+6b768780ace49c984d105b5ce558f69904f1076a, superseding historical no-T3-006 gates.
+**Local recommendation READY within approved synthetic/Windows scope; T3-006 and
+TASK-3 remain IN_PROGRESS, independent acceptance PENDING.** No code defect found.
+
+Mandatory acceptance evidence:
+
+- [x] R1-R8/Q01-Q21 and complete P/L/I/H/W policy traceability; exact test references.
+- [x] Fresh native Task1 149/Task2 452/Task4 427/Task3 637 passes, all8 Ruff checks0;
+  zero failures/errors/skips/warnings/xfails/xpasses (E039, not reused evidence).
+- [x] Clean locked25-package Task3 install, successful authenticated progressive
+  synthetic TCP demos,401 rejection/zero forwarding/done/end/confirmed child exits.
+- [x] Privacy/limits/deadlines/backpressure/cancellation/capacity and process receipts
+  audited with deterministic/native/OS distinctions retained.
+- [x] Current112-file/reachable19-commit/234-blob secret/artifact contextual screen:
+  no actual disclosure or unresolved finding; explicit ignore limitations retained.
+- [x] Accepted source/tests/config/dependencies/locks and Tasks1/2/4 unchanged;
+  independent environments/no cross-task production imports; READMEs corrected.
+- [ ] Independent ChatGPT acceptance and authorization of final Git checkpoint.
+
+Affected: AGENTS, root/Task3 READMEs, requirements/ledger/ADR-027/build/E039 and
+new docs/TASK3_FINAL_AUDIT.md. E039 records commands/versions/exits, ignored audit-
+tool-only first-demo failure and corrected rerun without application changes.
+No new original vendor brief or universal PII/provider/TLS/formalRSS/kernel10s
+guarantee. E038 Linux split/stall/import-path qualifications preserved. No local
+blocker; review required. Next: independently review final audit/E039/docs diff;
+do not markDONE, start new work, stage, commit or push before authorization.
+
+## T3-006 independent acceptance / final documentation Git checkpoint - 2026-11-05
+
+America/Los_Angeles. User confirms independent ChatGPT engineering APPROVAL:
+TASK-3 assessment-ready within accepted synthetic SSE/PII contract. T3-006 and
+TASK-3 DONE. All eight high-level requirements/21 criteria covered;73 unique
+named tests checked against prior source archive; implementation symbols/local
+links and assessor-demo syntax passed inspection; E039 evidence consistent; no
+blocking documentation/traceability discrepancy. Review did NOT rerun native
+Windows regression, directly inspect unpublished local Git history or validate
+unavailable vendor requirements. E040 reported review/Git inspection; E039 actual
+149/452/427/637 passes and eight Ruff results remain unchanged, not rerun here.
+
+One descriptive final nine-file documentation-only commit authorized. Preserve
+accepted source/tests/config/dependencies/locks and Tasks1/2/4; retain original
+brief/PII/production/RSS/TLS/socket/environment limitations and historical records.
+Initial HEAD6b768780ace49c984d105b5ce558f69904f1076a, main ahead4/behind0 recorded
+origin/main, index empty. New review ZIP retained via exact local exclude; no
+tracked ignore/config change. Explicitly stage only AGENTS, root/Task3 READMEs,
+requirements/ledger/decisions/build/evidence and new TASK3_FINAL_AUDIT.md. Inspect
+complete diff/index, run staged whitespace check, commit once, verify SHA/inventory/
+clean tree/branch counts and stop. No tests/install/compile/Ruff rerun, fetch or
+push. No remaining blocking assessment work; future publication/changes require
+separate authorization.

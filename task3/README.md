@@ -1,6 +1,82 @@
 # Task 3: asynchronous synthetic SSE proxy with PII redaction
 
-## Current T3-005 real-wire acceptance checkpoint
+## Reproduce a successful synthetic assessor demo
+
+From `task3/`, install `uv sync --locked --extra dev --extra serve --python 3.12.16`.
+This self-contained recipe uses accepted deterministic test adapters: `Lab` starts
+independent loopback upstream/Uvicorn processes on child-selected ports, configures
+ephemeral separate credentials, and owns bounded readiness/cleanup. `wire` encodes
+the synthetic event profile. No real secret, external provider or reading of the
+harness internals is needed. The gate proves delivery before upstream completion;
+auth failures must not forward. Fixture stats/control routes are not production
+endpoints. This is an assessor fixture API, not a real LLM vendor integration.
+
+```powershell
+@'
+import json
+from tests.http_wire_support import Lab
+from tests.support import wire
+
+with Lab() as demo:
+    case = demo.plan([
+        wire('delta', {'channel': 0, 'text': 'hello private@'}),
+        wire('delta', {'channel': 0, 'text': 'example.test '})
+        + wire('done', {'channel': 0}) + wire('end', {}),
+    ], gate_at=1)
+    before = demo.calls()
+    for auth in ([], ['Bearer invalid']):
+        denied, trace = demo.open(raw=b'{"prompt":"synthetic input"}', auth=auth)
+        assert denied.status == 401
+        assert json.loads(denied.response.read())['error']['code'] == 'invalid_credentials'
+        demo.settled(trace)
+    assert demo.calls() == before
+    stream, _ = demo.open(case)
+    assert stream.status == 200
+    demo.peer.event('held', case)
+    assert stream.frame() == ('delta', {'channel': 0, 'text': 'hello '})
+    assert not any(e['event'] == 'provider_closed' and e.get('case') == case
+                   for e in demo.peer.events)
+    demo.release(case)
+    rest = stream.all()
+    assert ''.join(v['text'] for k, v in rest if k == 'delta') == '[REDACTED] '
+    assert rest[-1] == ('end', {})
+    state = demo.settled(case)
+    assert state['active_http'] == state['active_upstream'] == 0
+    assert not state['quarantined']
+assert all(c.process.returncode == 0 and not c.forced for c in demo.children)
+print('PASS: auth rejection, progressive redaction, done/end, clean child exits')
+'@ | .\.venv\Scripts\python.exe
+```
+
+E039 executed these assertions using a fresh locked25-package environment:
+401/401 rejection,200 authenticated SSE, safe `hello ` before release, then
+`[REDACTED] ` and done/end, both children exit0/no forced cleanup. A separate
+clean-environment demo verified public Uvicorn factory import
+`task3_streaming.app:create_app`, actual T3_* environment loading and the same
+outcomes. Factory startup/graceful public-API shutdown was tested; literal shell
+console/signal behavior was not. See [final audit](../docs/TASK3_FINAL_AUDIT.md).
+
+## Current T3-006 final independent acceptance
+
+T3-001 through T3-006 are independently accepted. T3-006 and TASK-3 are **DONE**,
+independent APPROVAL confirmed 2026-11-05 within the accepted synthetic SSE/PII
+contract. E040 records documentation review: eight high-level requirements,
+21 detailed criteria,73 named tests, implementation symbols/local links and demo
+syntax inspected; no blocking discrepancy. Review did not rerun native Windows
+tests, inspect unpublished local Git history directly or validate unavailable
+vendor requirements. No new executions are claimed. One documentation-only final
+acceptance commit is authorized; no push or further implementation.
+[Final traceability and findings](../docs/TASK3_FINAL_AUDIT.md)
+and E039 in [test evidence](../docs/TEST_EVIDENCE.md) preserve actual native Windows
+2026-11-05 results: Task1 **149**, Task2 **452**, Task4 **427**, Task3 **637**
+passes, **1665 total**, zero failures/skips/warnings/xfails; all eight Ruff checks
+pass. Task3 took56.31s. Accepted source/tests/configuration/dependencies/lockfiles
+are unchanged. Original vendor brief unavailable; synthetic-profile, kernel/send,
+RSS, deployment and provider limitations remain. The T3-005 acceptance record
+below is historical; final acceptance supersedes earlier pending/no-commit gates
+only for the authorized documentation checkpoint. All limitations remain.
+
+## Historical T3-005 real-wire acceptance checkpoint
 
 T3-005 is **DONE and independently APPROVED**, confirmed 2026-11-05. E037
 final native Windows/Python3.12.16: **637 passed in53.46s**, including57 new wire
@@ -121,7 +197,9 @@ There are no secret defaults. Access token must be 32-4096 ASCII Bearer-token
 characters, and must differ from upstream token. Use a randomly generated value
 outside the repository, not a fixture value. Config/body/error values are not logged.
 
-Example operator setup/launch (documented, not socket-tested this checkpoint):
+Example operator setup/launch. E039 verified this factory import/environment over
+real TCP through public Uvicorn APIs; the literal CLI/console-signal path below
+was not exercised:
 
 ```powershell
 $env:T3_ACCESS_TOKEN = (& .\.venv\Scripts\python.exe -c "import secrets; print(secrets.token_urlsafe(32))")
@@ -146,7 +224,9 @@ not accepted. Valid input becomes compact UTF-8 prompt JSON; inbound whitespace/
 escape serialization is not preserved. Never forward inbound tokens/cookies/IDs.
 No CORS, docs/schema, OAuth, SSE retry/resume, slash redirect or extra route.
 
-Example real client for a separately available synthetic upstream (no wire claim):
+Example real client for a separately available synthetic upstream. E039 separately
+verified the default factory with environment loading over loopback; this command
+does not provide a vendor adapter or certify production deployment:
 
 ```powershell
 @'
@@ -293,7 +373,7 @@ and Ruff 0.17.3 evidence. No config/pin changes or warning suppression are shipp
 From task3/, with uv installed and Python 3.12.16 available:
 
 ```powershell
-uv sync --locked --extra dev --python 3.12.16
+uv sync --locked --extra dev --extra serve --python 3.12.16
 .\.venv\Scripts\python.exe -m pytest -q --tb=short
 .\.venv\Scripts\python.exe -m ruff check src tests
 .\.venv\Scripts\python.exe -m ruff format --check src tests

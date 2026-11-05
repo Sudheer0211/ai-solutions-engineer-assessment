@@ -2768,3 +2768,257 @@ Final inspection-record edits are documentation only; re-stage and repeat staged
 whitespace check before the one commit. Verify full SHA/parent/manifest/clean tree/
 recorded-origin counts afterward; identity remains in Git history/session report
 to avoid circular self-hash. No tests/Ruff/compile/install/fetch/push or T3-006.
+
+
+## E039 - 2026-11-05: T3-006 fresh four-project final audit
+
+America/Los_Angeles. Audit-only baseline6b768780ace49c984d105b5ce558f69904f1076a.
+These are NEW native Windows executions, distinct from E031-E038. Each suite ran
+as an independent process in its own environment/cwd; no deselection/shim/skips.
+Durations overlap and are not summed wall time. Final report:
+[Task3 audit](TASK3_FINAL_AUDIT.md), ADR-027. T3-006/TASK-3 remain IN_PROGRESS pending
+independent final review; no code/config/test/dependency/lock changes/commit/push.
+
+### Fresh commands and results
+
+Task1 cwd repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3006-task1
+.\.venv\Scripts\python.exe -m ruff check task1 tests
+.\.venv\Scripts\python.exe -m ruff format --check task1 tests
+```
+
+149 passed in39.44s, pytest exit0. Ruff all checks passed/exit0;
+17 files already formatted/exit0.
+
+Task2 cwd task2/:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3006-task2
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+452 passed in12.39s, pytest exit0. Ruff all checks passed/exit0;
+16 files already formatted/exit0.
+
+Task4 cwd task4/:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3006-task4
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+427 passed in50.33s, pytest exit0. Ruff all checks passed/exit0;
+22 files already formatted/exit0.
+
+Task3 cwd task3/:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3006-task3
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+637 passed in56.31s, pytest exit0. Ruff all checks passed/exit0;
+25 files already formatted/exit0. Includes all57 independent-process wire cases.
+
+TOTAL1665 passed; ALL four suites zero failures/errors/skips/warnings/xfails/xpasses.
+ALL8 Ruff commands exit0. Metadata probes used each environment's Python with
+sys.version/sys.executable/sqlite3.sqlite_version/importlib.metadata.version:
+Python3.12.16/MSC1944 AMD64, SQLite3.53.1, pytest9.2.0/Ruff0.17.3 in all four.
+Task1 mcp2.3.0/Pydantic2.12.5/pytest-asyncio1.4.1.post1. Tasks2/3/4 HTTPX0.28.1,
+FastAPI0.162.0/Starlette1.10.0/Pydantic2.14.2/Uvicorn0.54.0; Task2/3 httpcore1.0.9.
+SQLite is metadata only outside Task4; Task4 retains supported fixed-local-drive
+Windows/runtime gates. No Linux shim/pin widening/warning filter was applied.
+
+### Actual fresh process/wire observations
+
+Read fixture-generated ignored summaries after the completed suites. Task2:
+12 children reaped,0 alive/forced/live readers; intentional upstream1/proxy3 exits
+are negative scenarios. Task4:28 wire children27x0/1 expected3, all reaped/0 forced;
+15 storage children all0/none alive or forced. Task3:10 children9x0/1 expected
+startup-invalid2,0 forced/killed/live reader threads/private diagnostic violations.
+Task3's fresh summary was task3/.cache/t3005_wire_summary.json (the filename is
+historical; overwritten by THIS completed suite), not prior E037 receipts.
+
+Fresh Task3 first client frame0.093s while source gate still closed,2 native read
+attempts/1 delivered chunk;23 HTTP/auth/body zero-forwarding cases. Capacity16,
+17th429/zero forwarding, confirmed release/reuse. Native first-event15.000s and
+read-idle15.016s close with peer disconnect/no successful terminal. Slow client:
+suspended send/read117 frozen across3 barriers,124004 native bytes/143545 ASGI bytes
+offered; no kernel10s expiry claim. Long1000/5000-event runs125000/625000 chars:
+line290/event304/decoder2/candidate256/held256/pending125 chars&bytes/encoded169/
+raw304. Windows working set66027520->66043904 and66048000->63483904 bytes;
+peak68521984, empirical not formalRSS. Native active shutdown clean/pool close1.
+Exact first15/overall120/send10/cleanup1 boundaries and resistant ownership remain
+fresh deterministic test assertions, distinct from measured sockets/OS buffers.
+
+### Clean lockfile installation / imports
+
+Cwd task3/, NEW target (did not exist before sync):
+
+```powershell
+$env:UV_CACHE_DIR='S:\2026 jobs\Projects\ai-solutions-engineer-assessment\.cache\uv'
+$env:UV_PROJECT_ENVIRONMENT='S:\2026 jobs\Projects\ai-solutions-engineer-assessment\.cache\t3006-clean-env'
+..\.tools\bin\uv.exe sync --locked --extra dev --extra serve --python .venv/Scripts/python.exe --offline
+```
+
+Exit0, CPython3.12.16, resolved25/installed25, editable
+assessment-task3-streaming0.1.0 built/imported. Runtime pin/pyproject/uv.lock unchanged.
+Locked installed selection: annotated-doc0.0.5,annotated-types0.8.0,anyio4.16.0,
+assessment-task3-streaming0.1.0,certifi2026.10.23,click8.5.0,colorama0.4.6,
+fastapi0.162.0,h110.16.0,httpcore1.0.9,httpx0.28.1,idna3.20,iniconfig2.3.1,
+opentelemetry-api1.45.2,packaging26.3,pluggy1.7.0,pydantic2.14.2,
+pydantic-core2.50.2,pygments2.21.0,pytest9.2.0,ruff0.17.3,starlette1.10.0,
+typing-extensions4.16.0,typing-inspection0.4.5,uvicorn0.54.0.
+
+### Real TCP assessor demonstrations (manual assertions, not added pytest counts)
+
+1. From task3/, a PowerShell here-string containing the fixture recipe now in
+   task3/README.md was piped to
+   ..\.cache\t3006-clean-env\Scripts\python.exe. Exit0: missing/invalid credentials
+   401/401 and zero upstream calls; authenticated200; safe hello prefix BEFORE
+   releasing gated upstream, then whole-candidate redaction,done/end; active
+   HTTP/upstream0 and not quarantined. UpstreamPID40180/proxyPID27056 both exit0,
+   no forced cleanup. Ignored sanitized receipt .cache/t3006_clean_demo.json.
+2. From root:
+
+```powershell
+.\.cache\t3006-clean-env\Scripts\python.exe .cache/t3006_factory_demo.py
+```
+
+   Final exit0. Public Uvicorn Config imported task3_streaming.app:create_app in
+   factory mode, no HTTPSettings injection; actual T3_ACCESS_TOKEN/T3_UPSTREAM_URL/
+   T3_UPSTREAM_BEARER env loading with ephemeral separate credentials. Real sockets,
+   401/401/200, same gated redaction/done/end; upstream journal1. ProxyPID19952/
+   upstreamPID28556 exit0, no forced cleanup, reader threads0. Sanitized ignored
+   factory_demo/factory_cleanup JSON receipts. Graceful public Server.should_exit
+   was used; literal shell-CLI signal/console behavior was NOT verified.
+
+Initial factory utility invocation EXIT1 with AttributeError: its ignored
+SimpleNamespace test adapter lacked .process, during Lab.ready before generation.
+Only ignored utility corrected, then rerun exit0; not accepted application defect.
+Bounded finally cleanup ran but complete initial-attempt exit/PID receipts were not
+captured; do not count it as a successful demo. Subsequent Get-CimInstance matching
+factory/provider processes returned no rows. One documentation editing command
+also exited1 on nested PowerShell here-string parsing before writes; replaced
+with structured patches. No pytest failure/production correction is inferred.
+
+### Read-only security/publication/integrity inspection
+
+Executed native Python .cache/t3006_security_scan.py, exit0; uses git rev-list
+--all / --objects --all and git cat-file --batch-check/--batch to inspect all
+unique reachable blobs plus current tracked files.19 commits/339 objects/234
+unique text blobs/5475913 bytes/112 historical paths,0 binary. Current provider/
+private-key matches0.11 deduplicated credential-looking candidates/12 occurrences:
+6 synthetic fixtures/documentation,1 one-char invalid credential,1 malformed
+credential fixture,2 invalid-destination URL fixtures,1 NONcredential token-count
+invalid-type fixture. Context/AST review confirmed every classification;0 actual
+disclosures/unresolved. No raw credential values printed or stored in report.
+No tracked current/history env/cache/egg-info/DB/WAL/SHM/reviewZIP/receipt/credential-
+history artifacts. Origin embeds no credential. No cross-task production imports.
+Heuristic/contextual screen, not unknown-secret/PII/dependency-advisory certification
+or inspection of unreachable/unfetched history. Original Task3 brief unavailable.
+
+Actual git check-ignore probes: cache/newenv/generated egg-info/.env.production/
+default .runtime DB excluded; specific existing ZIP locally excluded. Arbitrary
+audit-review.zip/task4/usage.sqlite3 not ignored (intentional negative probe exit1).
+No such artifacts tracked; portable ignore/config unchanged. Exact-path staging
+required in any later authorized commit. This audit leaves index empty.
+
+E038 Linux/Python3.13.5 import-path-only review-harness change/split assertion
+passes/combined stall after50/19-case summary-not-returned qualifications preserved;
+NOT a clean combined637 Linux run. Fresh Windows E039 authoritative. No real vendor,
+universalPII/TLS/deployment/formalRSS/kernel10s or real120s wall-bound claim.
+Final SHA/test-reference/link/whitespace/Git inventory verification follows below;
+subsequent changes documentation only, no unnecessary test reruns.
+
+
+### Final documentation/integrity checks (inspection, not additional tests)
+
+Native SHA/AST/local-link/index inspection exit0:112 baseline tracked files,
+104 unchanged/eight authorized Markdown changes plus new TASK3_FINAL_AUDIT.md.
+All25 accepted Task3 Python files and all Task1/2/4 implementation/tests/config/
+dependencies/locks remain byte-identical.73 distinct named test references and36
+module/function references resolve;29 local links exist; README Python recipe
+parses. Historical TEST_EVIDENCE/BUILD_LOG/DECISIONS content is an unchanged prefix,
+with new audit entries appended. No unexpected control characters or targeted
+provider-key/private-key/credential-URL patterns in the nine audit docs. Current
+content/history artifact inventory additionally checks DB-wal/DB-shm suffixes:0.
+
+The first reference-inspection command exited1 because its audit-only resolver
+looked for the explicitly named TEST harness in the production package directory;
+resolver corrected to use task3/tests, then all references validated exit0. No
+missing application function/test and no accepted source correction. This is not
+a failed pytest assertion or new passing test count.
+
+Complete tracked documentation diff inspected; new audit content inspected with
+R/Q/policy/source/test mappings. git diff --check explicitly returned0. Index empty;
+working tree exactly eight modified docs and one new audit, no unignored environment,
+cache,DB/WAL/SHM,archive,credential or generated receipt. HEAD remains
+6b768780ace49c984d105b5ce558f69904f1076a; main ahead4/behind0 recorded origin/main,
+no fetch/stage/commit/push. Local diagnostics/clean env/receipts remain ignored.
+No functional changes after fresh suites/Ruff; final edits documentation only.
+Local READY in documented scope; T3-006/TASK-3 IN_PROGRESS pending independent
+acceptance. No blocking production defect found. Stop for review.
+
+
+## E040 - 2026-11-05: T3-006 independent documentation acceptance / final Git checkpoint
+
+America/Los_Angeles. User confirms independent ChatGPT engineering APPROVAL:
+T3-006 and TASK-3 DONE, assessment-ready within accepted synthetic SSE/PII contract.
+Reported independent DOCUMENTATION review (not commands executed here):
+
+- Eight high-level requirements and21 detailed criteria covered.
+- All73 unique named tests checked against previously submitted Task3 source archive.
+- Implementation-symbol and local-link checks passed.
+- E039 native Windows149/452/427/637 (1665) and eight Ruff checks consistent.
+- Assessor demo recipe passed independent syntax inspection.
+- No blocking documentation or traceability discrepancy.
+
+Review did NOT rerun full native Windows regression, directly inspect unpublished
+local Git history or validate unavailable vendor requirements. Preserve all
+production/RSS/TLS/socket/PII/runtime qualifications. No new pytest/Ruff/compile/
+install/demo/security-history rerun in this acceptance checkpoint. E039 remains
+actual execution evidence; no reported review is presented as a fresh local run.
+
+Actual initial inspections: Get-Content AGENTS/ledger/current docs/local exclude,
+git status --short --branch, diff --cached --name-status, rev-parse HEAD,
+rev-list --left-right --count origin/main...HEAD. HEAD6b768780ace49c984d105b5ce558f69904f1076a,
+main ahead4/behind0 recorded origin/main, index empty; eight authorized modified
+docs/new final audit plus a new local review ZIP. Native SHA/inventory check exit0:
+all112 original tracked files compared to E039 baseline, only eight allowed docs
+differ; all accepted source/tests/config/pins/locks and Tasks1/2/4 byte-identical.
+Captured current tracked hashes/new audit/ZIP hash in ignored diagnostic inventory.
+ZIP retained via exact .git/info/exclude entry, no tracked config edit.
+
+Only nine authorized documentation paths may be staged: AGENTS.md, README.md,
+task3/README.md, docs/TASK3_REQUIREMENTS.md, docs/TASK3_FINAL_AUDIT.md,
+docs/TASK_LEDGER.md, docs/DECISIONS.md, docs/BUILD_LOG.md, docs/TEST_EVIDENCE.md.
+Complete diff and staged content/inventory inspection, sensitive-artifact exclusion,
+index/working-byte comparison, staged whitespace check, one descriptive commit,
+then SHA/parent/inventory/clean-tree/ahead-behind verification. Retain local cache/
+env/scripts/diagnostics/reviewZIP/DB/WAL/SHM outside commit. No fetch/push or new work.
+
+
+Actual final inspection/staging: native SHA/AST/link/content check exit0;104 frozen
+original tracked paths unchanged, prior E039/build/decision/AGENTS content preserved
+as exact raw-byte prefixes before new acceptance entries.73 named tests/29 local
+links valid, both current ledger statusesDONE, zero targeted secret patterns in
+nine docs. No test/compile execution. One accidental historical dash re-encoding
+was restored during diff inspection; no historical content change remains. An
+initial inspection assumed LF append separators; adjusted only that inspection
+for native CRLF, then exact-prefix SHA checks passed. No application defect.
+
+Explicit git add staged EXACTLY the nine authorized paths; cached name-status/stat
+inspected. Staged-content check exit0: index equals reviewed working bytes after
+Git newline normalization, no unstaged/unignored leftovers or excluded artifact
+path, all accepted implementation/config/tests/locks unchanged and retained ZIP
+hash unchanged. git diff --cached --check exit0; no active default/custom hooks.
+LF/CRLF notice for new audit is normalization only. Re-stage these final inspection
+records, repeat staged check, create one descriptive commit, then verify full SHA,
+parent/exact nine-file manifest/clean status/recorded-origin counts in Git/session
+report. No fetch/push/test/Ruff rerun or further work authorized.

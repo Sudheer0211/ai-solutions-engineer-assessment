@@ -1,5 +1,37 @@
 # TASK-3 / T3-001: approved synthetic streaming contract and implementation gates
 
+## Current T3-006 independent acceptance - 2026-11-05
+
+America/Los_Angeles. Independently APPROVED within accepted synthetic SSE/PII
+contract; T3-006/TASK-3 DONE. E040 records reported review of eight requirements,
+21 criteria,73 named tests against prior source archive, implementation symbols/
+local links/demo syntax and consistent E039 evidence, with no blocking discrepancy.
+Final documentation review did not rerun native Windows tests, inspect unpublished
+local Git history directly or validate unavailable vendor requirements. E039
+actual1665 passes/eight Ruff checks remain unchanged. Preserve original-brief,
+production/RSS/TLS/socket/PII/environment limitations and all accepted source/
+tests/config/dependencies/locks. One final documentation-only commit authorized;
+no push or new work. The records below preserve historical local-review gates.
+
+## Historical T3-006 local audit / review handoff - 2026-11-05
+
+America/Los_Angeles. Audit over6b76878: R1-R8/Q01-Q21 plus all approved P/L/I/H/W
+policies mapped in [final audit](TASK3_FINAL_AUDIT.md). No contract changes.
+E039 fresh native Windows/Python3.12.16:149/452/427/637 passes (1665), all8 Ruff
+checks0, no failures/skips/warnings/xfails. Clean locked Task3 environment25 packages,
+fixture and default-factory/env real-TCP demos passed with sanitized progressive
+output,401 rejection,done/end and confirmed cleanup. Initial ignored audit utility
+adapter failure/correction are tool evidence, not an application defect or extra
+passing test. Accepted implementation/tests/pins/config/locks and Tasks1/2/4
+preserved. History screen found no actual disclosure; scan/ignore/OS/deployment
+limitations retained. Original vendor brief still unavailable; synthetic choices
+remain approved engineering policies, not recovered original requirements. Exact
+ASGI timing is not a kernel/TLS/remote guarantee; E038 Linux split/stall qualifications
+remain. Local READY, independent acceptance pending. T3-006/TASK-3 IN_PROGRESS.
+No staging/commit/push or new feature authorized; stop for review.
+
+## Historical checkpoint records and approved contract
+
 Date: 2026-11-05 (America/Los_Angeles). Baseline: `7e37045`.
 Status: **T3-001 independently APPROVED / accepted**, user confirmation 2026-11-05.
 Approval is ONLY for the explicitly defined synthetic assessment profile, not an
@@ -17,7 +49,10 @@ T3-005 independently APPROVED, user confirmation 2026-11-05; DONE. E037 preserve
 actual authoritative Windows verification; E038 records qualified Linux split review
 and this Git checkpoint, not new test execution or a clean combined Linux637 run.
 One descriptive acceptance commit authorized, preserving wire/source/tests/pins/lock.
-T3-006 NOT_STARTED/not authorized. Loopback/working-set observations remain qualified,
+T3-006 final audit independently APPROVED; T3-006/TASK-3 DONE. See E039 actual
+verification, E040 qualified independent documentation acceptance and
+TASK3_FINAL_AUDIT.md. Historical pending/no-audit gates below are superseded only
+for the authorized final documentation acceptance checkpoint. Loopback/working-set observations remain qualified,
 not kernel10s/TLS/vendor/deployment/formal RSS certification. No push. T3-H policies below define
 the implemented HTTP choices; they are not recovered original assessment wording.
 The T3-003 section below supersedes historical no-network gates for the accepted
