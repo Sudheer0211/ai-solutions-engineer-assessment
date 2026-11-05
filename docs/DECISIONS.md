@@ -802,3 +802,82 @@ T3-002 DONE/independently accepted; TASK-3 IN_PROGRESS. No architecture/source/t
 change. One accepted foundation commit authorized, exact source/test/config/pin/
 lock/README/requirements/governance inventory only. Preserve Tasks 1/2/4; no test
 rerun absent unexpected implementation changes, T3-003 or push. Verify Git and stop.
+
+## ADR-024 - 2026-11-05: T3-003 owned raw HTTPX streams and demand-driven sessions
+
+- Status: independently ACCEPTED, user confirmation 2026-11-05; T3-003 DONE.
+  TASK-3 IN_PROGRESS; T3-004 NOT_STARTED/not authorized. Pure baseline 0a75587 unchanged.
+- Decision: add only upstream.py/service.py and four async test/support files.
+  UpstreamSettings fixed trusted HTTPS/literal-loopback URL and optional private
+  credential; frozen 1-65536-byte request body, fixed POST/application-json without
+  invented provider schema. One owned HTTPX pool, no retry/redirect/env proxies/
+  cookies/decompression. Strict status/media validation before any body read.
+- Raw lifetime: use public response AsyncByteStream and explicit response.aclose
+  under owned close work. HTTPX 0.28.1 aiter_raw auto-closes at EOF; Response.aclose
+  marks is_closed before awaiting actual stream close. Reading/closing separately
+  avoids treating an interrupted hidden EOF close/flag as confirmed resource release.
+  No SDK internals patched or runner rewritten. Inspected native pinned HTTP/1.1
+  read size 65536; cap raw block there and lazily split <=4096 for accepted Processor.
+  Avoid aiter_raw(chunk_size=4096) coalescing small events and harming early delivery.
+- Service: async-with session, sequential anext, per-session Processor and one raw
+  reader, no producer queue. Atomic process-global 16 cap with synchronous brief
+  lock/no admission queue across service instances/loops. Reject before send.
+  Await demand between frames; only timer watchdogs can run while paused.
+  Final review removed the optional per-instance test capacity override to make
+  this invariant unconditional. Only new async test modules isolate the global
+  counter through a test fixture; no production bypass/SDK/pure monkeypatch.
+- Time/ownership: first-valid 15 s from admission, read idle 15 s only during reads,
+  overall monotonic 120 s even paused; HTTPX owns 5 s pool/connect/write phases.
+  First event inferred from accepted Processor's validated channel/terminal state,
+  no duplicate SSE/payload parsing. Record acceptance before timer observation;
+  delayed watchdog cannot retroactively fail a timely event. This race was exposed
+  by the new test and corrected without changing its failing assertion.
+- Cleanup: one shielded 1 s grace from close initiation for cancellation/discovery
+  and response close. Retain late workers/resources/slots, quarantine new admissions,
+  no pool close under uncertainty. Late confirmed release does not clear quarantine.
+  One separate bounded pool-close task after request owners drain. Cancellation of
+  a public cleanup waiter does not cancel/discard owned work. Client must retain
+  service ownership on False shutdown; arbitrary resistant Python/OS I/O cannot
+  be forcibly killed. No automatic retries or reset of uncertain close flags.
+- Privacy: only Processor frames, fixed StreamError/CapacityExceeded metadata.
+  Known error frame remains accepted pure behavior; other failures raise fixed
+  codes for future HTTP mapping. Context-scoped logging filters suppress owned
+  HTTPX/httpcore HTTP/1.1 records (untrusted reason phrases included), without
+  suppressing unrelated requests. No inbound header/body debug logging or telemetry.
+- Alternatives: background reader/list (unbounded read-ahead), async semaphore
+  waiting queue (violates immediate cap), per-service-only count (process cap bypass),
+  new client per request (no pool), wait_for alone (can await resistant cancellation
+  indefinitely), cancel/drop close work (false ownership release), change pure parser
+  to add first-event observer (unnecessary baseline change), pretend generator sends
+  completed socket writes (unsupported). Framework timers/gates are trusted inputs.
+- Tradeoffs: one raw block/processing slice/accepted parser state plus HTTPX buffers,
+  no RSS ceiling; mocked phase errors/settings are not native socket timing proof.
+  T3-004 must enforce actual send min(10 s, remaining overall), cancel blocked sends
+  on disconnect/deadline and retain session cleanup ownership. Cooperative processing
+  checkpoints are not preemptive interruption. No endpoints/wire/vendor integration.
+- Dependency: isolated HTTPX 0.28.1 runtime, httpcore 1.0.9 and 15-package lock;
+  pytest/Ruff/build/Python pins retained. Source references: official
+  [HTTPX async](https://www.python-httpx.org/async/),
+  [timeouts](https://www.python-httpx.org/advanced/timeouts/),
+  [transports](https://www.python-httpx.org/advanced/transports/); installed public
+  response/byte-stream implementation inspected read-only. Private httpcore read
+  constant inspected diagnostically, not imported/depended on as an application API.
+- E033 actual final 457 passes/95 new async cases, both Ruff checks (17 files),
+  read-count/gated deadline/cancellation/quarantine evidence. All 11 accepted pure
+  files/362 tests and Tasks 1/2/4 unchanged. Next independent review, no commit/push.
+
+### ADR-024 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User confirms independent engineering APPROVAL, no blocking
+production defect. Reported complete suite 457 passes, additional 240 randomized
+HTTPX fragmentation cases, resistant cancellation/ownership/quarantine/confirmed
+release, concurrent shutdown with admission blocked/shared transport closed once,
+11 pure files byte-identical and compilation pass. Review Linux/Python 3.13.5
+produced one nonfatal pytest configuration warning; warning text/pytest version/
+exact commands and timings not supplied. E033 native Windows/Python 3.12.16 and
+Ruff remain authoritative; no real-socket/ASGI/vendor or widened-runtime claim.
+E034 records reported review and inspection only, not a fresh test execution.
+No architecture or accepted implementation change. Supersedes pending/no-commit
+handoff above only for one descriptive T3-003 acceptance commit with exact approved
+source/tests/dependency/lock/README/governance inventory. Preserve all limitations
+and completed Tasks 1/2/4; no T3-004 or push; stop after Git verification.

@@ -7,7 +7,7 @@ name = "assessment-task3-streaming"
 version = "0.1.0"
 description = "Task 3 pure bounded synthetic SSE parsing and PII redaction"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = ["httpx==0.28.1"]
 
 [project.optional-dependencies]
 dev = ["pytest==9.2.0", "ruff==0.17.3"]

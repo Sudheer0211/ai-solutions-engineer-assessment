@@ -318,3 +318,45 @@ only, exclude env/cache/pycache/egg-info/temp/credentials/review ZIP. Run staged
 whitespace check, commit once, verify SHA/inventory/clean tree/ahead-behind and stop.
 No tests/Ruff/install rerun unless unexpected implementation changes are found.
 TASK-3 IN_PROGRESS; T3-003 NOT_STARTED/not authorized. No push or further code.
+
+## T3-003 active authorization (2026-11-05 America/Los_Angeles)
+
+Latest attachment authorizes upstream.py/service.py and necessary typed interfaces/
+tests/isolated HTTPX pins/lock only. Integrate accepted Processor over 0a75587;
+preserve all 11 accepted Python files/362 tests and completed Tasks 1/2/4. Any
+pure correction requires a concrete reproduced/documented integration defect first.
+Owned pooled HTTPX, trusted destination/credentials, no retry/redirect/decompression,
+4 KiB processing, pull-driven reads, 5 s pool/connect/write, 15 s first-valid/read
+idle, 120 s monotonic overall, one 1 s cleanup grace, immediate 16/process cap.
+Retain/quarantine uncertain cleanup. Run complete Task 3 suite and both Ruff checks,
+document actual progressive/read-count/cancel/deadline evidence and stop for review.
+No FastAPI/public HTTP/T3-004, wire harness/T3-005, final audit/T3-006, vendor APIs,
+persist/resume, commit or push. Actual downstream-send 10 s enforcement is deferred
+to T3-004; an async generator is not proof of socket-send completion.
+
+T3-003 local outcome: implemented/verified, independent acceptance PENDING. E033
+native 457 passes (362 unchanged pure +95 async), no failures/skips/warnings/xfails;
+Ruff lint/format pass (17 files), HTTPX 0.28.1/httpcore 1.0.9, 15-package lock.
+ADR-024 documents direct public raw-stream ownership, 64 KiB transport/4 KiB slices,
+first-valid/overall watchdogs and fixed quarantine policy. Preserve all tested code
+and T3-002 baseline. No actual socket send/wire/RSS/vendor certification. T3-003 /
+TASK-3 IN_PROGRESS; next independent review, not T3-004 or commit/push.
+
+## T3-003 independent acceptance / Git checkpoint (2026-11-05 America/Los_Angeles)
+
+Latest user independently APPROVES T3-003; DONE. Read E034 and ADR-024 acceptance
+provenance: reported 457 suite passes, 240 additional randomized HTTPX fragmentation
+cases, resistant-cancellation ownership/quarantine/confirmed release, concurrent
+shutdown blocking admission/one shared close, 11 pure files byte-identical and
+compilation pass; no blocking defect. Linux/Python 3.13.5 review recorded one
+nonfatal pytest configuration warning, details not supplied. Native Windows/
+Python 3.12.16 E033 and Ruff authoritative; no real socket/ASGI claims or pin changes.
+
+One descriptive T3-003 acceptance commit authorized, superseding historical
+no-commit/pending gates only for this checkpoint. Preserve all 17 verified Python
+files, approved dependencies/lock and Tasks 1/2/4. Record review, inspect full diff/
+new files/index, stage exact approved source/tests/dependency/lock/README/governance,
+exclude env/cache/pycache/egg-info/credentials/review archives (retain locally),
+run git diff --cached --check, commit once, verify SHA/inventory/clean tree/branch
+counts and stop. No test/Ruff rerun absent unexpected functional change. TASK-3
+IN_PROGRESS; T3-004 NOT_STARTED/not authorized. No push or further implementation.

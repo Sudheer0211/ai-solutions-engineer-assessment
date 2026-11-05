@@ -1,5 +1,27 @@
 # Task 3: pure synthetic SSE parsing and PII redaction
 
+## Current T3-003 acceptance checkpoint
+
+Async HTTPX adapter and owned StreamService are **DONE and independently APPROVED**,
+confirmed 2026-11-05 (America/Los_Angeles). E033 native Windows/Python 3.12.16: **457 passed
+in 4.09s** (362 accepted pure tests unchanged +95 new async cases), zero failures/
+errors/skips/warnings/xfails; Ruff lint/format pass (17 Python files). HTTPX 0.28.1 /
+httpcore 1.0.9, isolated 15-package lock, locked offline sync/import inventory checked.
+All accepted pure code/tests and completed Tasks 1/2/4 remain byte-identical.
+T3-001 through T3-003 are DONE; TASK-3 IN_PROGRESS. This gate supersedes historical
+T3-002 no-network/no-T3-003 instructions below only for implemented async work.
+One descriptive T3-003 acceptance commit authorized, then stop. No public HTTP
+endpoint, wire processes, vendor API, push or T3-004 work.
+
+E034 records reported independent 457 passes, 240 additional randomized HTTPX
+fragmentation cases, resistant-cancellation/concurrent-shutdown checks, 11 pure
+file comparisons and compilation. Linux/Python 3.13.5 review produced one nonfatal
+pytest configuration warning; native Windows/Python 3.12.16 and Ruff E033 remain
+authoritative. No tests rerun during acceptance, no real socket or ASGI validation
+claimed. Original brief unavailable; synthetic profile limitations remain intact.
+
+## Accepted T3-001/T3-002 foundation history
+
 T3-001 is independently ACCEPTED (2026-11-05 America/Los_Angeles) for the explicitly
 defined [synthetic profile](../docs/TASK3_REQUIREMENTS.md), ADR-022. The original
 vendor brief remains unavailable. This is not universal PII detection or a real
@@ -127,3 +149,90 @@ customer data; fixtures use synthetic values only. No networking/wire/RSS/vendor
 or universal privacy claim. T3-002 is accepted; next action is the one authorized
 foundation Git checkpoint, then stop. Original brief/synthetic profile limitations
 remain unchanged.
+
+## Async upstream and ownership API (T3-003)
+
+`UpstreamSettings(url, bearer_token=None)` is trusted immutable configuration;
+HTTPS or literal-loopback HTTP only, no userinfo/query/fragment, no secret defaults.
+`UpstreamRequest(body: bytes)` holds already formed request bytes (1-65536), private
+repr; the adapter uses fixed POST/application-json, preserves bytes and invents no
+provider/prompt schema. Future inbound route/auth/body validation is T3-004 approval
+work. There is no caller URL/header/cookie interface. Operator URLs/credentials
+are separate from inbound credentials. No environment/secret is printed or logged.
+
+`UpstreamAdapter` owns one pooled AsyncClient with 5 s pool/connect/write, 15 s read,
+16 HTTP/1.1 connections, TLS verification, trust_env=False, retries=0, redirects
+disabled and cookie rejection. Response must have status 200, one text/event-stream
+Content-Type (optional UTF-8 charset), and NO Content-Encoding, even identity.
+It never reads a diagnostic body for a rejected response. Private HTTPX/httpcore
+HTTP/1.1 log records are suppressed only inside owned I/O context; other callers'
+logging remains enabled. Arbitrary external telemetry/untrusted transports are
+outside that logging guarantee; application body/debug logging must remain disabled.
+
+`StreamService(adapter)` owns request sessions and final pool shutdown. Use:
+
+```python
+service = StreamService(adapter)
+try:
+    async with service.stream(UpstreamRequest(validated_request_bytes)) as session:
+        async for sanitized_frame in session:
+            await downstream_consumer(sanitized_frame)
+finally:
+    clean = await service.aclose()
+    # If False, retain service/resource ownership and handle unclean shutdown.
+```
+
+This snippet describes the library seam, not an implemented HTTP endpoint.
+Async context entry admits before any await/send; Capacity is unconditionally process-global
+across services/event loops, at most 16, with immediate CapacityExceeded/zero request
+for the 17th. Clock/transports are trusted test dependencies; there is no per-instance capacity override.
+Every session has its own accepted Processor and one reader; no producer queue.
+Fully consume or exit/close the context. Retain the service if cleanup is unconfirmed;
+Python GC/remote-provider cancellation are not physical termination guarantees.
+
+Service yields only Processor frames. Errors raise fixed StreamError codes before/
+after output; it does not invent an HTTP response or automatically send after failure.
+Known synthetic upstream error already becomes the accepted fixed error frame.
+Terminal end/error exhausts the pure iterator normally, closes resources, then yields
+the terminal frame. Unconfirmed terminal cleanup prevents a false success end.
+
+Small raw transport blocks flow immediately; do not use a coalescing 4096-byte
+iterator that waits for more data before delivering a small event. Public response
+AsyncByteStream is read directly without content decoding; response close is owned
+separately, avoiding hidden EOF-close cancellation/is_closed ambiguity. One raw block
+is capped at 65536 bytes (pinned native HTTP/1.1 read size), then lazily split into
+<=4096 processing slices. A larger injected block is rejected before retained growth.
+HTTPX/httpcore/OS buffers and encoding scratch add overhead; no total RSS or real
+wire allocation claim. Parser's independent 8 KiB line/16 KiB event caps still apply.
+
+First-valid deadline is 15 s from admission INCLUDING header acquisition. Valid
+empty delta counts; comments/incomplete frames do not. Read-idle gets 15 s only
+while awaiting the next body read. Overall is monotonic 120 s from admission and
+has an owned timer that closes even when downstream stops pulling. First-valid
+timer likewise closes if consumer never pulls. Checks occur at bounded processing
+checkpoints; late observation cannot reject a first event already accepted timely.
+Events/read results observed at a deadline lose; no budget refresh from small chunks.
+
+One 1 s cleanup grace is anchored when close starts, shared by pending open/read
+cancellation and response close. Shielded close work is retained past caller
+cancellation/grace expiry. Unconfirmed/failed cleanup quarantines new admissions,
+keeps the owner/slot and never closes the shared pool beneath it. Late confirmed
+cleanup releases the slot but does not reopen quarantined admissions. A failed close
+needs supervisor intervention; there is no automatic retry/recovery API. Pool shutdown
+has its own one-time 1 s resource-close budget only after response owners drain,
+and keeps an uncertain close task. Repeated aclose does not renew response grace.
+
+The service has fairness/cancellation checkpoints around bounded synchronous
+Processor steps, not preemptive interruption of Python bytecode. T3-004 must await
+actual ASGI send under min(10 s, remaining session.deadline), monitor disconnect and
+close the session on failure. Service's watchdog closes upstream, not a caller's
+blocked socket send; an async generator alone does not certify socket backpressure.
+
+New test evidence: first safe output after one read; still ONE read across 20
+scheduler turns with no demand; second pull starts read TWO and blocks at its gate;
+after release, final output has redacted cross-chunk PII and total reads TWO.
+Three pending 256/256/88-scalar frames consume ONE read, then controls use read TWO.
+A 2000-event test asserts one read per demand and 2001 total raw reads including
+terminal controls. Sixteen parallel requests accepted/17th zero upstream; uncertain
+connect/read/close work stays owned and blocks admissions. E033 includes exact tests,
+timing/cancel/quarantine coverage and the initial delayed-watchdog failure/fix.

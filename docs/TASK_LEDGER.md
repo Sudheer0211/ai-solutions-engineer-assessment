@@ -23,10 +23,10 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 | T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
-| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | IN_PROGRESS | T3-001/T3-002 independently accepted synthetic profile | Preserve accepted pure baseline; T3-003 NOT_STARTED/not authorized |
+| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | IN_PROGRESS | T3-001 through T3-003 independently accepted; E031-E034 | Preserve accepted baseline; T3-004 not authorized; no public HTTP/wire claims |
 | T3-001 | Requirements provenance, architecture and exact streaming contract | P0 | DONE | Independently APPROVED 2026-11-05 for documented synthetic profile; ADR-022 | Original vendor brief unavailable; preserve narrow approved scope |
 | T3-002 | Isolated project and pure SSE/redaction components | P0 | DONE | Independently APPROVED 2026-11-05; E031 native verification / qualified review E032; ADR-023 | One accepted foundation commit authorized; no T3-003/push |
-| T3-003 | Async upstream adapter, orchestration and lifecycle | P0 | NOT_STARTED | Proposed T3-Q13 through Q15 | Await preceding checkpoint acceptance/authorization |
+| T3-003 | Async upstream adapter, orchestration and lifecycle | P0 | DONE | Independently APPROVED 2026-11-05; native Q13-Q15/E033, qualified review E034; ADR-024 | One acceptance commit authorized; preserve source/tests/dependencies; no T3-004 or push |
 | T3-004 | FastAPI streaming HTTP integration | P0 | NOT_STARTED | Proposed T3-Q16 through Q18 | Await preceding checkpoint acceptance/authorization |
 | T3-005 | Independent-process real HTTP wire verification | P1 | NOT_STARTED | Proposed T3-Q19 through Q21 | Await preceding checkpoint acceptance/authorization |
 | T3-006 | Final Task 3 assessment audit | P1 | NOT_STARTED | Future requirements traceability/fresh regression/privacy/reproducibility audit | Await preceding checkpoint acceptance/authorization |
@@ -37,6 +37,20 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 | T4-004 | Primary/backup provider routing | P0 | DONE | Independently ACCEPTED in supported environment; native E024/qualified review E025 | Preserve accepted orchestration baseline c889236 |
 | T4-005 | Authenticated HTTP and real-wire verification | P1 | DONE | Independently ACCEPTED; native E026 / qualified split-review E027, H1-H8 | Preserve committed baseline 6eaccaf |
 | T4-006 | Final Task 4 assessment audit | P1 | DONE | Independently APPROVED 2026-11-05/E029; seven traceability rows/test references/E028/docs/limitations reviewed | One final documentation-only acceptance commit authorized; no implementation changes or push |
+
+## T3-003 independent acceptance / Git checkpoint - 2026-11-05
+
+America/Los_Angeles. User independently APPROVES T3-003; DONE. E033 preserves
+actual native 457-pass/Ruff execution; E034 records reported independent 457 passes,
+240 additional fragmentation cases, ownership/quarantine/confirmed release,
+concurrent shutdown/one shared close, 11 pure file comparisons and compilation.
+Linux/Python 3.13.5 review had one nonfatal pytest configuration warning; native
+Windows/Python 3.12.16 and Ruff remain authoritative. No real socket/ASGI claims.
+No blocking defect reported, no functional change or new local test execution.
+One descriptive acceptance commit authorized for exact approved 15-file inventory;
+retain/exclude local review ZIP, preserve source/tests/dependencies and Tasks 1/2/4.
+After SHA/inventory/clean-tree/recorded-origin verification, stop. TASK-3 remains
+IN_PROGRESS; T3-004 NOT_STARTED, requires separate authorization; no push.
 
 ## GOV-001 mandatory acceptance criteria
 

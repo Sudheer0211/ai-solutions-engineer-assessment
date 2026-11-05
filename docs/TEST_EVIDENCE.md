@@ -2040,3 +2040,221 @@ staged. git diff --cached --check exits 0. Git LF/CRLF advisories are normalizat
 not source functional changes or pytest warnings. No test/Ruff/compile/install
 rerun. One descriptive commit, then parent/SHA/inventory/clean-tree/branch-count
 verification and stop; commit identity recorded by Git history/session report.
+
+## E033 - 2026-11-05: T3-003 async streaming, budgets and owned cleanup
+
+America/Los_Angeles (client date). Latest supplied attachment authorizes async
+adapter/service and deterministic tests over accepted 0a75587/362 pure tests.
+Initial HEAD 0a75587e830618e69c4fcb827eb2d97ca37ec573, clean main ahead 1/behind 0
+recorded origin/main; 98 tracked SHA256 hashes captured in ignored baseline.
+Original vendor brief unavailable; only approved synthetic profile used. No
+FastAPI endpoint, actual TCP/wire processes, vendor integration or later checkpoint.
+
+### Runtime/setup/source inspection (not test pass claims)
+
+Read AGENTS/ledger/approved contract/ADR-022/023; inspected installed HTTPX 0.28.1 /
+httpcore 1.0.9 read-only using inspect.getsource on public Response.aiter_raw/aclose,
+AsyncByteStream.aclose, AsyncClient sending implementation. Diagnostic read of native
+HTTP/1.1 read constant yields 65536. No SDK monkeypatch/private API import in
+application. Official async/timeout/transport docs consulted; links ADR-024.
+Inspection explains avoiding coalescing small events and implicit EOF-close flag
+ambiguity; it is NOT actual socket timing/allocation proof.
+
+From task3/, actual isolated dependency command:
+
+```powershell
+$env:UV_CACHE_DIR = '..\.cache\uv'
+..\.tools\bin\uv.exe sync --extra dev --python .venv/Scripts/python.exe --offline
+```
+
+Exit 0: lock resolves 15 packages; eight installed/replaced (project rebuilt),
+only Task 3 env/config/lock affected. New runtime pin HTTPX 0.28.1; existing Python/
+pytest/Ruff/build pins preserved. No external inference contacted; cache-only setup.
+Final metadata probe prints native Python 3.12.16 (Oct 26 2026, MSC v.1944 AMD64)
+and all 15 installed distributions: assessment-task3-streaming 0.1.0, anyio 4.16.0,
+certifi 2026.10.23, colorama 0.4.6, h11 0.16.0, httpcore 1.0.9, httpx 0.28.1,
+idna 3.20, iniconfig 2.3.1, packaging 26.3, pluggy 1.7.0, Pygments 2.21.0,
+pytest 9.2.0, Ruff 0.17.3, typing_extensions 4.16.0. SQLite not used.
+
+Final `.venv` metadata probe followed by
+`..\.tools\bin\uv.exe sync --locked --extra dev --python .venv/Scripts/python.exe --offline`
+with same UV_CACHE_DIR: exit 0, resolved/checked 15, no lock/pin changes. Parent
+Task 1/2/4 environments/config/dependencies unchanged; no regression rerun needed.
+
+### Initial actual failure and correction
+
+From task3/, native outside sandbox (cache permissions), exact command:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_upstream.py tests/test_service.py --tb=short --maxfail=3 --basetemp=.cache/t3003-initial
+```
+
+Exit 1: **86 passed, 1 failed in 1.17s**, no skips/warnings/xfails. Failure:
+test_overall_deadline_closes_while_consumer_is_paused asserted response still open
+at 119.999 s after a valid event, but it was closed. A delayed first-event watchdog
+observed its timer after a large clock jump and falsely reclassified a valid
+already-accepted event as late. Source correction respects synchronous accepted-
+event state; original failing assertion/test preserved. No accepted pure change.
+
+Standalone Ruff check exits 1 with six findings: UP047 generic syntax, I001 import
+order and four F401 unused imports in NEW files. Corrected new source/test imports
+and Python 3.12 generic syntax only. `ruff check --fix` reported six fixed/zero
+remaining; new-file format command exits 0. No rule ignores/warning filters changed,
+no accepted pure file reformatted. Added eight further cleanup/cancel/header/cap
+regressions after the initial 87-case subset, for 95 new cases total.
+
+### Intermediate full pass / process-capacity review
+
+Before final capacity review, complete command
+`.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3003-full`
+exited 0, 457 passed in 3.86s; both Ruff checks exited 0 (16 Python files).
+Further review found the optional per-instance test capacity parameter could opt
+out of the default process-global counter. Removed that production override and
+made all services use the same process capacity. New tests/conftest.py isolates
+ONLY the new async test modules' process counter, not SDK/pure code; the cross-
+service/parallel cap tests still share one counter within each test. No accepted
+pure body/assertion changed. Full final rerun below verifies the correction.
+
+### Final actual complete suite and both Ruff checks
+
+All commands from task3/, supported native Windows/Python 3.12.16 environment;
+pytest outside sandbox for ordinary cache permissions, no substitutions/filters:
+
+| Exact command | Actual result | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3003-final` | **457 passed in 4.09s** | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` | 17 files already formatted | 0 |
+
+Final 457 = 362 accepted pure tests unchanged +95 new async cases. Zero failures,
+errors, skips, warnings, xfails/xpasses. Seventeen Python files = seven source/package
+and ten test/support/package. No actual HTTP server or child processes started.
+
+### Observed read-count/progressive/budget assertions from executed tests
+
+- `test_progressive_delivery_and_exact_read_counts_under_blocked_demand`: safe prefix
+  delivered while sensitive tail held and upstream gate unfinished; body/lease raw
+  read/processing count all 1. Still 1 after 20 scheduler turns without demand. Next
+  anext enters gated raw read 2 and cannot complete until released; final cross-
+  network-chunk PII replaced, total reads 2, one confirmed response close/slot released.
+- `test_pending_sanitized_frames_do_not_read_next_network_chunk`: output text lengths
+  256/256/88 from one input use raw read 1, done/end use read 2. No producer queue.
+- `test_raw_64k_segmentation_does_not_coalesce_small_events`: one 65536-byte raw block
+  ->16 processing chunks, each4096; one raw chunk, next EOF read then owned close.
+  65537-byte injected block rejects before any processing chunk, generic LIMIT.
+- `test_long_stream_has_no_producer_queue_or_accumulated_pure_buffers`: 2000 deltas,
+  exactly one read per delta demand and 2001 reads including terminal controls;
+  held/pending pure buffers zero at each yielded ordinary-text frame. No RSS claim.
+- First-event controlled boundary 14.999 passes, 15.0/15.001 time out. Comments,
+  incomplete frames and small chunks do not renew budget; delayed headers do not
+  reset admission anchor. Empty valid delta at14 qualifies, idle read expires29,
+  not the old first deadline15. First watcher also closes at15 with no body demand.
+- Overall watcher keeps response open at119.999 and closes at120 while consumer
+  paused, with raw read count still1, no raw candidate flush. These are controlled
+  monotonic assertions, not physical wall-clock/socket latency guarantees.
+- HTTPX request extensions carry connect/pool/write5/read15. Typed phase timeout
+  exceptions map TIMEOUT; MockTransport bypasses actual native phase timing. No
+  invented DNS/TLS/socket connect benchmark from these settings/error tests.
+
+### Cancellation, ownership, isolation and privacy results
+
+Executed cancellation paths: connect, awaiting raw read, bounded redaction
+checkpoint, paused consumer with pending output, request cleanup, repeated cancel,
+shutdown/pool cleanup. Caller cancellation propagates; retained shielded work closes
+and accounts for capacity, never flushes raw tails. No preemptive-bytecode claim.
+Three uncertain-cleanup cases (resistant connect/read/response-close) retain one
+owner/slot past1.001, quarantine adapter, reject new admission with zero extra
+requests and do not close pool beneath live resource. Releasing the fake gate later
+confirms response close/slot release then pool shutdown; quarantine not reopened.
+Shared-grace test spends .75 s on cancel/discovery then close, expires at1.001
+instead of renewing to1.75. Confirmed close at .999 is not quarantined. Failed fake
+close returns controlled unavailable, retains owner/quarantine and emits no success
+end; fixture-only manual disposal is not a production retry/recovery API.
+
+Process-global cap verified across services and with parallel headers: 16 admitted,
+17th CapacityExceeded, request count stays16, no waiting admission queue. Sixteen
+concurrent independent streams redact correctly, one request/close each, no mixed
+channel/candidate state. Strict status/type/encoding matrix reads zero rejected body
+bytes; no redirects/retries/cookies/header/credential confusion. Original request
+bytes preserved. Scoped HTTPX/httpcore logging filters suppress private body/token/
+untrusted reason markers during owned I/O and preserve an unrelated logger record.
+All emitted errors are accepted fixed Processor frames; other failures are generic
+StreamError/CapacityExceeded for future HTTP presentation, no raw exception context.
+
+No real sockets, downstream-send completion, actual network backpressure/RSS,
+remote provider cancellation/billing or vendor interoperability validated. Future
+T3-004 must bound actual ASGI send at min(10 s, remaining overall), own disconnect/
+send cancellation and retain service when shutdown False. T3-005 owns wire proof.
+Original brief remains unavailable. T3-003 locally verified/independent review
+PENDING; no T3-004, stage/commit/push.
+
+### Final integrity inspection (not additional test executions)
+
+`git diff --check` exits 0. A native Python SHA256/inventory/document inspection
+exits 0: nine authorized tracked changes, six new Python files, 89 baseline paths
+unchanged, all 11 accepted pure Python files byte-identical, all 17 final verified
+Python hashes unchanged. Checked 29 named test references and three relative local
+Markdown links; no missing target or unexpected control character. Targeted
+private-key/provider-key/credential-URL scan found one credential-URL candidate:
+the deliberately invalid destination in test_upstream.py's rejection fixture,
+not an actual credential. No actual secret identified by this targeted inspection;
+this is not an exhaustive publication/history audit. Unignored changed inventory
+contains no environment/cache/database/archive artifacts. Index empty; HEAD remains
+0a75587e830618e69c4fcb827eb2d97ca37ec573; main ahead 1/behind 0 recorded origin/main.
+No fetch, stage, commit or push. Subsequent changes are documentation-only.
+
+## E034 - 2026-11-05: T3-003 reported independent acceptance and Git checkpoint
+
+America/Los_Angeles. **Independent APPROVAL confirmed by user; T3-003 DONE.**
+This section records reported review and actual documentation/Git inspection;
+no pytest/Ruff/compile/install rerun during this checkpoint. E033 retains the
+authoritative actual native Windows/Python 3.12.16 tests and Ruff results.
+
+Reported independent evidence (not local commands executed here):
+
+- Complete Task 3 suite: 457 passed.
+- Additional 240 randomized HTTPX fragmentation cases passed.
+- Resistant cancellation retained ownership, quarantined new admissions and
+  released resources only after confirmed cleanup.
+- Concurrent shutdown blocked admission and closed shared transport once.
+- All 11 previously accepted pure source/test files byte-identical to review archive.
+- Python compilation passed; no blocking production defect identified.
+
+Review environment: Linux/Python 3.13.5, one nonfatal pytest configuration warning.
+Exact warning/pytest version, commands and timings not supplied; do not invent
+them or interpret as supported Python 3.13/native Windows verification. E033
+native execution/Ruff remains authoritative. No real socket or ASGI claims are
+authorized; original vendor brief unavailable, synthetic/narrow-PII scope retained.
+
+Actual read-only commands: Get-Content AGENTS/ledger/current requirements/README/
+ADR-024/evidence/build and new source/tests; git status --short --branch,
+git diff --cached --name-status, git diff --stat and complete path-scoped git diff.
+Initial HEAD 0a75587e830618e69c4fcb827eb2d97ca37ec573; main ahead 1/behind 0 recorded
+origin/main; empty index. Nine tracked changes/six new Python files plus one local
+review ZIP. Native Python SHA256 snapshot/inventory exits 0: captured 98 tracked/
+seven untracked files, all 17 Python hashes match final verified E033 snapshot.
+No unexpected functional change; no test rerun warranted. Completed Tasks 1/2/4
+and all 11 accepted pure files preserved. Local review ZIP retained and excluded
+from staging through exact local .git/info/exclude entry, no tracked ignore change.
+
+Only acceptance documentation changed in this session. Authorized staging inventory:
+two async source files/four test-support files, task3 pyproject/lock/README and
+AGENTS/requirements/ledger/decisions/build/evidence (15 paths). Preserve accepted
+source/tests/dependencies bytes, inspect staged manifest/contents for unexpected
+paths/secrets/artifacts, run git diff --cached --check, commit once and verify
+identity/parent/inventory/clean tree/ahead-behind. No fetch/push or T3-004.
+
+Actual final staging inspection: explicit git add of those 15 authorized paths;
+git diff --cached --name-status / --stat inspected. Native staged-content/hash/
+artifact scan exits 0: exact 15-path manifest, index equals inspected working-file
+content after Git newline normalization, no unstaged/unignored leftovers, 17
+verified Python hashes and retained ZIP hash unchanged. No excluded environment/
+cache/egg-info/database/archive/credential file staged. Targeted private-key/provider-
+key patterns found none; one credential-URL match is the deliberate invalid-
+destination negative fixture, not an actual secret. No actual secret identified;
+not an exhaustive history/publication audit. git diff --cached --check exits 0.
+No active default Git hooks. LF/CRLF advisories are normalization notices, not
+functional changes or test warnings. Final changes after inspection are these
+documentation records only; re-stage them and repeat staged whitespace check before
+the one commit. SHA/parent/manifest/clean status/branch counts are verified afterward
+and reported in the session/Git history. No test/Ruff/compile/install rerun.

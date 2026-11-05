@@ -5,9 +5,14 @@ Status: **T3-001 independently APPROVED / accepted**, user confirmation 2026-11-
 Approval is ONLY for the explicitly defined synthetic assessment profile, not an
 unavailable original vendor brief, universal PII detection or vendor interoperability.
 P1-P8 and L1-L10 are approved ENGINEERING POLICIES, not original assessment numbers.
-T3-002 independently APPROVED, user confirmation 2026-11-05; DONE. E032 records
-qualified review provenance. One accepted T3-001/T3-002 foundation commit authorized;
-preserve pure code/tests/pins/lock. No networking/HTTP/T3-003 or push authorized.
+T3-002 independently APPROVED, user confirmation 2026-11-05; DONE, committed 0a75587.
+E032 records qualified review provenance. T3-003 independently APPROVED, confirmed
+2026-11-05; DONE. E033 preserves actual native execution; E034 records qualified
+independent review and this acceptance Git checkpoint, without new test executions.
+One descriptive T3-003 acceptance commit authorized; preserve source/tests/pins/lock.
+T3-004 NOT_STARTED/not authorized. No public HTTP/wire/vendor claims or push.
+The T3-003 section below supersedes historical no-network gates for the accepted
+async checkpoint only; pure contract remains unchanged.
 The additional mandatory rules preserve valid-done-only finalization, no raw EOF/
 overflow flush, separate byte/scalar/encoded limits, strict channel sequencing,
 duplicate-key rejection and equality of detector/candidate alphabets.
@@ -325,9 +330,9 @@ Inbound route/method/request/authentication/browser-client decisions still requi
 explicit approval before T3-004. Real vendor adapters/tokenizers are not inferred.
 
 T3-001/T3-002 DONE / independently accepted within the synthetic profile.
-T3-003 through T3-006
-NOT_STARTED. Completed Tasks 1/2/4 remain DONE and must not change. One accepted
-foundation commit authorized; no push.
+T3-003 DONE/independently accepted; T3-004 through T3-006 NOT_STARTED. Completed
+Tasks 1/2/4 remain DONE and must not change. One T3-003 acceptance commit authorized;
+no T3-004 or push. Full TASK-3 remains IN_PROGRESS.
 
 ## Standards references consulted for the design
 
@@ -384,3 +389,97 @@ Original vendor brief still unavailable; no universal PII/vendor interoperabilit
 T3-002 DONE/independently accepted. One descriptive T3-001/T3-002 foundation commit
 authorized for approved source/tests/pins/config/lock/README and relevant governance
 only, preserving implementation unchanged. TASK-3 IN_PROGRESS; no T3-003 or push.
+
+## T3-003 actual async implementation / policies and verification
+
+Latest user attachment authorizes async upstream/service only over 0a75587, not
+HTTP endpoints/wire/final audit. T3-003 DONE/independently accepted, user confirmation
+2026-11-05; qualified review E034. E033 final native Python 3.12.16: **457 passed in 4.09s**, zero
+failures/errors/skips/warnings/xfails; both Ruff checks pass, 17 Python files.
+All 11 accepted T3-002 source/test files and 362 pure tests remain byte-identical.
+Original brief/synthetic-only/narrow-PII scope remains unchanged.
+
+Implementation choices I1-I8 below refine the authorized transport seam; they are
+engineering policies, not recovered vendor requirements or new PII rules:
+
+- T3-I1: immutable trusted UpstreamSettings requires HTTPS or literal-loopback HTTP
+  destination, no userinfo/query/fragment, separately configured optional Bearer.
+  UpstreamRequest contains 1-65536 opaque already formed bytes, fixed POST and JSON
+  media type. No provider/prompt schema inferred; no caller URL/header API or
+  inbound credentials/cookies forwarded. Future T3-004 must approve/validate input.
+- T3-I2: owned HTTPX 0.28.1/httpcore 1.0.9 pool, 16 HTTP/1.1 connections, TLS,
+  trust_env=False, no redirects/retries, reject cookie persistence. Validate 200,
+  one text/event-stream Content-Type/optional UTF-8 charset, NO Content-Encoding.
+  Reject before reading diagnostic bodies; no upstream headers reach output.
+- T3-I3: public response AsyncByteStream yields raw bytes without decoding or
+  implicit EOF close; own response.aclose explicitly under a shielded task. Native
+  pinned HTTP/1.1 network read size inspected as 65536. Enforce one retained raw
+  block <=65536 and lazily slice <=4096 for Processor, without coalescing small
+  events to 4 KiB. Reject oversized injected blocks. External transport/header/OS
+  buffers are not a certified RSS bound; T3-005 must verify real wire behavior.
+- T3-I4: StreamService/StreamSession async context and iterator retain one accepted
+  Processor, one operation and one bounded pending iterator per admitted request.
+  No producer queue/background reader. Direct encoder/parser bypass is prohibited.
+  Process-global Capacity is unconditionally atomic across services/loops, <=16 active,
+  no waiting queue; excess has fixed CapacityExceeded/zero requests.
+  No per-instance capacity override; only test fixtures isolate the counter in
+  new async test modules, not in production or the accepted pure components.
+- T3-I5: pool/connect/write 5 s/read 15 s configured in HTTPX (native transport owns
+  these phases). First VALID event absolute 15 s from admission including headers;
+  empty valid delta qualifies via accepted channel state, comments/incomplete data
+  do not. Read-idle 15 s from each body await, not time paused downstream. Monotonic
+  overall 120 s includes setup/processing/paused consumer. Owned timer-only watchdogs
+  enforce first/overall even with no demand. Read/event observation at deadline loses;
+  a delayed watchdog cannot reject an event already accepted before its deadline.
+- T3-I6: close drops raw tails/pending frames, cancels/discovers owned open/read work
+  then closes iterator/response under ONE additional 1 s grace anchored at close
+  initiation. Caller cancellation cannot cancel/drop the shielded close worker.
+  Unconfirmed/failed cleanup retains owner/slot and quarantines shared adapter/new
+  admissions; never close pool under live uncertain response. Late confirmed close
+  releases slot, quarantine stays. Permanent failed close needs supervisor, no retry
+  API. Pool shutdown has a separate one-time 1 s resource-close budget AFTER response
+  owners drain; no repeated request-grace renewal or silent discarded close tasks.
+- T3-I7: only Processor frames yielded. Known upstream error yields its fixed error
+  frame; other failures raise fixed StreamError codes, no raw diagnostic/context or
+  automatic after-header response. Public HTTP mapping remains T3-004. A terminal
+  success frame waits for confirmed cleanup, no false end after close failure.
+  HTTPX/httpcore HTTP/1.1 logs are filtered inside owned I/O ContextVar scope only,
+  including untrusted reason phrases; unrelated request logging unaffected.
+- T3-I8: bounded synchronous processing checkpoints provide cooperative cancellation,
+  not preemptive Python interruption. T3-004 owns actual ASGI send under minimum of
+  10 s and remaining session.deadline, disconnect monitoring and send-task cleanup.
+  Overall watchdog closes upstream but cannot prove socket-send completion. No
+  actual HTTP endpoint, process harness, remote cancellation/billing or RSS claim.
+
+| Q13-Q15 evidence | Executed tests (task3/tests/) / observed assertions |
+| --- | --- |
+| Progressive delivery/backpressure | test_service.py::test_progressive_delivery_and_exact_read_counts_under_blocked_demand: first safe prefix after read 1, no-demand count still 1 after 20 scheduler turns, explicit next pull enters read 2, final cross-chunk replacement/count 2 |
+| Pending frames / bounded reads | test_pending_sanitized_frames_do_not_read_next_network_chunk: 256/256/88 scalar frames use read 1, controls read 2; test_long_stream_has_no_producer_queue_or_accumulated_pure_buffers: 2000 deltas, 2001 reads including controls, bounded pure holds/output |
+| Fixed transport/privacy | test_upstream.py status/type/encoding matrix, request preservation/credentials/cookies/timeouts, no-retry failures, raw 64 KiB ->16x4 KiB, oversized-block rejection and scoped log filtering |
+| First/read/overall timing | test_first_valid_event_monotonic_boundary_and_no_partial_flush (14.999/15/15.001); frequent partial/comment chunks do not renew first deadline; empty valid delta switches to read idle; headers do not reset first budget; overall/first watchdogs close even without demand |
+| Cancellation/ownership | tests cover connect/read/processing checkpoint/pending output, caller and shutdown cleanup cancellation, repeated cancel, shared 750 ms cancel +close grace, .999 s confirmed close, uncertain connect/read/close >1 s retention and zero new sends, late cleanup/pool closure, failed close preventing success end |
+| Isolation/capacity | process-global 16 across services; parallel 16/17 zero-forward admission; 16 simultaneous streams separate candidates and finish/close once |
+
+Only controlled async/HTTPX transports were executed, no real sockets or external
+inference. HTTPX phase timeout settings/exceptions verified; mocks do not establish
+actual DNS/TLS/socket phase timing. First/idle/overall/cleanup tests use monotonic
+controlled clocks and gates. Native HTTP/1.1 source inspection is not wire evidence.
+Initial delayed-first-watchdog failure and Ruff findings/fix retained in E033.
+No pure integration defect/correction needed. Independent T3-003 review approved;
+next: the authorized acceptance commit, then stop. No T3-004 or push.
+Full TASK-3 stays IN_PROGRESS.
+
+### T3-003 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User confirms independent APPROVAL: complete suite 457 passed,
+240 additional randomized HTTPX fragmentation cases passed; resistant cancellation
+retained ownership/quarantined admissions until confirmed cleanup, concurrent
+shutdown blocked admission/closed shared transport once, all 11 accepted pure
+files byte-identical and compilation passed. No blocking production defect found.
+Reported Linux/Python 3.13.5 review had one nonfatal pytest configuration warning;
+exact warning, commands/timings and pytest version were not supplied. This is not
+a supported Python-pin change or a new local execution. E033 native Windows/
+Python 3.12.16 and Ruff remain authoritative. No real socket or ASGI claims,
+vendor interoperability or universal PII guarantees follow from this acceptance.
+Preserve all engineering policies/limitations and Tasks 1/2/4. E034 records this
+documentation/Git checkpoint only; no test rerun absent unexpected functional change.

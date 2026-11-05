@@ -1085,3 +1085,98 @@ working files, whitespace check exit 0, targeted credential candidates zero. All
 preserved, ZIP excluded locally, no unstaged/unignored artifacts. No test/Ruff/
 compile/install rerun. Create the one accepted foundation commit, verify resulting
 identity/parent/manifest/clean tree/recorded-origin counts, report and stop.
+
+## M049 - 2026-11-05 (America/Los_Angeles): T3-003 async adapter/service checkpoint
+
+Latest attachment authorizes async transport/service only over accepted 0a75587,
+362 pure tests. Initial working tree clean/main ahead 1 recorded origin/main,
+captured 98 tracked hashes. Read AGENTS/ledger/approved contract/ADRs and installed
+HTTPX public byte-stream/response source; no original vendor brief inferred.
+
+Added upstream.py/service.py, async_support/test_upstream/test_service/conftest. Fixed
+destination/credentials/opaque request body, strict 200/SSE/no-encoding validation,
+owned pooled HTTPX, raw 64 KiB cap and 4 KiB slices. No small-event coalescing or
+background reader. Accepted Processor handles every frame unchanged. Async context
+sessions/global immediate cap16, first/overall watchdogs, per-read idle budget,
+shared anchored 1 s cancellation+close grace, retained/quarantined uncertain owners,
+confirmed-only terminal emission and bounded pool shutdown. Scoped HTTPX/httpcore
+logging suppresses private I/O diagnostics without disabling unrelated callers.
+ADR-024/requirements/README explain public API seam, limits and downstream-send
+enforcement deferred to T3-004. No endpoints/process wire/vendor/persistence work.
+
+First async subset: 86 passed/one failed in 1.17s, exit 1; delayed first-watchdog
+observation falsely failed an already accepted event when clock jumped forward.
+Corrected watcher to respect synchronous accepted-event state, original assertion
+preserved. Initial Ruff six findings (generic annotation/import/unused imports),
+new files only corrected. Added further shared-grace/cancel/close-failure/parallel
+cap regressions. Final native full suite E033: **457 passed in 4.09s**, zero
+failures/errors/skips/warnings/xfails; both Ruff checks exit 0, 17 Python files.
+Offline sync/import inventory verified 15 packages, HTTPX0.28.1/httpcore1.0.9,
+Python3.12.16. No accepted pure correction or dependency change outside Task 3.
+
+Measured assertions: first safe output/read1, no-demand still1 for20 scheduler
+turns, next pull starts gated read2, final total2 with cross-chunk redaction. Pending
+256/256/88-scalar frames use read1, controls read2. 2000-event long stream:2001reads,
+bounded state. Default global16 across services and parallel16/17 zero-forward
+rejection; cancellation/open/read/processing/pending/cleanup and independent clocks
+verified. Uncertain close retains owner/slot and blocks new admissions, late gates
+release resource; permanent fake close error retains quarantine/owner, fixture-only
+disposal, no production retry. No network/RSS/preemptive cancellation proof claimed.
+
+Affected: Task 3 two source/four test files, pyproject/lock/README; AGENTS,
+requirements/ledger/decisions/build/evidence. All accepted 11 pure Python files and
+completed Task 1/2/4 unchanged. No current test/lint blocker. T3-003 IN_PROGRESS /
+independent acceptance pending; next review of source/tests/E033/ADR-024, not
+T3-004 or Git checkpoint. No commit/push. Final integrity/links/artifact checks next.
+
+After intermediate 457-pass/3.86s verification, final review found the optional
+per-instance capacity test seam could bypass process-wide scope. Removed it from
+production; new conftest isolates only async test-module counters. Final rerun
+457 passed/4.09s and Ruff pass/17 files covers this tightening; accepted pure files
+unchanged. No later code changes after final verification.
+
+Final inspection E033: whitespace check and native integrity script exit 0; nine
+tracked documentation/config/lock changes plus six new Python files only, 89
+baseline paths unchanged, accepted 11 pure files byte-identical and all 17 final
+verified Python hashes match. All 29 checked test references/three local links
+resolve. One targeted credential-URL match is an invalid-destination negative
+fixture, no actual secret identified. No unignored environment/cache/database/
+archive artifacts; index empty, HEAD still 0a75587, main ahead 1/behind 0 recorded
+origin/main. Recoverable handoff: review these uncommitted T3-003 changes and E033/
+ADR-024 independently; no further implementation, stage/commit/push or T3-004.
+
+## M050 - 2026-11-05 (America/Los_Angeles): T3-003 independent acceptance checkpoint
+
+User independently APPROVES async upstream/backpressure/cancellation/ownership
+checkpoint. Reported complete suite 457 passes, 240 randomized HTTPX fragmentation
+cases, resistant cancellation retaining/quarantining/releasing only after confirmed
+cleanup, concurrent shutdown blocking admission/one transport close, all 11 pure
+files unchanged and compilation passed. No blocking production defect. Independent
+Linux/Python 3.13.5 had one nonfatal pytest configuration warning; warning detail/
+exact commands not supplied. E033 native Windows/Python 3.12.16/Ruff authoritative;
+no new local execution or real-socket/ASGI/vendor claims. T3-003 DONE, TASK-3
+IN_PROGRESS, T3-004 NOT_STARTED/not authorized. No architecture change.
+
+Initial inspection: HEAD 0a75587e830618e69c4fcb827eb2d97ca37ec573, main ahead 1/
+behind 0 recorded origin/main, empty index; nine tracked changes, six new approved
+Python files and one local review ZIP. Captured acceptance baseline hashes for
+98 tracked/seven untracked paths. All 17 Python files match final verified E033
+hashes; no unexpected functional change, no test/Ruff/compile/install rerun.
+Full tracked diff/new source/tests/approved HTTPX dependency/lock inventory inspected.
+Preserve code/tests/dependencies and Tasks 1/2/4; archive retained locally/excluded.
+
+Affected documentation: AGENTS.md, task3/README.md, TASK3_REQUIREMENTS.md, ledger,
+ADR-024, build log and E034. Mark acceptance and record reported review with explicit
+environment qualifications, preserving E033 and historical evidence/limitations.
+Stage only approved T3-003 source/tests/dependency/lock/README and these governance
+documents (15 paths); inspect index, run staged whitespace check, one descriptive
+commit, verify parent/SHA/manifest/clean tree/recorded-origin counts and stop.
+No push, T3-004, public HTTP, wire harness or other task work.
+
+Staging inspection completed: exact 15 authorized paths, index content matches
+inspected files after Git newline normalization; no unstaged/unignored leftovers.
+All 17 verified Python hashes/dependencies unchanged, archive retained/excluded.
+Targeted credential scan identified only the invalid-destination negative fixture,
+no actual secret or staged artifact. git diff --cached --check exit 0; no default
+active hooks, no test rerun. Re-stage final inspection records, repeat whitespace
+check, commit once, verify identity/parent/manifest/status/counts and stop. No push.
