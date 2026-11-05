@@ -965,3 +965,80 @@ real socket/RSS/vendor/deployment certification or universal PII claim. Original
 brief unavailable; all historical evidence/tradeoffs retained. Supersedes pending/
 no-commit handoff above only for one T3-004 acceptance commit of approved source/
 tests/config/lock/README/governance. Preserve Tasks1/2/4; no T3-005 or push; stop.
+
+## ADR-026 - 2026-11-05: T3-005 independent native-wire verification harness
+
+- Status: independently ACCEPTED, user confirmation 2026-11-05; T3-005 DONE,
+  TASK-3 IN_PROGRESS. Accepted ecbd61c source/580 tests unchanged, T3-006 not authorized.
+- Decision: add only three tests/http_wire_* files and strict pytest marker plus
+  evidence/docs. Separate native Python processes run synthetic provider and the
+  accepted factory under Uvicorn; pytest client uses actual http.client sockets.
+  Child binds loopback port0/exclusive Windows address before reporting, then real
+  HTTP readiness. No parent bind-close/rebind race, external provider or public bind.
+- Synchronization: bounded stdin plan/release commands and sanitized stdout
+  receipts; generation is explicitly gated, not asserted from final-body equality.
+  Independent provider-side counter journal cross-checks native proxy attempts for
+  rejection evidence. No raw body/token/customer data persists in journals. Child
+  env allowlist, distinct ephemeral tokens, hidden Windows process windows, no
+  credential CLI arguments. Event/log/control queues bounded, fixture plans capped.
+- Measurement seam: public AsyncBaseTransport/AsyncByteStream delegates to actual
+  HTTPX AsyncHTTPTransport with approved pool/retry/env/TLS settings/request-phase
+  timeouts. Preserve bytes and partition; do not replace source parser/redactor or
+  generation runner. Test outer ASGI wrapper awaits actual Uvicorn send, counts
+  bytes/suspensions and reads public state high-water counters; no producer queue
+  or detached reader. Instrumentation overhead/settings are test-specific.
+- Backpressure: bounded control round trips prove identical suspended send/read
+  counter while real client pauses; do not infer TCP-read partitions from writes,
+  actual buffer occupancy from cumulative byte totals, universal OS tuning or a
+  kernel-stall deadline from ASGI tests. Client4096/listener16384 byte buffer requests
+  aid reproducibility, not production settings or measured accepted-socket buffers.
+  Exact10/120s remains deterministic ASGI evidence; representative real first/read
+  inactivity waits run once each per complete suite. Native confirmed cleanup is
+  distinguished from deterministic resistant/quarantined-owner tests.
+- Memory: independent streamed digest/text/control checks and fixed high-water
+  counters for1000/5000-event streams, Windows working-set/peak snapshots through
+  GetProcessMemoryInfo, optional unavailable observations on non-Windows.64MiB
+  growth guard is empirical only, no RSS/kernel/proxy allocation proof. Python,
+  framework/native buffers and instrumentation contribute to working set.
+- Process lifetime: explicit client sockets/pipes/readers closed; bounded child
+  drain/exit7s, termination2s/kill2s as last resort, classified receipts for each PID.
+  Expected startup-invalid2 is a negative test, not an unexpected crash or passing
+  startup. Ordered runtime drain tested during active request; stock signals and
+  deployment shutdown excluded. Failed fixture still reaps both children.
+- Alternatives: in-process ASGI mocks only (cannot prove real progression/transport
+  behavior), fixed ports or reserve-release ports (collision), arbitrary sleep
+  assertions (timing races), subprocess hard-kill-only cleanup (no graceful proof),
+  production instrumentation/features (unneeded baseline change), repeated120s
+  boundary waits (unneeded; accepted deterministic proof retained), raw journals
+  (privacy risk), vendor integration (brief unavailable/out of scope).
+- E037 actual native final:637 passes in53.46s,57 new wire/580 unchanged, Ruff25;
+  one client frame before gated provider completion,23 HTTP/body/auth rejection
+  cases plus capacity zero-forwarding,16/17 occupancy/reuse/isolated safe-sensitive
+  states, first15.016/read15.047s closure, sampled read117 frozen through3 control
+  barriers and empirical working set. Final10 test children9 normal0/1 expected2;
+  all three runs30 children27 normal/3 expected2, zero forced/killed/alive readers/
+  private diagnostic matches. No accepted implementation defect/correction found.
+- Source/API provenance: pinned Uvicorn Server.serve(sockets=...), Config,
+  FlowControl.drain and RequestResponseCycle.send inspected read-only; actual send
+  awaits writable drain when paused. Official website fetch timed out; do not claim
+  retrieved documentation or wire behavior based on that failure. Public HTTPX/
+  ASGI seams already established ADR-024/025. No monkeypatch/import of private
+  SDK internals in accepted code. Next independent review; no T3-006/commit/push.
+
+### ADR-026 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User APPROVES T3-005, no blocking defect/production correction.
+Reported580 existing passes, all57 wire cases with passing assertions across split
+executions,40 extra randomized real-socket fragmentation passes. SSE progression/
+redaction/auth/concurrency/disconnect/timeout/cleanup reviewed;22 prior Python files
+byte-identical to T3-004 archive. Linux/Python3.13.5 import-path change was ONLY in
+extracted review harness, not shipped source. Combined Linux wire run stalled
+after50 completed cases;19-case split printed passing summary but did not return
+promptly to enclosing command. NOT a clean combined637-test Linux execution or
+new process/exit guarantee. Native E037 Windows/Python3.12.16 full637/exit0/Ruff
+authoritative; E038 reported review/docs/Git inspection, no new tests. Preserve
+actual kernel10s/TLS/formal RSS/real-provider and synthetic-profile limitations.
+No architecture/code/marker/dependency/lock change in acceptance. Supersedes prior
+pending/no-commit handoff only for one descriptive T3-005 wire/marker/README/
+governance commit. Preserve Tasks1/2/4, exclude archives/generated receipts; verify
+Git status and stop. No T3-006 or push; TASK-3 remains IN_PROGRESS.

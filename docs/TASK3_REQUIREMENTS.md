@@ -13,8 +13,12 @@ T3-003 accepted baseline e4bd001. T3-004 independently APPROVED, user confirmati
 2026-11-05; DONE. E035 preserves actual native verification; E036 records qualified
 review and acceptance Git inspection without new test executions. One descriptive
 acceptance commit authorized; preserve all source/tests/config/dependencies/lock.
-T3-005 NOT_STARTED/not authorized. No real-socket/RSS/vendor/deployment claim or push.
-T3-H policies below define
+T3-005 independently APPROVED, user confirmation 2026-11-05; DONE. E037 preserves
+actual authoritative Windows verification; E038 records qualified Linux split review
+and this Git checkpoint, not new test execution or a clean combined Linux637 run.
+One descriptive acceptance commit authorized, preserving wire/source/tests/pins/lock.
+T3-006 NOT_STARTED/not authorized. Loopback/working-set observations remain qualified,
+not kernel10s/TLS/vendor/deployment/formal RSS certification. No push. T3-H policies below define
 the implemented HTTP choices; they are not recovered original assessment wording.
 The T3-003 section below supersedes historical no-network gates for the accepted
 async checkpoint only; pure contract remains unchanged.
@@ -335,9 +339,9 @@ Inbound route/method/request/authentication/browser-client decisions still requi
 explicit approval before T3-004. Real vendor adapters/tokenizers are not inferred.
 
 T3-001/T3-002 DONE / independently accepted within the synthetic profile.
-T3-003/T3-004 DONE/independently accepted; T3-005/T3-006 NOT_STARTED. Completed
-Tasks 1/2/4 remain DONE and must not change. One T3-004 acceptance commit authorized,
-no T3-005 or push. Full TASK-3 remains IN_PROGRESS.
+T3-003 through T3-005 DONE/independently accepted; T3-006 NOT_STARTED. Completed
+Tasks1/2/4 remain DONE and must not change. One T3-005 acceptance commit authorized;
+no T3-006 or push. Full TASK-3 remains IN_PROGRESS.
 
 ## Standards references consulted for the design
 
@@ -621,3 +625,114 @@ vendor compatibility or universal PII claim. All H/P/I policies, historical
 failures/evidence and limitations retained; original vendor brief unavailable.
 E036 records this acceptance/docs/Git checkpoint, with accepted source/tests/
 dependencies/lock unchanged. No T3-005 or push; stop after one commit verification.
+
+## T3-005 real-wire verification / engineering observations - 2026-11-05
+
+America/Los_Angeles. Latest attachment authorizes verification only over ecbd61c /
+580 accepted tests. E037 actual native Windows/Python3.12.16: **637 passed in53.46s**,
+including57 new wire cases, zero failures/errors/skips/warnings/xfails/xpasses;
+Ruff lint/format25 pass. T3-005 DONE/independently APPROVED 2026-11-05; qualified
+review E038, no new execution in acceptance. Original
+vendor brief remains unavailable; P/I/H synthetic profile/policies unchanged.
+No accepted production/test/dependency/lock correction was needed.
+
+W1-W8 below document harness choices/observed evidence, NOT new original brief
+requirements or production deployment settings:
+
+- T3-W1: independent child provider and accepted app/Uvicorn processes; pytest
+  client uses actual http.client TCP, never ASGITransport/MockTransport. Child-bound
+  127.0.0.1:0 sockets, exclusive address use on Windows, explicit startup receipts
+  and real HTTP readiness checks. No reserve-close-rebind race, public interfaces,
+  LLM vendors or external generation traffic. Child cwd/interpreter is Task3's pin.
+- T3-W2: stdin plans/gates/counter-journal control, bounded sanitized stdout receipts,
+  ephemeral distinct client/upstream/control tokens only in child environment.
+  Environment allowlist excludes ambient credentials; no token command-line args,
+  prompt/body/key journals or generated DBs. Control stats route exists ONLY in
+  outer test wrapper, never changes accepted /stream. Provider call journal counts
+  independently cross-check proxy native request attempts for zero-forward assertions.
+- T3-W3: public HTTPX AsyncBaseTransport/AsyncByteStream wrappers delegate to actual
+  AsyncHTTPTransport with same pooling/timeouts via request extensions, no retries/
+  redirects/env proxies. Original byte partitions passed unchanged. ASGI wrapper
+  awaits the actual Uvicorn send in the existing pull chain, records counters/high
+  water only, no producer task/queue or parser/redactor replacement. Independent
+  client framing/known expected text checks avoid a production-redactor oracle.
+- T3-W4: gated first provider write contains completed safe text and unresolved
+  candidate. Real client receives safe frame while provider cannot finish; gate
+  release permits remaining replacement/done/end. Native reads-before-release2
+  include a pending read attempt, with only1 body chunk received; not two delivered
+  chunks or upstream-write/TCP-read equivalence. Upstream writes may coalesce/split.
+- T3-W5: slow reader with requested4096-byte receive buffer and child listener
+  SO_SNDBUF16384 observed same suspended ASGI send/read counter117 across3 control
+  round trips. Received124004 raw body bytes/offered143545 SSE bytes are cumulative
+  counters, NOT buffer occupancy; framing/rechunking changes lengths. HTTPX/native/
+  Uvicorn/asyncio/OS buffers add overhead. Accepted-socket buffer inheritance and
+  all kernel autotuning are not measured. No exact10s socket-stall expiry claim;
+  exact10/120s boundaries remain in accepted deterministic ASGI suite rerun here.
+- T3-W6: real first-event inactivity15.016s/read-idle15.047s each closed native
+  resources and was observed as provider disconnect, without flushing unresolved
+  text or SSE end. Headers already200, HTTP chunk termination incomplete as allowed
+  by fail-closed contract. Connection refusal returns fixed502. Native wire cleanup
+  confirmed/no quarantine in tested cases; resistant/uncertain cleanup and sticky
+  quarantine remain deterministic ASGI evidence, not falsely reproduced native cases.
+- T3-W7: Windows GetProcessMemoryInfo WorkingSetSize/PeakWorkingSetSize captures
+  instrumented proxy observations, not formal total RSS/allocator bounds.1000/
+  5000-event streams produce125000/625000 characters and independent SHA256 output
+  checks; fixed application high-water counters stay within P6 limits. Empirical
+  64MiB RSS-growth guard is a regression guard, not a guaranteed memory ceiling.
+  Memory includes interpreter/native/framework/probe overhead, not OS socket totals.
+- T3-W8: bounded startup10s, native client22s for representative waits, child stop7s
+  then terminate2s/kill2s only if needed; all sockets/stdin/stdout/stderr/reader
+  threads explicitly closed/joined. Ordered test stop drains accepted runtime before
+  Uvicorn exit; stock signal/deployment shutdown is not certified. Final run10 child
+  processes:9 exit0,1 expected invalid-config exit2, no unexpected nonzero/forced/
+  killed/alive readers. Across subset/two full runs30 children:27 normal/3 expected
+  exit2, zero forced. Failed-fixture cleanup and active-request shutdown included.
+
+| Q19-Q21 evidence | Named tests in task3/tests/test_http_wire.py |
+| --- | --- |
+| Gated progressive TCP | test_wire_progressive_delivery_before_gated_upstream_completion |
+| Protocol/PII/UTF-8/framing | test_wire_fragmentation_unicode_json_escapes_and_three_pii_categories; test_wire_whole_candidate_masking_includes_surrounding_candidate_text |
+| Fail-closed / fixed error | test_wire_fail_closed_without_unresolved_text_or_false_end; test_wire_known_upstream_error_stays_fixed_and_drops_unresolved_candidate |
+| HTTP/auth/body/no forwarding | test_wire_auth_rejections_zero_upstream; test_wire_http_schema_rejections_zero_upstream; test_wire_chunked_upload_enforces_actual_byte_limit_without_content_length; test_wire_content_length_and_chunked_requests_credentials_isolated |
+| Header/connection failure | test_wire_upstream_preflight_failure_is_sanitized_json; test_wire_connection_refusal_is_controlled_json |
+| Disconnect/timeouts | test_wire_client_disconnect_closes_blocked_upstream_and_withheld_pii; test_wire_real_inactivity_deadlines_close_native_resources |
+| Capacity / channel-state isolation | test_wire_sixteen_active_streams_seventeenth_denied_then_capacity_released |
+| Buffer/RSS observations | test_wire_slow_reader_native_buffering_probe_and_disconnect; test_wire_long_stream_high_water_and_empirical_process_rss |
+| Process hygiene | test_wire_shutdown_with_active_request_cancels_native_upstream; test_wire_invalid_configuration_child_exit_is_expected_and_reaped; test_wire_fixture_exception_still_reaps_both_children |
+
+23 HTTP/auth/body rejection cases plus the17th-stream capacity case assert zero
+extra proxy attempts/independent upstream journal calls. Sixteen simultaneous
+streams use distinct markers and alternating sensitive/safe candidates; released
+capacity is successfully reused. Captured diagnostic private-marker count0.
+No end after failed/truncated/disconnected stream; prior safe delivery irreversible.
+Final raw receipt/high-water/RSS values and PID/exit evidence are durable in E037;
+ignored harness summaries contain counters only and are not submission artifacts.
+
+Limits: instrumented loopback native HTTP/1.1 on supported Windows only, empirical
+RSS/short flow-control observation, not exhaustive RSS/OS buffering/10s-kernel-stall
+proof, production TLS/reverse-proxy settings/real vendor/provider billing or universal
+PII detection. No native uncertain-close/physical cancellation guarantee or automatic
+resume/retry. T3-006/final audit not begun. Independent T3-005 review now approved;
+next one authorized acceptance commit, then stop. No T3-006 or push. Tasks1/2/4
+and all22 previously accepted files preserved; wire harness unchanged in acceptance.
+
+### T3-005 independent acceptance provenance - 2026-11-05
+
+America/Los_Angeles. User independently APPROVES, no blocking implementation defect
+or production correction required. Reported580 existing passes; all57 wire cases
+produced passing assertions across split executions;40 additional randomized
+real-socket fragmentation tests passed. Progressive SSE/PII/auth rejection/
+concurrency/disconnects/timeouts/cleanup reviewed. All22 previously accepted Python
+files byte-identical to T3-004 archive. No new local tests in this checkpoint.
+
+Linux/Python3.13.5 review used an import-path change ONLY in the extracted harness,
+not repository source. Combined Linux wire run STALLED after50 completed cases;
+19-case split printed passing summary but did NOT return promptly to enclosing
+command. Do not describe this as a clean combined637-test Linux run or invent
+clean process/exit/Ruff receipts. Exact review commands/timings/pytest version not
+supplied. E037 native Windows/Python3.12.16 full637/exit0 and Ruff remain authoritative.
+Kernel-level10s send-stall expiry, production TLS, formal RSS ceilings, real-provider
+interoperability and original vendor brief remain unverified/unavailable. Synthetic
+profile and all historical evidence/limitations retained. E038 records reported
+acceptance and Git inspection only. Preserve all25 verified Python files, marker/
+dependencies/lock and Tasks1/2/4; one acceptance commit, no push or T3-006.

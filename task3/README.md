@@ -1,6 +1,92 @@
 # Task 3: asynchronous synthetic SSE proxy with PII redaction
 
-## Current T3-004 acceptance checkpoint
+## Current T3-005 real-wire acceptance checkpoint
+
+T3-005 is **DONE and independently APPROVED**, confirmed 2026-11-05. E037
+final native Windows/Python3.12.16: **637 passed in53.46s**, including57 new wire
+cases plus all580 accepted tests; zero failures/errors/skips/warnings/xfails/xpasses.
+Ruff lint/format25 pass. All22 accepted Python source/test files, dependencies/lock
+and Tasks1/2/4 remain unchanged. Only isolated pytest marker configuration added.
+T3-001 through T3-005 independently accepted; TASK-3 IN_PROGRESS. One descriptive
+acceptance commit authorized, then stop. No T3-006 or push.
+Original vendor brief unavailable; approved synthetic/narrow PII profile unchanged.
+
+E038 records reported independent580 existing passes, all57 wire cases with passing
+assertions across split executions,40 additional real-socket fragmentation passes
+and no blocking implementation defect. All22 prior files byte-identical; no source
+correction required. Linux/Python3.13.5 used import-path change ONLY in extracted
+review harness. Combined Linux wire run stalled after50 completed cases;19-case
+split printed passing summary but did not return promptly to enclosing command.
+This is NOT a clean combined637-test Linux run. Native Windows/Python3.12.16 E037
+full637/exit0/Ruff remains authoritative. No new tests during acceptance, shipped
+import-path change or widened runtime/kernel/TLS/RSS/vendor certification.
+
+From task3/, with the documented dev/serve extras already installed:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q -m http_wire
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+Three new files under tests: http_wire_child.py (provider/proxy process roles),
+http_wire_support.py (readiness/gates/TCP/process cleanup), test_http_wire.py
+(independent client acceptance assertions). No mock transport/ASGITransport in
+wire cases. A public HTTPX transport wrapper delegates to actual pooled native
+HTTP/1.1 I/O and preserves byte partitions; a public ASGI wrapper awaits real
+Uvicorn send. Accepted app/service/parser/redactor/encoder are unchanged.
+
+Each child binds 127.0.0.1:0 before reporting its port; real HTTP probes verify
+readiness. Secret-free stdin plans/releases and counter-only provider journal
+control the fixture; ephemeral separate tokens are injected through an allowlisted
+environment, never args/files/logs. The __wire_stats route is TEST WRAPPER ONLY,
+not a production route. Logs contain generated case IDs/counters/lifecycle receipts,
+not prompts/PII/bodies/keys. Captured private-marker violations:0.
+
+Final-run observations (not production performance/memory guarantees):
+
+| Evidence | Actual observation |
+| --- | --- |
+| Progressive delivery | Client safe frame ~0.062s while upstream held; one native body chunk received, second read attempt pending, no provider completion until explicit release |
+| Redaction/framing | Email/phone/SSN across events/writes, UTF-8 and JSON escapes, two interleaved channels, LF/CRLF/CR/multiline, whole-candidate masking; no TCP-write-boundary assumption |
+| Zero forwarding |23 HTTP/auth/body rejection cases plus capacity rejection have zero extra native attempts/independent provider-journal calls |
+| Concurrency |16 active streams with distinct sensitive/safe states;17th429/no forwarding; released slot reused successfully |
+| Slow reader | Same suspended Uvicorn send/native read count117 across3 control barriers;124004 received native bytes/143545 offered SSE bytes; no next pull during that observation |
+| Timeouts | First-event15.016s/read-idle15.047s, observed provider disconnect, no raw tail or end; already200 HTTP stream intentionally closes incomplete |
+| Shutdown/disconnect | Gated provider observes disconnect before/after safe output; active runtime drain clean, pool closes once, no false end |
+| Memory |1000/5000 events =125000/625000 chars, independent output digests; observed working set65052672->65163264 and65167360->63582208 bytes; peak67788800 bytes in that child |
+| Child cleanup | Final run10 children:9 normal0,1 expected invalid-config2,0 forced/killed/live reader threads; failed-fixture cleanup included |
+
+Across the initial subset and two complete runs:30 test children,27 normal0 and3
+expected startup2 exits, no forced cleanup/unexpected nonzero/private log matches.
+E037 retains each run's counts separately; initial subset deselected only the two
+real15s waits. Final run includes both. Counter/journal measurement was tightened
+after first complete run and final637/53.46s run verifies it; no production defect.
+
+High-water observations remain within approved caps: candidate256 chars, UTF-8
+carry2 bytes, line1055/event1069 bytes, pending256 chars/bytes, encoded frame300
+bytes, observed raw block1069 bytes across these probes. Different probes have
+different maxima; these are observed counters, not the sum of a process RSS bound.
+Working-set probes include interpreter/framework/native/instrumentation overhead.
+
+Slow-reader test requests client receive buffer4096 and child listener send buffer
+16384. HTTPX/Uvicorn/asyncio/OS buffers may retain additional bounded bytes;
+accepted-socket inheritance/autotuning and total kernel allocation are unmeasured.
+Received/offered byte totals differ due to framing/rechunking and are NOT buffer
+occupancy. A short real flow-control stall was reproduced; exact10s kernel stall
+expiry and120s wall-clock stream cutoff were NOT claimed. Exact10/120 boundaries
+remain in accepted deterministic ASGI tests, rerun in this full suite.
+
+Wire cleanup in tested cases confirmed/no quarantine. Resistant/uncertain close
+and quarantine remain deterministic ASGI evidence, not invented native cases.
+Ordered test shutdown invokes the accepted runtime drain before Uvicorn exits;
+stock signal/deployment behavior is not certified. No production TLS/proxy/vendor/
+remote billing/physical cancellation or universal PII claim. T3-006 not begun.
+Independent T3-005 review approved with qualifications above; complete the one
+authorized acceptance commit, then stop. No T3-006 or push.
+
+## Accepted T3-004 checkpoint (history)
 
 FastAPI HTTP integration is **DONE and independently APPROVED**, confirmed
 2026-11-05 (America/Los_Angeles). E035 final native Windows/Python 3.12.16: **580 passed in 4.67s**, zero

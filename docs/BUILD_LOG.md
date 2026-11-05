@@ -1293,3 +1293,123 @@ candidates.18 local links valid; staged whitespace check exits0. No active Git
 hooks, no tests rerun. Re-stage final inspection records, repeat whitespace check,
 commit once, verify full SHA/parent/manifest/clean status/branch counts and stop.
 No push, T3-005 or accepted implementation changes.
+
+## M055 - 2026-11-05 (America/Los_Angeles): T3-005 real-wire verification begins
+
+Latest attachment authorizes harness/tests/documentation only over ecbd61c/580.
+Initial working tree clean, captured tracked hashes. Read governance/contract/
+accepted ASGI/service APIs and earlier wire support patterns read-only (one
+historical Task2 child filename lookup was absent; no file modified). Q19-Q21
+criteria recorded before implementation: gated progressive output, real UTF-8/SSE/
+PII/HTTP rejection/zero-forwarding, disconnect/native timeout/cap16, bounded state/
+RSS observations and every subprocess reaped with classified exits. Test-only
+public transport/ASGI wrappers will observe native reads/sends, never bypass the
+accepted pipeline. Separate child-owned loopback listeners, stdin control gates,
+sanitized stdout receipts and bounded parent waits/cleanup. No production change,
+test execution, real vendor or later checkpoint yet. Next implement three harness/
+wire files and marker, run actual native suite/Ruff, document all outcomes.
+
+## M056 - 2026-11-05 (America/Los_Angeles): T3-005 first native wire results
+
+New three harness/test files formatted (new files only); Ruff check passed without
+findings. Native wire subset excluding only two real15s inactivity cases passed:
+52 passed/2 deselected in18.22s, exit0, no warnings/skips/failures. Ten child receipts:
+nine normal0, one expected invalid-config2, zero forced/killed/alive reader threads,
+zero private diagnostic matches. Snapshot retained in ignored initial-run summary.
+Gated TCP progression observed client frame before upstream release; slow-reader
+probe reproduced native suspended-send state unchanged through three control HTTP
+barriers/read counter117, without pretending exact10s kernel timeout was tested.
+Empirical long-stream high-water/RSS recorded, not a formal RSS ceiling. Added
+actual chunked16384/16385 byte-boundary tests, fixed upstream error wire case and
+distinct safe/sensitive candidate states across16 concurrent clients before the
+complete suite, including real first-event/read-idle waits. No accepted source/test/
+dependency correction or new production behavior. Next actual full native run/Ruff.
+
+First complete native run:637 passed in53.09s, exit0, no failures/skips/warnings;
+Ruff lint/format25 pass. Both real inactivity cases observed15.032s closure.
+Final harness review tightened mandatory zero-forwarding evidence: native proxy
+attempt counters are now cross-checked with an independent provider-side stdin
+counter journal, which never stores prompts/keys. New test-only seam, no accepted
+code change. Preserve initial/first-full summaries separately; rerun complete final
+suite/checks after this measurement correction. Counts remain57 new wire cases.
+
+## M057 - 2026-11-05 (America/Los_Angeles): T3-005 final native wire handoff
+
+Final complete E037:637 passed in53.46s, zero failures/errors/skips/warnings/
+xfails/xpasses; Ruff lint/format25 pass. Includes all580 accepted cases and57 new
+wire cases, final independent upstream journal cross-check included. No source
+changes after this run. Versions unchanged: native Windows/Python3.12.16, HTTPX
+0.28.1/httpcore1.0.9, FastAPI0.162.0/Starlette1.10.0/Uvicorn0.54.0, pytest9.2.0/
+Ruff0.17.3. Only pytest marker change, no dependency/env/lock modifications.
+
+Final observable progression: safe client frame~0.062s before provider gate release;
+1 received body chunk/2 read attempts including pending. Real slow reader reproduces
+same suspended send/read117 across3 control barriers,124004 native/143545 offered
+SSE bytes; counters are not queue occupancy. Native first/read idle closure15.016/
+15.047s with peer disconnect/no end.23 HTTP/auth/body rejects plus capacity reject
+zero extra attempts/provider calls.16 distinct safe/sensitive streams occupy slots,
+17th429, released slot reused. Active drain closes pool once; native cleanup
+confirmed, no quarantine; uncertain cleanup still deterministic ASGI evidence.
+
+1000/5000 events125000/625000 characters independently digested; high-water caps
+hold. Final child working sets65052672->65163264 and65167360->63582208 bytes,
+peak67788800. Slow-reader child63066112 current/68587520 peak. Empirical instrumented
+observations only, not formal RSS/kernel/production memory bounds. Exact10s socket
+stall/120s wall boundary not claimed; accepted deterministic cases rerun.
+
+All final10 service children reaped:9 normal0/1 expected invalid-config2, zero
+forced/killed/alive pipe readers/private diagnostics. Across three native runs:
+30 service children27 normal0/3 expected2, no unexpected nonzero/forced cleanup.
+Initial/first-full/final ignored receipts retained separately, actual PID tables E037.
+
+Affected: new Task3 tests/http_wire_child.py, http_wire_support.py, test_http_wire.py;
+Task3 pyproject marker; AGENTS/root and Task3 README/requirements/ledger/ADR-026/
+build/E037. All22 accepted Python files, production, tests, dependencies/lock and
+Tasks1/2/4 unchanged. No production defect found. T3-005/TASK-3 IN_PROGRESS /
+independent review pending; no T3-006, stage/commit/push. Final integrity/recoverable
+handoff next; original vendor brief unavailable and synthetic limitations retained.
+
+Final E037 integrity scan exits0:100 baseline tracked paths unchanged,22 accepted
+Python hashes identical,25 verified Python files captured. Nine tracked changes +
+three new tests only; marker-only config, no lock/dependency/accepted-code changes.
+20 named tests/18 local links valid, no targeted credential/control-character
+finding, no unignored artifacts or staged files.30 service receipts all classified/
+reaped, zero forced/killed/live readers/private diagnostics. Whitespace check0;
+HEAD ecbd61c/main ahead3/behind0 recorded origin/main. Recoverable handoff remains
+uncommitted for independent T3-005 review; do not start T3-006 or publish.
+
+## M058 - 2026-11-05 (America/Los_Angeles): T3-005 independent acceptance checkpoint
+
+User independently APPROVES, no blocking implementation defect or production
+correction. Reported580 prior passes, all57 wire cases produced passing assertions
+across split executions,40 extra randomized real-socket fragmentation passes.
+Progressive SSE/PII/auth/concurrency/disconnects/timeouts/cleanup reviewed; all22
+previous files byte-identical to T3-004 archive. Review Linux/Python3.13.5 used an
+import-path change ONLY in extracted harness. Combined Linux wire run stalled
+after50 completed cases;19-case split printed passing summary but did not return
+promptly to enclosing command. NOT clean combined637 Linux verification. E037
+native Windows/Python3.12.16 full637/exit0/Ruff remains authoritative; no new tests.
+Actual kernel10s send-stall/TLS/formal RSS/real-provider limitations retained.
+
+Initial HEAD ecbd61c1a8e779b81e97652251085a9955366e09, main ahead3/behind0 recorded
+origin/main, index empty. Nine tracked changes/three new approved Python files plus
+one local review ZIP. Captured109 tracked/four untracked hashes; all25 verified
+Python files match final E037 snapshot. Complete tracked diff/new-file inventory/
+AST inspected read-only; no unexpected functional change or reason for test rerun.
+No application/test/dependency/lock/marker edits or shipped Linux import-path shim.
+
+Acceptance docs updated: ledger/requirements/ADR-026/build/E038, AGENTS/root and
+Task3 READMEs (eight files). Preserve all historical evidence/environment limits
+and Tasks1/2/4. Retain ZIP via exact local exclusion, exclude generated receipts/
+env/caches/egg-info/credentials. Stage exactly12 approved wire/marker/README/
+governance paths, inspect index/content, staged whitespace check, one descriptive
+commit and parent/fullSHA/manifest/clean-tree/recorded-origin verification. T3-005
+DONE/TASK-3 IN_PROGRESS, T3-006 NOT_STARTED/not authorized. No push or audit; stop.
+
+Staged inspection: exactly12 approved paths; contents match inspected files after
+newline normalization, all25 verified Python hashes/retained ZIP unchanged, no
+unstaged/unignored leftovers or shipped shim. Zero targeted credential/artifact
+findings,18 local links valid; staged whitespace exits0, no active hooks. No test
+rerun. Re-stage final inspection docs, repeat whitespace check, commit once, verify
+fullSHA/parent/manifest/clean status/recorded-origin counts and stop. Preserve all
+Linux qualifications/native authority, no T3-006/push or accepted-code changes.

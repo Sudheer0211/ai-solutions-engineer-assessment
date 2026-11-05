@@ -2498,3 +2498,273 @@ Final changes after inspection are these documentation records only; re-stage
 and repeat staged whitespace check before one commit. Verify SHA/parent/manifest/
 clean status/recorded-origin counts afterward; identity belongs to Git history and
 the session report, avoiding a circular self-hash. No tests/Ruff/compile/install.
+
+## E037 - 2026-11-05: T3-005 independent-process loopback HTTP verification
+
+America/Los_Angeles. Actual native local verification, **independent acceptance
+PENDING**. Baseline ecbd61c1a8e779b81e97652251085a9955366e09, clean main ahead3/
+behind0 recorded origin/main;109 tracked SHA256 baseline captured. Read governance,
+approved contract/ADR-022/024/025 and accepted factory/service. User attachment
+authorizes harness/verification only; no accepted production/test correction.
+
+### Runtime/configuration and inspection, not test pass claims
+
+Native Windows/Python3.12.16 (Oct26 2026 MSC1944 AMD64), HTTPX0.28.1/httpcore1.0.9,
+FastAPI0.162.0/Starlette1.10.0/Uvicorn0.54.0/h110.16.0/anyio4.16.0,
+pytest9.2.0/Ruff0.17.3. Actual sys.version/importlib.metadata probe exits0.
+Existing Task3 dev/serve environment used, no installation/dependency/lock change.
+Task3 pyproject adds only http_wire marker/description; no rule/warning ignores.
+Task1/2/4 environments not affected; their regression suites not rerun.
+
+Read-only installed Uvicorn Server.serve(sockets=...)/Config/FlowControl.drain/
+RequestResponseCycle.send source inspection exits0. Actual native send awaits
+writable drain when flow.write_paused; used to interpret suspended-send receipts,
+not a replacement implementation. Official Uvicorn documentation fetches timed out;
+do not claim their retrieval. Earlier Task2 wire child filename lookup absent,
+recorded M055, no effect on implementation/tests. No private SDK import/monkeypatch
+in accepted application. New instrumentation delegates through public transport/
+ASGI seams and observes public runtime/parser/redactor counters.
+
+Each server child: own127.0.0.1:0 bound/exclusive Windows socket, listener backlog128/
+SO_SNDBUF16384, Uvicorn asyncio/h11/HTTP1.1, lifespan on, proxy headers off, no
+access log/server header, critical-only framework logs, keepalive2s/graceful2s.
+Parent real HTTP readiness deadline10s. Client connections explicit close,22s
+socket timeout for representative15s waits; slow-reader requests SO_RCVBUF4096.
+Tokens are ephemeral/distinct and passed only in filtered child env, never args/
+files/receipt journals. Child plan/release controls use stdin, no external services.
+Provider journal counts generation calls independently; no raw body/prompt/key data.
+Test-only outer stats route requires its own control token, not shipped in app.
+
+### Actual commands/runs
+
+All commands below from task3/, supported native Windows environment. pytest runs
+outside sandbox for local socket/process/cache access; no compatibility shim,
+warning filters or external generation. New-file Ruff format/check initially
+exits0, three files formatted/no lint findings.
+
+| Exact pytest command | Actual result | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py -k "not inactivity" --tb=short --maxfail=2 --basetemp=.cache/t3005-initial` |52 passed,2 deselected in18.22s |0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3005-full` |637 passed in53.09s |0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3005-final` |**637 passed in53.46s** |0 |
+
+Initial subset omitted only real first/read inactivity cases. Before first complete
+run added actual chunked byte boundaries, known upstream error and distinct16-client
+safe/sensitive states (57 new cases total). Final measurement review then cross-
+checked proxy native attempt counts against INDEPENDENT upstream stdin journal;
+final complete rerun verifies that test-only change. No failing tests or accepted
+source corrections occurred. Full final637 =580 accepted unchanged +57 new wire;
+zero failures/errors/skips/warnings/xfails/xpasses/deselections in complete runs.
+
+Final actual lint/format commands, after final suite, both exit0:
+
+```powershell
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+All checks passed;25 files already formatted (9 source/package,16 test/support/
+package). Source hash inspection confirms all22 accepted Python files byte-identical.
+No code changes after final637/53.46s and Ruff25 results; later edits docs only.
+
+### Final-run progression / protocol / rejection assertions
+
+test_wire_progressive_delivery_before_gated_upstream_completion: client receives
+safe SSE delta at~0.062s while provider held after first write; no provider_closed
+receipt before explicit release. Native body chunks received1, native read attempts2
+(includes pending attempt), not two delivered chunks or packets. Release permits
+redacted continuation/done/end, valid headers and confirmed close. This is observed
+ordering, not final-response equality or a universal latency SLA.
+
+Four fragmentation/framing cases send1/2/3/7-byte fixture writes with LF/CRLF/CR/
+multiline data. Actual UTF-8 split carry observed2 bytes, JSON escapes decoded,
+email/phone/SSN span events/writes, two channels maintain independent text/control
+order. Client reconstructs emitted frames against independent expected strings;
+never assumes TCP preserves write/chunk boundaries. Whole-candidate masking,
+candidate overflow257, unexpected EOF, duplicate done, premature end, duplicate-key
+payload, unknown event, abrupt provider failure and known fixed error all fail
+closed/no raw unresolved candidate/end. Metadata/comments/IDs stay dropped.
+
+23 HTTP/auth/body rejection cases (7 auth,15 schema/media/query,1 chunked overflow)
+each assert zero extra native request attempts AND independently journaled provider
+calls;16/17 capacity test adds one further zero-forward rejection. Exactly16384-byte
+chunked body accepts;16385 rejects413 without Content-Length reliance. Ordinary
+Content-Length/chunked requests, fixed JSON status/header mapping, no forwarding
+of client Bearer/cookies/role/resume claims and separate upstream auth verified.
+Status302/429/500, non-SSE and encoded upstream responses return fixed502 JSON,
+no private diagnostic echoed; bound-but-nonlistening endpoint yields fixed502.
+
+Sixteen simultaneous held streams use distinct output markers and alternating
+email-like versus safe candidate states.17th receives429, zero extra call in both
+counters; release one slot, retry succeeds, remaining streams finish independently.
+No shared redaction state, duplicate generation or admission queue observed.
+
+### Final-run real backpressure / memory observations
+
+Slow client pauses real reads after a valid frame; native Uvicorn send suspends.
+Three separate control HTTP barriers observe the SAME pending send/read-attempt
+counter117. Received raw body124004 bytes, offered SSE143545 bytes, suspended sends1.
+No new upstream pull during this observed wait. Snapshot16 state probes, listener
+send buffer16384, client requested receive buffer4096. These byte counters are
+cumulative, differ due to framing/rechunking, and are NOT queue occupancy. No
+claim about accepted-socket buffer inheritance/all OS tuning or summed memory.
+Short flow-control suspension reproduced; exact10s kernel stall expiry explicitly
+NOT verified. Accepted exact10/120s deterministic ASGI cases rerun in full suite.
+
+Observed maxima across these wire probes (different scenarios, not a summed RSS
+bound): line1055/event1069 bytes, UTF-8 carry2 bytes, candidate256/held256 chars,
+pending256 chars/bytes, encoded frame300 bytes, raw body block1069 bytes. Approved
+caps8192/16384/3/256/1024/1024+8192/8192/65536 respectively all hold. Configured
+4096-byte processing slice unchanged; native partitions are not assumed to equal it.
+
+Long-stream tests consume incrementally, independently compare SHA256/logical
+length/control order and do not buffer complete output at the proxy. Actual
+Windows instrumented process WorkingSetSize/PeakWorkingSetSize snapshots:
+
+| Delta events / chars | Working set before / after (bytes) | Child peak (bytes) |
+| --- | --- | --- |
+|1000 /125000 |65052672 /65163264 |67788800 |
+|5000 /625000 |65167360 /63582208 |67788800 |
+
+Main-child long-run high-water counters remain line290/event304/decoder2/
+candidate256/held256/pending125 chars+bytes/encoded169/raw304; prior scenarios can
+contribute to cumulative peaks. Slow-reader child current63066112/peak68587520.
+64MiB growth assertion is only an empirical regression guard. Interpreter/native/
+framework/instrumentation overhead included; OS socket buffers/RSS ceiling/universal
+deployment memory envelope NOT certified. Other platforms may report unavailable
+RSS rather than invented observations; this execution is native Windows.
+
+### Actual native timeout/disconnect/shutdown assertions
+
+| Case | Final elapsed | Result |
+| --- | --- | --- |
+| First valid event inactivity |15.016s | Peer disconnect confirmed; no output/end, HTTP chunk completion false |
+| Read idle after safe frame |15.047s | Peer disconnect confirmed; unresolved PII discarded, no end, HTTP chunk completion false |
+
+Tests use broad representative13.5-22s wall tolerance, not exact phase-boundary
+claims. Headers already200 per approved preflight contract, so failures close the
+HTTP stream incomplete; no attempted status change/error leak. Two native client
+disconnect cases (with/without prior safe output while provider gated/raw tail
+held) confirm upstream receive disconnect and source response closure; owners/
+slots drain, new send counter remains unchanged after completion, quarantine false.
+Bytes already offered to ASGI/TCP cannot be retracted, no post-disconnect new sends
+claimed possible. Resistant/uncertain ownership and quarantine remain deterministic
+ASGI evidence, not falsely claimed native reproduction.
+
+Active-request shutdown via ordered control invokes accepted runtime.aclose before
+Uvicorn exits: clean true, active HTTP/upstream0, pool closes1, provider disconnect
+observed, no false SSE end, lifespan.shutdown.complete. Stock signals/deployment
+teardown not certified. Deliberate fixture exception still closes both child
+processes; invalid configuration child exits expected2 without forced cleanup.
+
+### Every service-child process receipt / cleanup outcome
+
+Final complete run10 test children, all reaped; parent pipe-reader threads0 alive,
+forced termination0/kill0/unexpected nonzero0/private diagnostic matches0:
+
+| Role | PID | Exit | Classification |
+| --- | --- | --- | --- |
+| upstream |17128 |0 | normal |
+| proxy |4916 |0 | normal |
+| upstream |5540 |0 | normal |
+| proxy |9132 |0 | normal |
+| proxy |23540 |0 | normal (refused upstream) |
+| upstream |19720 |0 | normal |
+| proxy |19224 |0 | normal (active drain) |
+| proxy |29944 |2 | expected invalid-configuration test |
+| upstream |40128 |0 | normal (fixture-failure cleanup) |
+| proxy |22480 |0 | normal (fixture-failure cleanup) |
+
+Initial subset/first complete/final complete each spawned10 service children:
+9 normal0 and1 expected2 each, zero forced/killed/live readers/private diagnostics.
+Across all three actual runs30 service children:27 normal/3 expected2, no unexpected
+nonzero. These counts exclude pytest/tool interpreter processes. Ignored separate
+receipts retained in task3/.cache/t3005_initial_wire_summary.json,
+t3005_first_full_wire_summary.json and t3005_wire_summary.json (final snapshot
+also retained as t3005_verified_wire_summary.json); no credentials/raw bodies.
+
+### Scope / current handoff
+
+No real LLM vendor, external generation service, public listener, production TLS/
+reverse proxy/deployment, formal RSS bound, exact socket10s/120s wall boundary,
+native resistant-cleanup proof or final audit. Original vendor brief unavailable;
+approved synthetic/narrow PII contract only. No implementation defect identified,
+accepted source/tests/dependencies/lock and Tasks1/2/4 preserved. T3-005/TASK-3
+IN_PROGRESS, NOT independently accepted; T3-006 NOT_STARTED. No stage/commit/push.
+Final baseline/hash/link/artifact inspection follows; next independent review.
+
+### Final integrity inspection (not additional pytest executions)
+
+Native SHA256/inventory/TOML/AST/link/receipt scan exits0:100 original tracked paths
+unchanged, all22 accepted Python files byte-identical,25 final verified Python
+hashes captured. Exact unignored inventory nine tracked changes/three new test
+files; pyproject diff is marker-only, dependency/lock/root pins/accepted source/
+tests and Task1/2/4 directories unchanged.20 named test references/18 local links
+resolve; no unexpected control character or targeted credential/private-key/
+provider-key/credential-URL pattern finding. This is not an exhaustive history/
+publication security audit. All three receipt sets confirm30 reaped service
+children/27 normal0/3 expected2, zero forced/killed/live readers/private diagnostics.
+git diff --check exits0. No environment/cache/database/archive/credential file in
+unignored inventory, index empty. HEAD remains ecbd61c1a8e779b81e97652251085a9955366e09,
+main ahead3/behind0 recorded origin/main; no fetch/stage/commit/push. No source/
+test/config change after final637/53.46s and Ruff25; subsequent edits docs only.
+
+## E038 - 2026-11-05: T3-005 qualified independent acceptance / Git checkpoint
+
+America/Los_Angeles. User confirms **APPROVED, no blocking implementation defect;
+T3-005 DONE**. This record distinguishes reported independent review from actual
+documentation/Git inspection. No pytest/Ruff/compile/install rerun in acceptance;
+E037 native Windows/Python3.12.16 full637/exit0/clean Ruff remains authoritative.
+
+Reported independent evidence, not commands newly executed here:
+
+- Existing Task3 tests:580 passed.
+- All57 wire cases produced passing assertions across split executions.
+- Additional40 randomized real-socket fragmentation tests passed.
+- Progressive SSE, PII redaction, auth rejection, concurrency, disconnects, timeouts
+  and cleanup reviewed.
+- All22 previous Python files byte-identical to T3-004 review archive.
+- No blocking implementation defect or production-code correction required.
+
+**Linux qualification must remain attached to these results:** review used Linux/
+Python3.13.5; an import-path change was applied ONLY to extracted review harness.
+Combined Linux wire run STALLED after50 completed cases. A 19-case split run printed
+passing summary but did NOT return promptly to enclosing command. Do not describe
+Linux verification as a clean combined637-test run or infer clean process/exit
+receipts from its assertion summaries. Exact commands/timings/pytest version and
+independent Ruff results not supplied; do not invent them. No review shim/pin change
+is shipped. Actual kernel10s stall expiry/production TLS/formal RSS ceilings/real-
+provider interoperability remain unverified. Original vendor brief unavailable;
+approved synthetic profile, historical evidence and limitations preserved.
+
+Actual initial read-only commands: Get-Content AGENTS/ledger/current docs/local
+exclude; git status --short --branch, git diff --cached --name-status, git diff
+--stat and complete path-scoped git diff. Native SHA256/inventory script exits0:
+109 tracked/four untracked hashes captured, all25 verified Python hashes match E037,
+index empty, HEAD ecbd61c1a8e779b81e97652251085a9955366e09. Main ahead3/behind0
+recorded origin/main, no fetch. Read-only AST inventory enumerated25 Python files;
+not compilation or a test execution. No unexpected functional change introduced.
+
+Only eight acceptance-doc files changed this session: AGENTS, root/Task3 READMEs,
+requirements/ledger/decisions/build/evidence. Approved application/wire/previous
+tests, dependencies/lock/marker and Tasks1/2/4 unchanged. Local review ZIP retained
+and excluded via exact .git/info/exclude entry; no tracked ignore/config mutation.
+Authorized12-path staging inventory: three wire test/support files, Task3 pyproject
+marker, root/Task3 READMEs, AGENTS and five governance documents. Exclude env/caches/
+egg-info/credentials/review ZIP/generated receipts; inspect staged inventory/content,
+run git diff --cached --check, one descriptive commit then parent/full SHA/manifest/
+clean tree/branch counts. TASK-3 IN_PROGRESS, no T3-006 or push; stop at Git checkpoint.
+
+Actual final staging inspection: explicit git add of exactly12 approved paths;
+git diff --cached --name-status / --stat inspected. Native staged-content/hash/
+artifact/link script exits0: exact manifest, index equals inspected working bytes
+after Git newline normalization, no unstaged/unignored leftovers. All25 verified
+Python hashes and retained review ZIP unchanged; no shipped Linux import shim.
+Zero targeted private-key/provider-key/credential-URL pattern findings or excluded
+artifact paths;18 local links valid, no unexpected control characters. Not an
+exhaustive history/publication audit. git diff --cached --check exits0; no active
+default/custom hooks. LF/CRLF notices are normalization, not test/function changes.
+Final inspection-record edits are documentation only; re-stage and repeat staged
+whitespace check before the one commit. Verify full SHA/parent/manifest/clean tree/
+recorded-origin counts afterward; identity remains in Git history/session report
+to avoid circular self-hash. No tests/Ruff/compile/install/fetch/push or T3-006.

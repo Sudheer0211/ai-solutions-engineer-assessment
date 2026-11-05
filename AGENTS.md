@@ -404,3 +404,48 @@ databases/review ZIPs. Run git diff --cached --check, commit once, verify full S
 manifest/clean tree/recorded-origin counts and stop. No tests/Ruff/install rerun
 absent unexpected functional change. TASK-3 IN_PROGRESS; T3-005 NOT_STARTED/not
 authorized. No push or further implementation.
+
+## T3-005 active authorization (2026-11-05 America/Los_Angeles)
+
+Latest attachment authorizes independent-process loopback HTTP wire harness/tests
+only over ecbd61c/580 accepted tests. Read Q19-Q21/T3-H/ADR-022/024/025; preserve
+all accepted production/tests/dependencies and Tasks1/2/4. Record/reproduce any
+wire-level defect before a narrow correction. Real provider/proxy processes with
+dynamic child-bound ports, explicit gates/readiness, bounded deadlines/cleanup,
+sanitized metrics/journals and tracked child exit receipts. Native full Task3
+pytest and both Ruff checks; report measured progression/read/send/RSS separately
+from formal bounds/kernel guarantees. Keep exact10/120 boundaries in accepted
+deterministic tests; no repeated long boundary waits. No vendor/deployment/resume/
+T3-006, commit/push or independent-acceptance claim. Stop for review.
+
+T3-005 local outcome: native E037: 637 passes (580 unchanged +57 new wire), zero
+failures/skips/warnings/xfails; Ruff lint/format25 pass. Read ADR-026/T3-W1-W8 and
+Task3 README. Final-run10 children reaped:9 normal0/1 expected startup2, zero forced/
+killed/live reader threads. Three runs total30 children/27 normal/3 expected2.
+Actual loopback progression/flow-control counter freeze/native15s timeouts and
+Windows working-set observations recorded, NOT exact10s socket-stall/120s real-time
+or formal RSS/deployment/vendor guarantees. Accepted22 Python files/580 tests,
+source/dependencies/lock and Tasks1/2/4 unchanged; only pytest marker config added.
+T3-005/TASK-3 IN_PROGRESS, independent review PENDING. No further test repetitions
+absent new changes/concerns; finish docs/integrity handoff, no T3-006/commit/push.
+
+## T3-005 independent acceptance / Git checkpoint (2026-11-05 America/Los_Angeles)
+
+Latest user APPROVES T3-005; DONE, no blocking implementation defect or correction.
+Read E038/ADR-026 provenance: reported580 existing passes, all57 wire cases passing
+assertions across split executions,40 extra real-socket fragmentation passes,22
+prior Python files unchanged; behavior/cleanup reviewed. Linux/Python3.13.5 import-
+path change ONLY in extracted review harness. Combined wire run stalled after50
+completed cases;19-case split printed passing summary but command did not return
+promptly. NEVER label it clean combined637 Linux verification. Native E037 Windows/
+Python3.12.16 full637/exit0/Ruff authoritative. Kernel10s expiry/TLS/formal RSS/
+real-provider limitations retained, original brief unavailable.
+
+One descriptive T3-005 acceptance commit authorized, superseding historical
+pending/no-commit gates for exact approved wire tests/pytest marker/READMEs/
+governance only. Preserve all25 verified Python files, dependencies/lock and
+Tasks1/2/4; no shipped Linux import shim. Exclude/retain locally env/cache/egg-info/
+credentials/review ZIPs/generated receipts, inspect full diff/index, run staged
+whitespace check, commit once, verify full SHA/manifest/clean tree/recorded-origin
+counts and stop. No tests/Ruff/compile/install rerun absent unexpected functional
+change. TASK-3 IN_PROGRESS, T3-006 NOT_STARTED/not authorized; no push or audit.

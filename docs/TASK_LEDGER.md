@@ -23,13 +23,13 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 | T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
-| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | IN_PROGRESS | T3-001 through T3-004 independently accepted; E031-E036 | Preserve accepted baseline; T3-005 needs separate authorization; real sockets/RSS unverified |
+| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | IN_PROGRESS | T3-001 through T3-005 independently accepted; E031-E038 | T3-006 needs separate authorization; no final-audit/vendor/deployment certification |
 | T3-001 | Requirements provenance, architecture and exact streaming contract | P0 | DONE | Independently APPROVED 2026-11-05 for documented synthetic profile; ADR-022 | Original vendor brief unavailable; preserve narrow approved scope |
 | T3-002 | Isolated project and pure SSE/redaction components | P0 | DONE | Independently APPROVED 2026-11-05; E031 native verification / qualified review E032; ADR-023 | Preserve accepted foundation 0a75587 |
 | T3-003 | Async upstream adapter, orchestration and lifecycle | P0 | DONE | Independently APPROVED 2026-11-05; native Q13-Q15/E033, qualified review E034; ADR-024 | Preserve accepted baseline e4bd001 |
-| T3-004 | FastAPI streaming HTTP integration | P0 | DONE | Independently APPROVED 2026-11-05; native Q16-Q18/E035, qualified review E036; ADR-025/T3-H policies | Accepted implementation preserved; one Git checkpoint authorized; no T3-005 or push |
-| T3-005 | Independent-process real HTTP wire verification | P1 | NOT_STARTED | Proposed T3-Q19 through Q21 | Await separate implementation authorization |
-| T3-006 | Final Task 3 assessment audit | P1 | NOT_STARTED | Future requirements traceability/fresh regression/privacy/reproducibility audit | Await preceding checkpoint acceptance/authorization |
+| T3-004 | FastAPI streaming HTTP integration | P0 | DONE | Independently APPROVED 2026-11-05; native Q16-Q18/E035, qualified review E036; ADR-025/T3-H policies | Preserve accepted baseline ecbd61c |
+| T3-005 | Independent-process real HTTP wire verification | P1 | DONE | Independently APPROVED 2026-11-05; native Q19-Q21/E037, qualified split-review E038; ADR-026 | Preserve accepted wire milestone; one Git checkpoint authorized; no T3-006 or push |
+| T3-006 | Final Task 3 assessment audit | P1 | NOT_STARTED | Future requirements traceability/fresh regression/privacy/reproducibility audit | Await separate audit authorization |
 | TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | DONE | T4-001 through T4-006 independently accepted; final APPROVED 2026-11-05/E029; actual audit E028 | Assessment-ready within supported Windows/SQLite/trusted-adapter scope; preserve implementation, no push |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
@@ -37,6 +37,22 @@ Last updated: 2026-11-05 (America/Los_Angeles).
 | T4-004 | Primary/backup provider routing | P0 | DONE | Independently ACCEPTED in supported environment; native E024/qualified review E025 | Preserve accepted orchestration baseline c889236 |
 | T4-005 | Authenticated HTTP and real-wire verification | P1 | DONE | Independently ACCEPTED; native E026 / qualified split-review E027, H1-H8 | Preserve committed baseline 6eaccaf |
 | T4-006 | Final Task 4 assessment audit | P1 | DONE | Independently APPROVED 2026-11-05/E029; seven traceability rows/test references/E028/docs/limitations reviewed | One final documentation-only acceptance commit authorized; no implementation changes or push |
+
+## T3-005 independent acceptance / Git checkpoint - 2026-11-05
+
+America/Los_Angeles. User independently APPROVES T3-005, no blocking implementation
+defect or production correction. Reported580 existing passes, all57 wire cases
+produced passing assertions across split executions,40 extra randomized real-socket
+fragmentation passes,22 prior Python files unchanged; behavior/cleanup reviewed.
+Linux/Python3.13.5 used import-path change ONLY in extracted review harness. Combined
+Linux wire run stalled after50 completed cases;19-case split printed passing summary
+but did not return promptly to enclosing command. NOT a clean combined637 run.
+E037 native Windows/Python3.12.16 full637/exit0/Ruff remains authoritative; E038
+records reported review and Git inspection only. Preserve kernel10s/TLS/formal RSS/
+real-provider limitations. One descriptive acceptance commit authorized for approved
+wire tests/marker/READMEs/governance only, retain/exclude ZIP/receipts/caches. No
+test rerun absent unexpected functional change. TASK-3 IN_PROGRESS, T3-005 DONE,
+T3-006 NOT_STARTED/not authorized. Verify Git checkpoint and stop; no push.
 
 ## T3-004 independent acceptance / Git checkpoint - 2026-11-05
 
