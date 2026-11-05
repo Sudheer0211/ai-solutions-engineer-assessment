@@ -5,12 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "assessment-task4-accounting"
 version = "0.1.0"
-description = "Task 4 pure tenant sliding-window token accounting"
+description = "Task 4 authenticated HTTP tenant token limiter and injectable orchestration"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = ["fastapi==0.162.0"]
 
 [project.optional-dependencies]
-dev = ["pytest==9.2.0", "ruff==0.17.3"]
+dev = ["pytest==9.2.0", "ruff==0.17.3", "httpx==0.28.1", "asgi-lifespan==2.1.0"]
+serve = ["uvicorn==0.54.0"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -20,7 +21,7 @@ include = ["task4_limiter*"]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
 cache_dir = ".cache/pytest"
-markers = ["task4: T4-002 pure sliding-window accounting"]
+markers = ["task4: Task 4 accounting, storage, routing and HTTP", "http_wire: T4-005 independent loopback processes"]
 
 [tool.ruff]
 target-version = "py312"

@@ -1,6 +1,6 @@
 # AI Solutions Engineer assessment
 
-This repository contains two independently executable Python projects:
+This repository contains independently executable Python assessment projects:
 
 - **Task 1: DONE.** Official MCP STDIO customer/refund server; setup and architecture
   are documented below. Fresh T2-006 regression: 149 passing tests.
@@ -11,9 +11,13 @@ This repository contains two independently executable Python projects:
   [final audit / requirements traceability](docs/TASK2_FINAL_AUDIT.md).
   T2-006 evidence: 452 passing tests, including 52 real HTTP wire cases; final
   independent approval confirmed 2026-11-04. No tests rerun for the acceptance commit.
-- Tasks 3 and 4 have not been implemented and are outside the authorized scope.
+- **Task 4: IN_PROGRESS.** T4-001 through T4-005 are independently accepted.
+  Native Windows full-suite evidence remains authoritative; Linux review used
+  split runs/compatibility substitutions, with a combined wire teardown stall
+  explicitly recorded. See [Task 4 setup/contract](task4/README.md).
+  T4-006 is not started; Task 3 remains unimplemented.
 
-Both tasks passed Ruff lint and formatting checks on 2026-11-04
+Tasks 1 and 2 passed Ruff lint and formatting checks on 2026-11-04
 (America/Los_Angeles). [E017](docs/TEST_EVIDENCE.md) records actual commands/results.
 Use each task's own environment; Task 2 does not run through Task 1's STDIO server.
 
@@ -249,7 +253,8 @@ ai-solutions-engineer-assessment/
 
 Ignored local environments/caches are omitted. Read AGENTS.md and the ledger
 at every session start.
-Task 2 is implemented separately under `task2/`; Tasks 3 and 4 remain unimplemented.
+Task 2 is implemented separately under `task2/`. Task 3 remains unimplemented;
+Task 4 has its own isolated project under `task4/` (status and review gate above).
 FastAPI, HTTP proxies, OAuth/JWT, SQLite, rate limiting, inference APIs,
 SSE, PII streaming, Docker/Kubernetes and optional CI/performance/property-testing
 extras are intentionally excluded from this Task 1 implementation. Some HTTP

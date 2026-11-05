@@ -192,3 +192,31 @@ DB/WAL/environments/cache/credentials/review archives, run staged whitespace che
 commit once and verify SHA/clean tree/ahead-behind. No tests/Ruff rerun unless an
 unexpected implementation change appears. TASK-4 IN_PROGRESS; T4-005 NOT_STARTED
 and not authorized. No push/HTTP/vendor changes/Task 3. Stop after Git checkpoint.
+
+## T4-005 active authorization (2026-11-04 America/Los_Angeles)
+
+Latest user attachment authorizes authenticated FastAPI integration and independent
+loopback wire verification over c889236/324 tests. Preserve all accepted components
+unless an integration defect is reproduced/documented first; preserve Tasks 1/2.
+Document HTTP/auth/config choices, bounded strict input, stable HMAC identity,
+trusted adapter bounds, lifecycle and cancellation; no caller token estimates.
+Run full native Windows Task 4 suite and Ruff, update evidence and stop for review.
+Task 4 dependency/lock additions are isolated. No real vendor/tokenizer claim,
+OAuth/distributed infrastructure/Task 3/T4-006, commit or push.
+
+T4-005 outcome: DONE and independently ACCEPTED, user confirmation 2026-11-04.
+Read E026/E027 and accepted ADR-020. Reported review: all 427 cases passed across
+separate runs, including 29 wire cases in split groups; authentication/quota/
+fallback/concurrency/persistence/sanitization reviewed, no blocking source defect.
+Linux used review-only compatibility substitutions. One COMBINED Linux wire run
+STALLED in fixture teardown, not a completed all-at-once pass. Do not infer native
+Linux support or ship review substitutions. E026 native Windows/Python 3.12.16/
+SQLite 3.53.1 full 427-pass result remains authoritative; no new test execution.
+
+Latest authorization permits ONE descriptive T4-005 Git checkpoint, superseding
+historical no-commit gates for this scope only. Preserve all approved production
+code/tests/configuration/lock and Tasks 1/2. Stage only approved HTTP source/tests/
+support/config/lock/README/governance; exclude envs/DB/WAL/caches/credentials/review
+archives. Inspect full diff/index, run git diff --cached --check, commit once,
+verify SHA/clean tree/ahead-behind and stop. No test/Ruff rerun absent unexpected
+implementation changes; no T4-006, Task 3, feature work or push. TASK-4 IN_PROGRESS.

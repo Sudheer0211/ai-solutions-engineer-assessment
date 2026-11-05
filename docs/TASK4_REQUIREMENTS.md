@@ -5,16 +5,17 @@ requirements and explicit clarifications supplied in this session. No separate
 verbatim original Task 4 document/provider specification was attached. This record
 preserves the confirmed requirements separately from proposed engineering choices.
 
-Current status (2026-11-04 America/Los_Angeles): T4-001/T4-002/T4-003 are
-independently accepted; the storage baseline is ebc226a. E022 remains native
-Windows/SQLite 3.53.1 evidence; E023 distinctly records the Linux shim review.
-T4-004 is independently ACCEPTED, user confirmation 2026-11-04; E024 records
-authoritative native Windows/Python 3.12.16/SQLite 3.53.1 verification (324 passes
-and Ruff), E025 records qualified reported independent review. One descriptive
-approved T4-004 commit is now authorized; no reruns or implementation changes.
-No real vendor, HTTP/T4-005, Task 3, installation or push. Tasks 1/2 and accepted Task 4
-models/accounting/storage/tests/configuration/lock remain unchanged. TASK-4 remains
-IN_PROGRESS. The original R1-R7 and approved P1-P4 are preserved below.
+Current status (2026-11-04 America/Los_Angeles): T4-001 through T4-005 are
+independently ACCEPTED; TASK-4 remains IN_PROGRESS. E026 native Windows/Python
+3.12.16/SQLite 3.53.1 full-suite verification remains authoritative. E027 records
+qualified independent review: 427 cases across separate runs, 29 wire cases in
+split groups with review-only Linux compatibility substitutions. One combined
+Linux wire run stalled during fixture teardown, NOT a completed all-at-once pass.
+No blocking production defect; no new native Linux support or shipped substitution.
+One descriptive approved T4-005 Git commit is authorized; preserve code/tests/
+configuration/lock and Tasks 1/2. No tests absent unexpected implementation changes,
+T4-006, Task 3, new vendor/HTTP features or push. Original R1-R7/P1-P4 and HTTP
+implementation choices below are unchanged.
 
 ## Finalized engineering policies after conditional approval
 
@@ -589,3 +590,149 @@ one descriptive approved-source/tests/support/README/requirements/governance com
 only, superseding historical no-commit gates for this checkpoint. Preserve approved
 provider/service/accounting/storage/tests/config/locks and Tasks 1/2. No test rerun
 absent unexpected implementation changes, no T4-005, new vendor/HTTP work or push.
+
+## T4-005 authenticated HTTP checkpoint (2026-11-04)
+
+Source: latest user attachment, "Authenticated HTTP Integration and Real HTTP Wire
+Verification". Independently ACCEPTED, user confirmation 2026-11-04 (E027).
+These checkpoint requirements supplement R1-R7; the specific route/schema/auth choices below are
+engineering policies where the original assessment brief was silent.
+
+| ID | Mandatory checkpoint criterion |
+| --- | --- |
+| T4-H1 | FastAPI factory/lifespan around accepted modules; bounded strict HTTP input and no blocking SQLite in event loop |
+| T4-H2 | External tenant-key authentication; reject missing/malformed/duplicate/unknown/unauthorized keys; stable approved identity; no client tenant authority |
+| T4-H3 | Trusted model-specific bounds/enforced caps only; no caller estimates, invented production tokenizer or unspecified vendor support |
+| T4-H4 | Local 429 zero calls; primary success/429/3000 ms timeout/500 ms cleanup and backup failures preserve accepted routing/accounting |
+| T4-H5 | Quota boundaries, isolation/persistence, concurrent atomic admission and conservative client cancellation |
+| T4-H6 | Standardized controlled responses/logs without raw keys, secrets, request prompts or exception diagnostics |
+| T4-H7 | Independent loopback processes, dynamic ports, real client/framing, journaled actual calls/durable state and bounded reliable cleanup |
+| T4-H8 | Full supported native Task 4 suite/Ruff, actual evidence/governance; preserve Tasks 1/2/accepted components; stop for review, no T4-006/commit/push |
+
+### HTTP and authentication contract (implementation choices)
+
+- POST /generate only; no redirect, docs/redoc/OpenAPI, streaming or public status/
+  journal/control endpoint. Other methods 405 (Allow: POST), unknown paths 404.
+  The wire fixture's upstream control/readiness endpoints are TEST ONLY.
+- Authenticate one Authorization: Bearer <key> header before body reading/JSON/
+  bounds/admission. Scheme case-insensitive, token exact/case-sensitive ASCII RFC
+  Bearer characters, 32-256 bytes total. Missing/malformed/duplicate/unknown or
+  removed/not-allowlisted keys all return identical 401 + Bearer realm="task4".
+  No default credentials, JWT/OAuth, roles, query/cookie authentication or key CRUD.
+- External TASK4_TENANT_KEYS_JSON is an immutable allowlist (1-1024 distinct keys).
+  Retain SHA256 digests for authentication, visit all with constant-time digest
+  comparisons. Hand accepted bytes transiently to existing SQLiteStore for HMAC
+  identity under unchanged external identity secret/domain. Header/body tenant
+  overrides never become authority; extra JSON fields are rejected. Keys must be
+  generated strongly/provisioned by operator; syntax cannot prove entropy. Removing
+  a key revokes HTTP access without deleting stored usage. Rotation/migration is
+  not implemented and must not silently reset accounting identity.
+- Body must be application/json, optionally charset=utf-8 (case-insensitive), with
+  no Content-Encoding (including identity). Reject unsupported media/encoding 415.
+  Validate visible duplicate/ambiguous length/transfer headers; HTTP/1.1 chunked
+  is supported. Count actual bytes while streaming, not only Content-Length.
+  Default max 65536 (configurable 1-1048576), total body-read timeout 5000 ms
+  (configurable 1-60000): too large 413, read deadline 408. Length mismatch 400.
+- Strict UTF-8 JSON object with ONLY prompt: nonempty string, <=16000 characters,
+  valid Unicode (no unpaired surrogates). Reject duplicate JSON keys at every
+  object level, nonfinite constants, malformed JSON, arrays/scalars, wrong types,
+  unknown keys (including tenant IDs/token estimates/model overrides) with 400.
+  Validation details/input are never reflected or logged.
+- Server generates UUID correlation ID, never trusts client-supplied IDs. Success
+  200: {request_id, result:{text, used_backup}}. Error:
+  {error:{code,message,request_id}} with fixed public message. All application
+  responses include X-Request-ID, Cache-Control:no-store, X-Content-Type-Options:
+  nosniff and JSON media type. No inbound header/cookie/role forwarding.
+- Local quota: 429/tenant_quota_exceeded, zero provider calls/reservations. Primary
+  provider 429 is INTERNAL routing, normally successful backup -> 200; terminal
+  backup 429 -> 429/provider_rate_limited (distinct from tenant quota). Typed model
+  failure -> 502/model_unavailable; timeout -> 504/model_timeout; unreliable bounds,
+  storage failure/quarantine/unavailable -> 503/service_unavailable. Invalid request
+  400/invalid_request; invalid credentials 401/invalid_credentials. Entity failures
+  use request_too_large/unsupported_media_type/unsupported_content_encoding/
+  request_timeout with the statuses above. Disconnect is diagnostic 499 if a
+  response is still deliverable; a closed socket normally receives nothing.
+- Malformed transport framing rejected by Uvicorn/h11 BEFORE ASGI may receive a
+  server-generated HTTP 400 rather than the application JSON envelope. Server
+  normalization can erase redundant identical header syntax; the boundary checks
+  what ASGI actually exposes. Do not claim byte-level HTTP parsing ownership or
+  unrestricted reverse-proxy/HTTP2 deployment compatibility.
+
+### Trusted resources and failure/cancellation ownership
+
+HTTPSettings/load_settings require absolute TASK4_DATABASE_PATH, external
+TASK4_IDENTITY_SECRET_HEX, TASK4_TENANT_KEYS_JSON, TASK4_BACKUP_TIMEOUT_MS and
+TASK4_RESERVATION_MS. Optional TASK4_MAX_BODY_BYTES/TASK4_BODY_TIMEOUT_MS configure
+HTTP budgets. No secret/backup/overall defaults. Existing RoutingPolicy validates
+combined budgets; test values are not deployment requirements. Storage runtime/
+filesystem/identity checks are unchanged. Read configuration at startup, no import-
+time DB/network I/O. Invalid configuration fails startup with generic diagnostics.
+
+Trusted Python deployment code injects provider_resources(), an async context
+manager yielding primary/backup adapters, into create_app. The default factory
+uses bounds-unavailable adapters: requests authenticate/validate then fail 503
+BEFORE reservation/dispatch, not a fictional vendor/tokenizer. Actual adapters
+must establish reliable model-specific counters/caps under accepted Protocols.
+Clients cannot choose providers, URLs, bounds or caps. Success contains only the
+trusted adapter completion and controlled metadata; no raw prompt/debug echo.
+A real completion's semantic privacy/redaction is not certified by synthetic tests.
+
+Initialize SQLiteStore off-loop during lifespan; accepted LLMService offloads all
+subsequent DB operations. No HTTP code duplicates admission/settlement/recovery.
+Providers are owned by lifespan, closed AFTER service work drains; close store last
+(flag only, all DB work already drained). Startup cancellation discovers the actual
+initialization worker outcome before close. Shutdown owns a shielded cleanup task;
+caller cancellation cannot discard DB/provider cleanup. Failed/unconfirmed attempt
+cleanup retains resources and raises a generic unclean-shutdown signal rather than
+closing a pool under a live owned attempt. Blocking OS I/O or a permanently broken
+trusted resource context cannot be forcibly killed by asyncio; supervisor/operational
+recovery remains necessary. No new replay or distributed recovery system.
+
+Read request body with one consumer, then watch ASGI disconnect alongside the public
+service call. On disconnect/cancellation, cancel that public coroutine so accepted
+service signals its retained workflow; never assume cancelled DB work rolled back.
+No new fallback after observed cancellation. Known/unknown usage, admission-time
+settlement, deadline-anchored recovery and reserved primary+backup policy are exactly
+those already accepted. No accepted production correction was needed.
+
+### Wire evidence, supported scope and operational limits
+
+E026 records actual native Windows/Python 3.12.16/SQLite 3.53.1 executions. New ASGI
+and wire tests supplement the unchanged 324 tests. Wire harness starts independent
+Uvicorn proxy and deterministic synthetic HTTP upstream processes, both 127.0.0.1,
+OS-bound port 0 with reported ports, HTTP readiness checks, bounded deadlines,
+per-request journal counts and on-disk SQLite state. Fixed fixture counting/caps
+are not a real tokenizer/provider guarantee. No external service contacts. Upstream
+fixture has no tenant credentials in its environment or incoming headers. Explicit
+release events coordinate concurrency/remote timeout work; cleanup reaps all children,
+including expected invalid-startup failures, with receipts under ignored .cache.
+
+No raw API keys/identity secrets/prompts/completions are persisted in usage/journals;
+journals contain synthetic UUID/ordinal/state/header-presence only. Do not enable
+access logs or forward untrusted proxy headers. HTTP over loopback is the verified
+scope; non-loopback deployment needs TLS, trusted ingress/logging, key provisioning,
+verified real-model adapters/caps, appropriate explicit execution budgets and reviewed
+filesystem/clock operations. No load-saturation/slow-header/OS-crash final audit,
+full streaming, public model integration, administrative unblock/rotation/retention
+API or multi-host SQLite support. T4-005 is independently accepted as recorded
+below; TASK-4 is not DONE. No T4-006 implementation or push.
+
+### T4-005 independent acceptance and Git authorization
+
+User APPROVES T4-005, 2026-11-04 (America/Los_Angeles), no blocking production
+defect identified. All 427 cases passed independently across separate review runs;
+29 real wire cases passed in split groups. Authentication/quota rejection/fallback/
+concurrency/persistence/error sanitization reviewed. Linux verification required
+review-only compatibility substitutions. One COMBINED Linux wire run stalled during
+fixture teardown; do not describe it as a completed all-at-once pass. Native E026
+Windows/Python 3.12.16/SQLite 3.53.1 full-suite result remains authoritative.
+Reported review commands/versions and child cleanup counts were not supplied;
+no new local execution or native Linux support is claimed. No substitutions ship.
+
+T4-005 DONE/ACCEPTED, TASK-4 IN_PROGRESS. Latest user authorization supersedes only
+this checkpoint's historical no-commit gate: one descriptive approved source/tests/
+support/config/lock/README/governance commit, preserving implementation unchanged.
+Exclude envs/DB/WAL/caches/credentials/archives, inspect exact staged content and
+whitespace, verify resulting commit/clean status/branch counts and stop. No reruns
+absent unexpected implementation changes, T4-006, Task 3 or push. E027 records
+review provenance and Git inspection; accepted engineering choices are unchanged.

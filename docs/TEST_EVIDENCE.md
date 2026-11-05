@@ -1369,3 +1369,237 @@ review ZIP exclusions. git diff --cached --check exits 0. Git LF-to-CRLF advisor
 are not implementation changes or test warnings. No test/Ruff rerun or new feature.
 Proceed with one authorized commit; Git history/final report record SHA and final
 clean-tree/branch verification. No fetch/push or T4-005.
+
+## E026 - 2026-11-04: T4-005 authenticated HTTP and native wire verification
+
+America/Los_Angeles (clock probes Nov 5 UTC, Nov 4 locally). User attachment
+explicitly authorizes T4-005 only. Starting c889236a83978f72330dc937b68ad249ea71027f,
+clean tree, main ahead 3/behind 0 recorded origin/main. Captured 74 tracked SHA256
+hashes in ignored .cache/t4005_baseline.json. No commit, push, T4-006, Task 3 or
+accepted production correction. Task 1/2 source/tests/dependencies/environments
+remain unchanged; no new execution/pass claim for their suites.
+
+### Environment/dependencies (actual inspection and installation, not tests)
+
+Task 4 interpreter probe: Python 3.12.16 (main, Oct 26 2026, 14:10:56), MSC v.1944
+64-bit AMD64; SQLite 3.53.1. Native Windows fixed-local-drive gate remains enabled
+in unchanged storage.py; no compatibility shim. importlib.metadata reports FastAPI
+0.162.0, Starlette 1.10.0, Pydantic 2.14.2, HTTPX 0.28.1, Uvicorn 0.54.0, pytest
+9.2.0, Ruff 0.17.3, asgi-lifespan 2.1.0. Standard-library SQLite only. Task 4's
+isolated pyproject/lock extended, no Task 1/2 pin/environment change.
+
+uv was absent from PATH; used existing ../.tools/bin/uv.exe. With cwd task4/ and
+UV_CACHE_DIR=../.cache/uv, executed:
+
+| Actual command | Result | Exit |
+| --- | --- | --- |
+| `../.tools/bin/uv.exe lock --python .venv/Scripts/python.exe --offline` | Failed: FastAPI metadata absent from cache | 1 |
+| `../.tools/bin/uv.exe sync --locked --extra dev --extra serve --python .venv/Scripts/python.exe --offline` initial | Same offline resolution failure; no install | 1 |
+| `../.tools/bin/uv.exe lock --python .venv/Scripts/python.exe` authorized online | Resolved 27 packages in 1.10s; Task 4 lock updated | 0 |
+| `../.tools/bin/uv.exe sync --locked --extra dev --extra serve --python .venv/Scripts/python.exe` | Resolved 27; prepared/installed 20 including editable Task 4 rebuild, isolated environment only | 0 |
+| Same locked sync with `--offline`, final | Resolved 27 in 1ms; checked 27 in 2ms, no further installation | 0 |
+
+Official FastAPI lifespan/Starlette request-stream docs consulted (ADR-020).
+`python -m uvicorn --help` in Task 4 environment exited 0; factory, host/port,
+no-access-log and no-proxy-headers flags confirmed. No real LLM/vendor contacted;
+package downloads are separate from loopback-only integration verification.
+
+### Actual verification commands (cwd task4/)
+
+All commands below use the pinned Task 4 executable .\.venv\Scripts\python.exe; no other interpreter.
+
+| Command / stage | Actual result | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m ruff format src/task4_limiter/app.py src/task4_limiter/settings.py tests/http_support.py tests/test_http.py` | Four new files formatted | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` initial | Two new-test issues I001/B023; corrected scoped import/closure binding | 1 |
+| `.\.venv\Scripts\python.exe -m ruff check --fix tests/test_http.py` | One import fixed, zero remaining | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q tests/test_http.py --tb=short --basetemp=.cache/t4005-asgi-01` | 71 passed in 2.68s | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format tests/http_wire_child.py tests/http_wire_support.py tests/test_http_wire.py` | Three new files formatted | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` wire initial | One unused-import F401; corrected only new support file | 1 |
+| `.\.venv\Scripts\python.exe -m ruff check --fix tests/http_wire_support.py` | One issue fixed, zero remaining | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py --tb=short --basetemp=.cache/t4005-wire-01` | 26 passed, 1 failed in 36.08s; harness invalid-startup exit mismatch, described below | 1 |
+| Scoped Ruff format over all seven new Python files after harness/lifecycle additions | Four formatted, three unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` expanded | One new nested import I001; scoped fix made | 1 |
+| `.\.venv\Scripts\python.exe -m ruff check --fix tests/test_http.py` | One import fixed, zero remaining | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4005-full-01` | 427 passed in 40.60s, zero failures/skips/warnings/xfails | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` / `.\.venv\Scripts\python.exe -m ruff format --check src tests` | Both pass; 22 files already formatted | 0 / 0 |
+| `.\.venv\Scripts\python.exe -m ruff format tests/http_wire_support.py` after receipt/upstream-env refinement | One formatted | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` before final full run | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4005-final` FINAL | **427 passed in 40.81s; zero failures/skips/warnings/xfails** | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` FINAL | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` FINAL | **22 files already formatted** | 0 |
+
+All pytest invocations execute outside sandbox restrictions for native local SQLite
+files/locks and Windows subprocesses, consistent with E022/E024. Read-only sandbox
+access to a native pytest temp directory was denied; native diagnostic inspection
+then succeeded. This did not require changing permissions/gates or weakening tests.
+
+### Initial wire harness failure and correction (new support code only)
+
+test_wire_bad_startup_reaps_process_without_forced_cleanup expected exit 3 for
+invalid tenant configuration but observed Windows 3221225477. Native stderr
+confirmed generic configuration rejection followed by Python _enter_buffered_busy:
+a daemon stdin-reading thread held a BufferedReader lock during interpreter
+finalization. Initial receipt still reaped all 28 children, zero forced; 27 normal
+exit 0 and the erroneous invalid-startup exit. Replaced proxy daemon stdin control
+with asynchronous stop-file polling, no reader thread at interpreter shutdown;
+kept the expected-exit assertion. Harness cleanup continues through other children
+after an assertion. Final complete suites above pass with expected exit 3 and zero
+forced cleanup. No accepted app/service/storage correction, no bypass/shim introduced.
+
+### Test coverage / native wire receipts
+
+427 = 324 unchanged accepted + 74 new ASGI/config/lifecycle tests + 29 real HTTP
+wire tests. H1-H8 map to test_http.py/test_http_wire.py, settings.py/app.py and the
+unchanged accepted tests. Key named cases:
+
+- H1/H2/H6: test_authentication_rejection_zero_reservations_and_calls,
+  test_valid_duplicate_credentials_and_nonascii_headers_reject_without_reading_body,
+  test_invalid_external_configuration_is_generic, wire authentication matrix.
+  Only registered credentials authenticate; not-allowlisted keys use the unknown-
+  credential path (no separate revocation interface). Missing/malformed/duplicate/
+  cookie/spoof headers cannot grant identity.
+- H1/H3/H6: strict input/header/size matrices, streamed exact 64/65-byte boundary,
+  body deadline, wire Content-Length/chunked/compressed/malformed/schema/framing
+  tests. No estimated tokens/tenant/model overrides; missing trusted bounds 503
+  before admission/dispatch. Safe errors/logs exclude private diagnostic/prompt/
+  credential/path canaries; completion is fixed synthetic content, not prompt echo.
+- H4/H5: test_routing_status_accounting_and_no_prompt_or_secret_leak,
+  test_combined_admission_boundaries_and_quota_rejection (49999/50000/50001),
+  test_http_primary_timeout_and_unconfirmed_cleanup, wire routing/conservative accounting.
+  Cooperative primary expiry uses REAL monotonic clock/HTTPX/TCP in wire tests;
+  exact 3000/500 boundary and unconfirmed cleanup remain controlled-clock tests.
+- H5/H7: test_http_concurrency_tenant_isolation_and_restart_persistence,
+  test_wire_concurrent_tenants_atomic_quota_and_persistence_across_process_restart,
+  test_wire_disconnect_accounts_primary_and_does_not_launch_backup. Five held 10000-
+  token demands fill a tenant, sixth denied, separate key allowed; closed/restarted
+  proxy retains HMAC identity/charges. Disconnect charges uncertain primary bound
+  without starting backup. No false DB rollback inference on caller cancellation.
+- H1/H5/H6: test_http_cancellation_preserves_dispatched_accounting,
+  test_startup_cancel_discovers_initialized_worker_before_closing,
+  test_shutdown_cancellation_drains_owned_provider_context,
+  test_failed_attempt_close_quarantines_resources_instead_of_claiming_shutdown,
+  test_database_failure_is_sanitized_and_unconfigured_provider_fails_closed.
+  Owned cleanup/state are retained; no provider pool close under uncertain execution.
+
+Real harness: 13 configured fixture modes; independent synthetic upstream and
+Uvicorn proxy processes per mode, one proxy restart plus one expected invalid-
+configuration startup. Both bind 127.0.0.1 on child-selected port 0, publish ports
+and require bounded HTTP readiness (no preselect/release port race). Every HTTP
+client disables environment proxies. No external LLM/vendor contacts. Upstream is
+a TEST-ONLY fixed protocol/counter/cap fixture, receives no tenant configuration
+or credential headers. Trusted adapters, not incoming prompts, choose bounds.
+Journals persist only synthetic UUID/ordinal/phase/header-presence, never secrets,
+prompts or completions. Explicit release events and bounded polling coordinate
+requests/disconnect; arbitrary wall-sleep timing assertions are not used.
+
+Final .cache/http_wire_summary.json was parsed/asserted (inspection, exit 0):
+28 children/reaped 28/forced 0; 27 exit 0, one EXPECTED invalid-startup exit 3.
+All 21 local rejection receipts have provider_delta=0 AND reservation_delta=0:
+5 credential, 8 body/schema, 2 chunked-size/body-deadline, 2 quota, 1 concurrent
+quota, 1 database-unavailable, 2 pre-ASGI framing. Non-admitted paths leave no new
+request rows. Separate .cache/sqlite_process_summary.json: 15 storage children
+all exit 0, zero alive/forced. Total **43 children reaped**, no forced cleanup.
+
+Actual final per-mode journal/SQLite aggregates (distinct synthetic tenants):
+
+| Wire mode | Primary calls | Backup calls | Complete requests | Charged tokens |
+| --- | --- | --- | --- | --- |
+| success (length + chunked) | 2 | 0 | 2 | 10 |
+| primary 429 | 1 | 1 | 1 | 25 |
+| primary real timeout | 1 | 1 | 1 | 25 |
+| backup failure | 1 | 1 | 1 | 40 |
+| backup 429 | 1 | 1 | 1 | 40 |
+| transport failure | 1 | 0 | 1 | 20 |
+| unknown success usage | 1 | 0 | 1 | 20 |
+| exact quota | 1 | 0 | 1 | 25000 |
+| excessive quota | 0 | 0 | 0 | 0 |
+| concurrent tenants + restart | 7 | 0 | 7 | 35000 |
+| client disconnect | 1 | 0 | 1 | 20 |
+| database unavailable | 0 | 0 | 0 | 0 |
+| startup fixture | 0 | 0 | 0 | 0 |
+
+All modes: credential_headers_forwarded=0, held_tokens=0 after cooperative wire
+completion/cleanup. Unconfirmed cleanup is verified separately in ASGI tests with
+full holds retained. No third attempt. Raw journals/DB/WAL/logs/ports are ignored
+.cache artifacts, not committed credentials/test fixtures.
+
+### Preservation, current status and limitations
+
+New runtime app.py/settings.py reuse accepted modules unchanged. Five new test/
+support/child files, Task 4 pyproject/lock updates, relevant governance/Task 4 README
+and root README Task 4 status correction. No accepted logic/test correction or
+Task 1/2 dependency change needed; no Task 1/2 rerun claimed. R1-R7/P1-P4 unchanged.
+Final source-hash/diff/artifact/index checks below are inspections, not tests.
+
+T4-005 IMPLEMENTED/locally VERIFIED, independent acceptance PENDING; TASK-4 remains
+IN_PROGRESS. No current test/lint failure; first harness/lint/cache failures above
+are preserved. Stock provider rejects without trustworthy bounds. No real-model
+counter/cap or semantic completion-privacy certification, public TLS/ingress/load/
+OS-crash audit, unsupported filesystem/platform guarantee, OAuth/streaming/Redis
+or arbitrary uncooperative-resource shutdown guarantee. Deployment needs strong
+external keys/identity, verified adapters/caps, explicit execution budgets and safe
+logging/clock/filesystem operations. Next: independent review, no T4-006/commit/push.
+
+Final inspections (not tests): git diff --check exits 0; index empty, HEAD unchanged
+c889236, main ahead 3/behind 0 recorded origin/main. SHA256 manifest comparison:
+64 original tracked files byte-identical (all accepted Task 4 modules/tests and
+Task 1/2 source/tests/pins included); exactly eight relevant docs/README plus
+Task 4 pyproject/lock modified, seven new HTTP Python files. R1-R7/P1-P4 and prior
+AGENTS/build/decision/evidence history intact. Root README corrects only Task 4
+status/project count and clarifies unchanged Task 1/2 verification scope. New code
+hashes (22 files) retained only in ignored .cache/t4005_verified_code.json; targeted
+private-key/provider-token/credential-URL scan found zero candidates in changes.
+Git LF/CRLF advisory on lockfile is not a test warning/implementation change.
+No virtual environments/DB/WAL/cache/credentials/archive staged; no commit/push.
+
+## E027 - 2026-11-04: T4-005 independent acceptance / Git inspection
+
+America/Los_Angeles (clock probe 2026-11-05 06:00:12 UTC = Nov 4 locally).
+User reports independent engineering APPROVAL, no blocking production defect.
+Reported evidence, NOT new Codex executions:
+
+- All 427 test cases passed independently across separate review runs.
+- The 29 real HTTP wire cases passed in split groups. Authentication, quota
+  rejection, fallback, concurrency, persistence and sanitization were reviewed.
+- Linux verification required review-only compatibility substitutions. One combined
+  Linux wire run STALLED DURING FIXTURE TEARDOWN; it is NOT a completed all-at-once
+  pass. Do not represent aggregate split passes as a completed combined run.
+- E026 native Windows/Python 3.12.16/SQLite 3.53.1 full-suite result remains
+  authoritative for supported deployment. No review substitutions are shipped or
+  native Linux support claimed. Review command lines, interpreter/SQLite versions,
+  per-run timing/counts and Linux child-cleanup totals were not supplied.
+
+T4-005 DONE/independently ACCEPTED; TASK-4 remains IN_PROGRESS. One descriptive
+approved-source/test/support/config/lock/README/governance commit authorized.
+No pytest/Ruff/install/provider/SQLite execution in this Git checkpoint. No T4-006,
+Task 3, feature modification or push. Earlier E026 native evidence stays unchanged.
+
+Initial inspections: git status --short --branch, git diff --stat, git diff --cached
+--name-status, git rev-parse HEAD and git rev-list --left-right --count
+HEAD...origin/main exited 0. HEAD c889236a83978f72330dc937b68ad249ea71027f;
+ahead 3/behind 0 recorded origin/main, empty index. Ten tracked changes, seven
+approved new Python files and untracked task4_t4005_review.zip. Captured 82 hashes
+in ignored .cache/t4005_acceptance_baseline.json. All 22 Python files match the
+final native verification snapshot in .cache/t4005_verified_code.json: no unexpected
+implementation changes or need for tests. Retained archive locally excluded via
+.git/info/exclude; no tracked ignore/config/source/test changes made this session.
+
+Following source/index checks are inspections, not new test passes. Inspect full
+diff/new approved files, exact 17-file index, exclude envs/DB/WAL/cache/credentials/
+archives, run git diff --cached --check, create one descriptive commit and verify
+SHA/parent/inventory/clean status/branch counts. Preserve Tasks 1/2 and T4-006 gate.
+
+Completed staged inspection (not tests): full tracked diff/config/lock and all seven
+new approved Python files reviewed. Explicit git add -- staged exactly 17 approved
+paths (eight docs/README, two configuration/lock, seven Python). No Task 1/2 files,
+environments/DB/WAL/caches/credentials/archives or review substitutions staged.
+Staged blobs match reviewed working files after Git EOL normalization; no unstaged
+or unignored leftovers. All 74 captured non-document files, including approved
+code/tests/config/lock/archive, unchanged. Targeted private-key/provider-token/
+credential-URL and artifact scans found zero candidates. Existing ignore rules
+cover actual cache/DB/WAL/SHM/env/pycache and locally retained ZIP. Earlier E026
+history is intact. git diff --cached --check exits 0; LF/CRLF advisories do not
+represent implementation changes/test warnings. No tests/Ruff/install rerun.
+Proceed with one authorized commit; Git history/final report record identity and
+clean-tree/branch verification. No fetch/push or T4-006 implementation.

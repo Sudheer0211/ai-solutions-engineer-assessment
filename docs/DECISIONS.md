@@ -557,3 +557,65 @@
 - Accepted design/tradeoffs above remain intact. E025 records reported acceptance
   and inspection, not new tests. One descriptive approved-source/test/doc commit;
   preserve implementation/pins/Tasks 1/2, no T4-005 or push. TASK-4 remains incomplete.
+
+## ADR-020 - Authenticated bounded HTTP around accepted orchestration
+
+- Date: 2026-11-04 (America/Los_Angeles); T4-005; status ACCEPTED following
+  independent engineering review, confirmed by the user with qualification below.
+  Preserve accepted c889236 modules/tests and Tasks 1/2; no architecture change.
+- Decision: isolated FastAPI factory; POST /generate prompt-only strict JSON;
+  manual bounded streaming read and explicit validation/error envelope avoid raw
+  input in automatic validation responses. Require registered external Bearer keys,
+  keep allowlist digests, derive stable identity through existing SQLite HMAC only.
+  No client tenant/model/token estimate authority or cookie/role forwarding.
+- Lifespan offloads store initialization, owns provider context and accepted service,
+  drains service before provider/store close. Retain startup worker/shutdown task
+  after cancellation; quarantine resources on unconfirmed close, never false success.
+  Single post-body disconnect consumer cancels the public service call, preserving
+  accepted request-owner/DB accounting. No duplicate storage/routing logic or changes
+  to accepted modules. Default adapters fail BoundsUnavailable before admission;
+  no invented vendor/tokenizer. Deployment injects trusted Python resources only.
+- HTTP choices (not original R1-R7): 64 KiB/5 s default body limits, UTF-8 JSON only,
+  no compression, prompt <=16000 chars, one Bearer header/32-256-byte registered key,
+  opaque server UUID; 400/401/404/405/408/413/415/429/499/502/503/504 mappings in
+  requirements. Distinguish tenant_quota_exceeded from provider_rate_limited.
+  Uvicorn/h11 owns transport parsing and may reject framing before JSON envelope.
+- Dependencies: FastAPI 0.162.0 runtime; HTTPX 0.28.1/asgi-lifespan 2.1.0 dev;
+  Uvicorn 0.54.0 serve extra. Existing pytest/Ruff/build pins preserved, isolated
+  lock resolves 27 packages. No Task 1/2 dependency/environment change. Resolved
+  Starlette 1.10.0/Pydantic 2.14.2 are tested in Task 4, not silently assumed from
+  Task 2. Official [FastAPI lifespan](https://fastapi.tiangolo.com/advanced/events/)
+  and [Starlette request streams](https://starlette.dev/requests/) consulted.
+- Real-wire design: independent proxy/synthetic upstream processes, loopback only,
+  child-bound dynamic ports/HTTP readiness, trusted fixture counters/caps, SQLite
+  journals and bounded state polling/release events. No production vendor contract.
+  Native invalid-startup harness exposed daemon stdin reader finalization failure;
+  replace with async stop-file control, preserving expected failure assertion.
+- Alternatives: caller estimates/tenant IDs (quota bypass), permissive reflected
+  validation/debug errors (secret/prompt leak), DB calls on event loop (blocking),
+  guess production tokenizer/vendor (unsupported), mock-only verification (misses
+  framing/disconnect/process behavior), cancel-and-discard workers (false rollback).
+- Tradeoffs: immutable allowlist needs controlled restart for revocation, no rotation
+  migration, conservative reservation may reject early; no semantic completion
+  redaction guarantee, TLS/public deployment/load/final fault audit deferred. Broken
+  trusted adapters/OS I/O can prevent clean shutdown; retain ownership and surface
+  controlled failure. Access/proxy logging must be configured safely at deployment.
+  All accepted local Windows/runtime restrictions remain. E026 records actual
+  verification/initial failures; E027 records independent acceptance. One approved
+  milestone commit only; no T4-006 or push.
+
+### T4-005 independent acceptance provenance
+
+- User APPROVES T4-005 on 2026-11-04 (America/Los_Angeles), no blocking production
+  defect. All 427 cases passed independently across separate review runs; 29 wire
+  cases passed in split groups. Authentication, quota rejection, fallback,
+  concurrency, persistence and sanitization were reviewed.
+- Linux review used review-only compatibility substitutions. One combined Linux
+  wire run stalled during fixture teardown; it was NOT a completed all-at-once
+  pass. Split results must not be presented as that combined run, proof of native
+  Linux support, or a new local execution. No review substitutions ship.
+- E026 native Windows/Python 3.12.16/SQLite 3.53.1 full-suite verification remains
+  authoritative. No new review commands/versions/cleanup counts were supplied;
+  E027 records only the provided evidence and Git/source inspection. Accepted
+  design/tradeoffs unchanged. One approved T4-005 commit; no code/test/config edits,
+  test rerun absent unexpected implementation changes, T4-006 or push.

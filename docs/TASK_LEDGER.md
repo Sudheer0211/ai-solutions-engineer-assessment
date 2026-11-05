@@ -24,12 +24,12 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
-| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001 through T4-004 independently accepted; E024/E025 | T4-004 Git checkpoint only; T4-005 NOT_STARTED/not authorized |
+| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001 through T4-005 independently accepted; E026/E027 | T4-005 Git checkpoint only; T4-006 NOT_STARTED/not authorized |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
 | T4-003 | SQLite atomic admission, persistence and settlement | P0 | DONE | Independently ACCEPTED within supported Windows/SQLite scope; E022/E023 | Preserve accepted storage baseline ebc226a |
-| T4-004 | Primary/backup provider routing | P0 | DONE | Independently ACCEPTED in supported environment; native E024/qualified review E025 | One approved orchestration commit; preserve implementation, no T4-005/push |
-| T4-005 | HTTP and real-wire verification | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
+| T4-004 | Primary/backup provider routing | P0 | DONE | Independently ACCEPTED in supported environment; native E024/qualified review E025 | Preserve accepted orchestration baseline c889236 |
+| T4-005 | Authenticated HTTP and real-wire verification | P1 | DONE | Independently ACCEPTED; native E026 / qualified split-review E027, H1-H8 | One approved HTTP/wire commit; preserve implementation, no T4-006/push |
 | T4-006 | Final Task 4 assessment audit | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
 
 ## GOV-001 mandatory acceptance criteria
@@ -645,3 +645,63 @@ ahead 2/behind 0 recorded origin/main; seven modified docs/five new Python files
 and a local review ZIP. Capture hashes, retain/exclude archive, inspect full diff
 and exact index inventory, run git diff --cached --check, commit once and verify
 SHA/clean status/branch counts. No push, T4-005, Task 3 or new provider/HTTP work.
+
+## T4-005 start - 2026-11-04 (America/Los_Angeles)
+
+Latest attachment authorizes FastAPI factory, external tenant-key authentication,
+strict bounded HTTP JSON, reuse of accepted service/storage, resource lifespan and
+independent loopback process/socket tests. Acceptance: zero reservations/provider
+calls on local input/auth/quota rejection; exact quota/isolation/persistence;
+429/3000 ms routing and bounded cleanup; conservative cancellation/billing;
+sanitized responses/logs; full native Task 4 pytest/Ruff and process cleanup.
+Preserve c889236 approved logic/tests and Tasks 1/2. Document implementation choices
+separately from R1-R7. No real vendor, HTTP provider guarantee, T4-006, commit/push.
+
+## T4-005 local verification / review handoff - 2026-11-04 (America/Los_Angeles)
+
+Implemented H1-H8, independent acceptance PENDING. Final native full suite E026:
+427 passed in 40.81s (324 unchanged accepted + 74 HTTP/config/lifecycle + 29 real
+wire), zero failures/skips/warnings/xfails; Ruff lint/format pass, 22 files. Runtime
+Python 3.12.16/SQLite 3.53.1; Task 4 lock 27 packages, locked offline sync checked.
+21 wire local rejection receipts have zero provider calls AND zero new reservations;
+28 wire children reaped, 27 exit 0/one expected invalid-startup exit 3, zero forced.
+15 storage children exit 0/zero live or forced; 43 total reaped. Separate processes
+verify framing, primary 429/real timeout routing, conservative usage, concurrent
+same/different tenants, durable process restart and disconnect. No accepted code
+or test correction needed; initial harness fatal stdin-reader issue fixed in NEW
+support code and recorded, with original expected-exit assertion preserved.
+
+New app.py/settings.py and five HTTP test/support/child modules; Task 4 pyproject/
+lock HTTP additions only. Relevant governance/README updated, root README changes
+Task 4 status only. No Task 1/2 implementation/dependency/environment change; no
+rerun or new pass claim for their suites. Existing R1-R7/P1-P4 remain unchanged.
+ADR-020 records interface/auth/body/error/lifecycle/test choices separately.
+
+No current test/lint blocker. Limits: Windows fixed local drive, trusted UTC,
+registered key/identity provisioning, verified real-model bounds/caps and explicit
+deployment budgets still required; stock provider fails closed. Only loopback
+HTTP/1.1 verified; no semantic completion redaction proof, public TLS/ingress,
+load/OS-crash final audit or arbitrary uncooperative-resource shutdown guarantee.
+Next: independent engineering review of T4-005/source/tests/E026/ADR-020, preserve
+uncommitted checkpoint. TASK-4 IN_PROGRESS; do not start T4-006, commit or push.
+
+## T4-005 independent acceptance / Git checkpoint - 2026-11-04 (America/Los_Angeles)
+
+User APPROVES T4-005; DONE/independently ACCEPTED. No blocking production defect
+identified. TASK-4 remains IN_PROGRESS; T4-006 NOT_STARTED and not authorized.
+Reported review: all 427 test cases passed independently across separate runs;
+29 real HTTP wire cases passed in split groups. Authentication, quota rejection,
+fallback, concurrency, persistence and error sanitization were reviewed. Linux
+verification required review-only compatibility substitutions. ONE combined Linux
+wire run STALLED DURING FIXTURE TEARDOWN: not a completed all-at-once pass. Do not
+conflate split passes with a completed combined run or native Linux support.
+E026 native Windows/Python 3.12.16/SQLite 3.53.1 full-suite result remains
+AUTHORITATIVE for the supported environment; E027 records reported review provenance.
+
+Latest authorization permits ONE descriptive approved T4-005 source/tests/support/
+configuration/lock/README/governance commit. Preserve all code/tests/config/pins and
+Tasks 1/2 unchanged; no reruns absent unexpected implementation changes. Initial
+HEAD c889236, empty index, ahead 3/behind 0 recorded origin/main; ten tracked files
+modified, seven new Python files and one review ZIP. Capture 82 hashes, retain/
+locally exclude archive, inspect full diff/index and whitespace, commit once,
+verify SHA/manifest/clean tree/branch counts and stop. No T4-006, Task 3 or push.

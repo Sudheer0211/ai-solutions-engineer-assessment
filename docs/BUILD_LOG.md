@@ -803,3 +803,88 @@ candidates. Approved code/tests/pins/archive hashes unchanged; E024 remains inta
 DB/WAL/environment/cache/review ZIP paths excluded; git diff --cached --check
 passes. Create the one approved commit, verify parent/SHA/manifest/clean status and
 branch counts, then stop. No tests, source edits or T4-005.
+
+## M041 - 2026-11-04 (America/Los_Angeles): T4-005 HTTP boundary and harness investigation
+
+User attachment authorizes authenticated HTTP and real loopback verification over
+c889236/324 tests. Captured 74 tracked-file hashes. Added app.py/settings.py and
+five HTTP fixture/test/child files; isolated Task 4 FastAPI/HTTPX/Uvicorn/dev extras
+and lock updated. Bundled uv used because uv was absent from PATH; offline cache
+resolution failed, then authorized online lock/sync succeeded (27 packages).
+No accepted accounting/storage/provider/service/test or Task 1/2 modification.
+
+HTTP implementation choices: POST /generate, prompt-only strict bounded UTF-8 JSON,
+registered external Bearer keys, digest allowlist and accepted store HMAC identity,
+no caller tenant/bounds, safe outcomes, resource lifespan/cancellation ownership.
+Stock factory cannot dispatch without a trusted model adapter. Native focused
+ASGI run passed 71 in 2.68s. First wire run: 26 passed/1 failed in 36.08s; all 28
+children reaped, zero forced. Invalid-startup child returned Windows 3221225477
+instead of expected 3. Native stderr reproduced Python _enter_buffered_busy fatal
+error from a daemon stdin reader at interpreter finalization. This was a NEW test
+harness defect, not an accepted production defect. Replaced proxy stdin thread
+with async stop-file polling; preserved expected-exit assertion. Cleanup continues
+reaping other children after failures. No accepted component correction required.
+
+Added cancellation/partial-startup/quarantined-shutdown and wire parser tests,
+zero-provider/zero-reservation receipts. Expanded full native run: 427 passed in
+40.60s, no failures/skips/warnings/xfails; Ruff lint/format pass, 22 files. Wire
+summary: 28 reaped, zero forced, 27 exit 0/one EXPECTED invalid-startup exit 3;
+21 local rejection receipts all zero forwarding/reservations. Existing 15 storage
+children exit 0 without forced cleanup. Next: final receipt/security refinement
+(strip tenant credentials from test upstream environment), final verification,
+contract/README/evidence and independent review. No T4-006, commit or push.
+
+## M042 - 2026-11-04 (America/Los_Angeles): T4-005 final native verification/handoff
+
+Final native full suite: 427 passed in 40.81s, no failures/skips/warnings/xfails;
+Ruff lint/format pass (22 files). 324 accepted tests unchanged + 74 new HTTP/config/
+lifecycle + 29 real socket tests. Final wire receipt adds per-mode calls/durable
+charges and strips tenant/identity configuration from synthetic upstream environment.
+21 local rejection receipts show zero calls/new reservations; 28 wire children
+reaped, 27 exit 0 and one EXPECTED invalid-startup exit 3, zero forced. Existing 15
+storage children exit 0, zero live/forced; 43 total. Mode receipts: primary 429 and
+real timeout each one primary/one backup, 25 charged; backup failure/rate-limit
+40 charged, no third; unknown primary 20; overquota/DB-unavailable zero; concurrency
+seven primary completions/35000 aggregate tokens across isolated tenants/restart.
+All wire holds finalized; unconfirmed-cleanup ASGI tests preserve full holds.
+
+Updated requirements H1-H8/HTTP policy, ADR-020, ledger, AGENTS, E026, Task 4 README
+and root README Task 4 status. New source app.py/settings.py; new HTTP support,
+ASGI/wire tests/child harness; isolated Task 4 pyproject/lock. Native runtime
+3.12.16/SQLite 3.53.1, FastAPI 0.162.0/Starlette 1.10.0/Pydantic 2.14.2/HTTPX 0.28.1/
+Uvicorn 0.54.0; locked offline sync checked 27 packages, no further install. Accepted
+logic/tests and Tasks 1/2 unchanged. No production defect/correction to accepted
+components; no current test/lint failure. Final source/diff/secret/artifact checks
+and recoverable uncommitted handoff; independent acceptance PENDING. Next action:
+engineering review, not T4-006. No commit/push or new vendor integration.
+
+## M043 - 2026-11-04 (America/Los_Angeles): T4-005 acceptance / Git checkpoint
+
+User APPROVES T4-005, no blocking production defect identified. Reported independent
+review passed all 427 cases across separate runs, including 29 real HTTP wire cases
+in split groups. Authentication/quota rejection/fallback/concurrency/persistence/
+error sanitization reviewed. Linux used review-only compatibility substitutions.
+One combined Linux wire run STALLED during fixture teardown; NOT a completed
+all-at-once pass. E026 native Windows/Python 3.12.16/SQLite 3.53.1 full-suite
+verification remains authoritative. No substitutions are shipped; no native Linux
+support is inferred. No new test results or architecture/source changes are claimed.
+
+Updated AGENTS, root/Task 4 READMEs, requirements, ledger (T4-005 DONE/ACCEPTED,
+TASK-4 IN_PROGRESS), accepted ADR-020 and append E027. Earlier E026 native evidence
+remains intact. All 22 Python files match final verified hashes, no unexpected
+implementation change; no test/Ruff rerun. Initial HEAD c889236, empty index, ahead
+3/behind 0 recorded origin/main; ten tracked changes/seven new Python files and
+local review ZIP. Captured 82 file hashes; retain/locally exclude ZIP, preserve
+approved config/lock/code/tests/Tasks 1/2. No install/fetch/push or T4-006.
+
+Next: inspect full diff and exact 17-file staged inventory, exclude envs/DB/WAL/
+caches/credentials/archives, git diff --cached --check, one descriptive approved
+T4-005 commit, verify SHA/manifest/clean tree/branch counts and stop. No feature work.
+
+Staged checks complete: full content/diff/config/lock reviewed, exact 17-file
+allowlist, index/worktree match, no unexpected leftovers, targeted secret/artifact
+scan zero candidates. Source/tests/config/lock/archive hashes unchanged, E026
+history intact, no Linux review substitutions included. git diff --cached --check
+passes; environments/DB/WAL/cache/review ZIP excluded. Create the one authorized
+commit, verify parent/SHA/manifest/clean tree/branch counts, then stop. No tests,
+accepted implementation changes, T4-006 or push.

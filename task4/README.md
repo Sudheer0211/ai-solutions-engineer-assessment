@@ -1,21 +1,24 @@
 # Task 4: token accounting, SQLite storage and injectable LLM routing
 
-**T4-004 is independently ACCEPTED**, confirmed by the user 2026-11-04.
-E024: **324 passed in 7.24s**, zero failures/skips/warnings/xfails;
-Ruff lint and format pass (15 files), native Python 3.12.16/SQLite 3.53.1.
-No real model/tokenizer or HTTP endpoint is supplied. No vendor credentials needed
-for tests. TASK-4 remains IN_PROGRESS; one approved T4-004 milestone commit only,
-no T4-005 implementation or push. E025 records reported review: 324 tests passed
-in an isolated Linux copy with review-only platform/SQLite changes, additional
-category/total-bound checks and approximately 3.020 s real-monotonic fallback with
-one backup/conservative accounting. No review changes are shipped or native Linux
-support/real-provider guarantee claimed; E024 native Windows evidence is authoritative.
+**T4-005 is independently ACCEPTED**, confirmed by the user 2026-11-04.
+E026: **427 passed in 40.81s** (324 accepted + 74 ASGI/config/lifecycle + 29 wire),
+zero failures/skips/warnings/xfails; Ruff lint/format pass (22 files). Native
+Windows/Python 3.12.16/SQLite 3.53.1; storage remains fixed-local-drive only.
+28 wire children reaped (27 exit 0, one EXPECTED invalid-startup exit 3), zero
+forced cleanup; 15 storage children exit 0, total 43 reaped. 21 journal receipts
+confirm zero provider calls AND zero new reservations for local rejections.
 
-T4-001/T4-002/T4-003 are independently accepted. Storage baseline: ebc226a.
-E022 native Windows/SQLite 3.53.1 evidence remains authoritative; E023's Linux
-shim review does not add native Linux support. All accepted code/tests/pins and
-Tasks 1/2 are unchanged. Historical checkpoint limits below are superseded only
-by the expressly authorized T4-004 section at the end.
+T4-001 through T4-004 are independently accepted (baseline c889236). E024 native
+orchestration verification remains authoritative; E025's Linux compatibility review
+does not add native Linux support. Accepted components/tests and Tasks 1/2 are
+unchanged; only Task 4 HTTP dependencies/lock were extended. No real model/tokenizer
+or vendor is supplied. TASK-4 IN_PROGRESS; one approved T4-005 milestone commit
+only, no T4-006 implementation or push. E027 records qualified independent review:
+427 cases across separate runs, 29 wire cases in split groups, using Linux review-
+only compatibility substitutions. A combined Linux wire run stalled in fixture
+teardown; it was NOT a completed all-at-once pass. No review substitutions ship,
+no blocking production defect found; E026 native Windows full-suite result remains
+authoritative. Historical limits below are superseded only by this checkpoint.
 
 ## Accepted T4-001/T4-002 foundation
 
@@ -32,7 +35,7 @@ E021 records acceptance/Git inspection. Whole TASK-4 remains IN_PROGRESS.
 From task4/, with uv installed:
 
 ```powershell
-uv sync --locked --extra dev --python 3.12.16
+uv sync --locked --extra dev --extra serve --python 3.12.16
 .\.venv\Scripts\python.exe -m pytest -q --tb=short
 .\.venv\Scripts\python.exe -m ruff check src tests
 .\.venv\Scripts\python.exe -m ruff format --check src tests
@@ -203,3 +206,131 @@ See requirements T4-004 contract, accepted ADR-019 and E024/E025. Preserve appro
 implementation; no test rerun or T4-005. The approximately 3.020 s independent
 probe is reported evidence, not a latency SLA or new local execution. Stop after
 the one authorized milestone commit; no push.
+
+## T4-005 HTTP API and execution (independently accepted)
+
+From task4/, use the isolated lock/environment above. FastAPI 0.162.0 runtime,
+HTTPX 0.28.1/asgi-lifespan 2.1.0 dev, Uvicorn 0.54.0 serve extra; actual locked
+Starlette 1.10.0/Pydantic 2.14.2. Never install these into Tasks 1/2 environments.
+
+Supply required values through your operator environment/secrets manager (no real
+credentials, .env contents or database files belong in Git):
+
+| Variable | Meaning |
+| --- | --- |
+| TASK4_DATABASE_PATH | Absolute on-disk path, existing trusted parent on supported Windows fixed local drive |
+| TASK4_IDENTITY_SECRET_HEX | Stable external 32-1024-byte identity secret encoded as hex; strong random material, no default |
+| TASK4_TENANT_KEYS_JSON | JSON array of 1-1024 distinct strong registered Bearer keys, 32-256 safe ASCII bytes each; no default |
+| TASK4_BACKUP_TIMEOUT_MS | Explicit positive finite backup budget; no default |
+| TASK4_RESERVATION_MS | Explicit lifetime >3000+500+backup_timeout_ms+500, with adequate DB/scheduling margin |
+| TASK4_MAX_BODY_BYTES | Optional 1-1048576; default 65536 |
+| TASK4_BODY_TIMEOUT_MS | Optional 1-60000; default 5000 total body read |
+
+Keep the same identity secret and tenant key across restarts to preserve identity.
+Do not delete the database or rotate identity to recover quota. Removing a key from
+allowlist and controlled restart revokes access without removing usage. Key/identity
+rotation or DB retention migrations are not implemented.
+
+Launch from task4/ (with dependencies installed):
+
+```powershell
+./.venv/Scripts/python.exe -m uvicorn task4_limiter.app:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log --no-proxy-headers --log-level warning
+```
+
+**The stock factory deliberately returns 503 before admission when model bounds
+are unavailable.** It does not pretend to provide a real LLM. A trusted deployment
+module must call create_app(..., provider_resources=...) with an async context
+manager yielding verified primary/backup Provider adapters. Its pure prepare must
+establish model-specific reliable input bounds, install/enforce output caps and
+cover billable categories. Credentials remain private to that adapter. No caller
+model/URL/cap/token estimate override, guessed tokenizer, hidden retry or redirect.
+Tests use synthetic counters/adapters, not real-model guarantees. Deploy the trusted
+module's factory through Uvicorn once its provider contract is verified.
+
+With a registered key already supplied in your environment, an authenticated request
+can be made without writing the key into an example file:
+
+```powershell
+$registeredKeys = ConvertFrom-Json $env:TASK4_TENANT_KEYS_JSON
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/generate -ContentType application/json -Headers @{ Authorization = "Bearer " + $registeredKeys[0] } -Body '{"prompt":"Example request"}'
+```
+
+POST /generate accepts ONLY a nonempty prompt string (<=16000 characters) in a
+UTF-8 JSON object. Duplicate keys, malformed/invalid-Unicode/nonfinite JSON, unknown
+fields (tenant IDs, token estimates, model/cap overrides), arrays and coerced types
+are rejected. JSON content type only (optional UTF-8 charset); no Content-Encoding,
+even identity. Actual streamed bytes are limited, including chunked requests.
+One Authorization: Bearer <key> header is required. Scheme case-insensitive, token
+exact/case-sensitive. Unknown/removed/malformed/duplicate/missing credentials get
+identical 401. Cookies/query keys/X-Tenant-ID/X-Role never grant authority. Only
+authenticated, validated calls reach accepted service; existing SQLite HMAC maps
+the accepted raw bytes to stable tenant identity, no client ID authority.
+
+Success: {request_id, result:{text,used_backup}}; error:
+{error:{code,message,request_id}}. UUID is generated by server, also X-Request-ID.
+Responses are JSON with Cache-Control:no-store and X-Content-Type-Options:nosniff.
+For example (UUID/completion are synthetic placeholders):
+
+```json
+{"request_id":"<server-uuid>","result":{"text":"Synthetic completion","used_backup":false}}
+```
+
+```json
+{"error":{"code":"tenant_quota_exceeded","message":"Tenant quota exceeded","request_id":"<server-uuid>"}}
+```
+
+No raw request prompt, credentials, SQL path or provider diagnostics are reflected
+as metadata/error detail or logged. Success text is the trusted adapter completion;
+real-model semantic redaction/privacy is not certified by synthetic tests.
+
+| Status | Meaning / code |
+| --- | --- |
+| 200 | Primary or authorized backup completion |
+| 400 | Invalid JSON/schema/framing visible to app / invalid_request |
+| 401 | Invalid credentials, WWW-Authenticate Bearer challenge |
+| 404 / 405 | Unknown path / unsupported method (Allow: POST) |
+| 408 | Body-read deadline / request_timeout |
+| 413 | Body-size limit / request_too_large |
+| 415 | Unsupported media type/content encoding |
+| 429 | tenant_quota_exceeded (NO provider call) OR provider_rate_limited (terminal backup 429) |
+| 499 | Diagnostic client_disconnected if still deliverable; normally closed peer receives no response |
+| 502 | model_unavailable, no unapproved fallback/third attempt |
+| 503 | service_unavailable: missing reliable bounds, DB failure, quarantine/unavailable resources |
+| 504 | model_timeout: terminal timeout |
+
+Primary HTTP 429 is an internal event and normally yields a 200 backup success,
+not a local quota 429. Primary 3000 ms deadline and shared 500 ms cleanup behavior
+remain unchanged. Failed/unconfirmed cleanup launches no backup, retains holds and
+quarantines dispatch. Unknown consumption is charged conservatively; only proven
+unsent capacity is finalized unused. No provider work inside DB transactions.
+
+Lifespan opens SQLite off-loop, owns provider resources and accepted LLMService,
+drains service before closing provider pools/store. A post-body ASGI disconnect
+watcher cancels the public generate call; accepted shielded workflow discovers DB
+completion and settles/recoverably retains usage. Startup/shutdown cancellation
+cannot silently discard workers/cleanup. Unconfirmed cleanup produces a generic
+unclean-shutdown failure while retaining resource ownership. Arbitrary broken
+adapters/blocked OS I/O cannot be forcibly killed by asyncio; supervisor recovery
+may be necessary. Real remote execution/billing after cancellation is uncertain.
+
+Run all tests (including wire) with the isolated dev AND serve extras installed.
+Wire harness starts separate proxy and synthetic upstream processes on 127.0.0.1,
+child-bound dynamic ports, HTTP readiness and explicit release synchronization.
+No real vendor or external network is contacted. Journals contain only synthetic
+attempt IDs, ordinal/phase/header-presence; usage DB stores approved accounting
+metadata/HMACs. Receipts in ignored .cache/http_wire_summary.json record per-mode
+provider calls/charges, 21 zero-call/zero-reservation rejections, process cleanup;
+.cache/sqlite_process_summary.json records the 15 storage children. First invalid-
+startup harness failed due to daemon stdin finalization; async stop-file control
+fixed it without weakening assertions. E026 preserves both actual runs.
+
+Malformed HTTP rejected before ASGI may receive Uvicorn/h11's HTTP 400 rather than
+the application envelope; server normalization may erase redundant header syntax.
+Only loopback HTTP/1.1 is verified, not arbitrary proxy/HTTP2/public deployment.
+Outside loopback require TLS, safe ingress/logging, strong key provisioning and
+verified provider accounting/caps. No access logs/untrusted proxy-header trust,
+OAuth, streaming, Redis/distributed limiting, vendor support, rotation/unblock/
+retention API or final fault/load audit. T4-005 is independently accepted (E027),
+with split Linux review results and the combined-run teardown stall qualified above.
+Preserve approved implementation; no test rerun absent unexpected changes. Stop
+after the one authorized milestone commit; no T4-006 or push.
