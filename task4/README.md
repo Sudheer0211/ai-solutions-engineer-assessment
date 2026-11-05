@@ -1,4 +1,15 @@
-# Task 4: pure sliding-window accounting (T4-002)
+# Task 4: token accounting and SQLite storage
+
+T4-003 local verification: **221 passed in 3.37s**, no failures/skips/warnings/xfails;
+Ruff lint/format pass (10 files). **T4-003 is independently ACCEPTED** within
+Windows fixed-local-drive/supported SQLite scope, confirmed by the user 2026-11-04.
+E022 native Windows/SQLite 3.53.1 results remain authoritative. E023 records reported
+Linux review-copy passes with test-only platform/runtime gate shims (221 tests,
+15 normal child exits and three additional scenarios). That review does not add
+native Linux support or native Windows gate evidence; no shim/gate change ships.
+One T4-003 milestone commit authorized; no new tests, T4-004, provider/HTTP or push.
+
+## Accepted T4-001/T4-002 foundation
 
 Isolated Python 3.12 project with standard-library-only runtime. Task 1/2 source,
 tests, environments and dependency configurations are separate and unchanged.
@@ -67,5 +78,58 @@ No SQLite database/transactions, provider clients, timeout/fallback execution, H
 endpoints, crash-recovery infrastructure or Task 3 is implemented. P3's monotonic
 3,000 ms primary/500 ms cleanup policy is documented only. Persistence, concurrency,
 real token provenance, provider behavior and full Task 4 compliance remain unverified.
-One T4-001/T4-002 foundation commit is authorized. Preserve accepted logic; no test
-reruns, T4-003 implementation or push during this Git checkpoint.
+The accepted foundation is committed as 3d8d3e5 and unchanged. Historical pure-only
+limits above describe T4-002; T4-003 adds storage below, with its own review gate.
+
+## T4-003 storage API
+
+`storage.SQLiteStore(StorageSettings(absolute_path, external_identity_secret),
+clock=injected_UTC_clock)` bootstraps/validates a local SQLite store. The parent
+directory must exist. Only Windows fixed local volumes are currently verified;
+network volumes and other platforms fail closed. Runtime minimum SQLite 3.51.3;
+this environment verifies 3.53.1. No database file or secret ships in the repository.
+
+| Operation | Guarantee |
+| --- | --- |
+| admit(key_bytes, UUID, plan, reservation_ms=...) | Atomic read/pure decision/two reservations; return only after COMMIT |
+| start_attempt(key_bytes, UUID, ordinal) | One durable dispatch intent; does not execute/select a provider |
+| settle(..., actual_tokens=int or None) | Known charge or full unknown bound; same admission time; identical repeat no-op |
+| release_unused(...) | Only never-started reservation; idempotent zero charge |
+| usage(key_bytes) / request(key_bytes, UUID) | Tenant-scoped immutable accounting/state; persistent clock and lazy recovery |
+| recover(key_bytes) | Convert due unresolved holds to full deadline charges once; no provider replay |
+
+API keys are transient opaque bytes HMACed under the external 32-1024-byte identity
+secret; only full digests/verifier/internal UUIDs/numeric states are persisted.
+Actual key authentication/provisioning remains a future boundary. Raw prompts,
+completions, model/counter strings and provider credentials are not stored. Reopening
+with incompatible identity/configuration fails. Do not rotate the secret/delete the
+DB to recover availability; use separately reviewed migration/restore procedures.
+
+SQLite uses STRICT schema/PK/FK/check constraints, WAL/FULL, explicit 1,000 ms busy
+policy (configurable 1-10,000), and short BEGIN IMMEDIATE transactions. Connections
+are private to each synchronous operation/calling thread. Async callers must offload
+whole calls and drain before close. No provider/network I/O belongs inside a store
+operation. Existing-file calls use mode=rw; missing stores are not recreated silently.
+
+All unresolved holds count beyond their original 60s window. At the explicitly
+supplied finite reservation deadline, lazy recovery changes remaining holds to full
+charges anchored at that deadline and marks the request abandoned. Those charges
+expire exactly 60s later; settled earlier attempts keep original timestamps.
+Duplicate IDs, stale/invalid transitions and clock regression fail; failed
+transactions retain original state. Over-bound actual usage durably blocks further
+tenant admission. Generic StorageError exposes only an internal failure kind, not
+SQLite diagnostics/paths/credentials. No automatic retry, pruning or unblock API.
+
+Six barrier-synchronized processes competed for the final 2,000 tokens: one winner,
+five denials, durable total 50,000. Duplicate-ID and identical/conflicting settlement
+races and two independent writer/reader processes pass. Full run reaped 15 children,
+all exit 0, no live/forced cleanup. Sanitized `.cache/sqlite_process_summary.json`
+contains only cleanup outcomes; databases and artifacts under .cache are ignored.
+
+This is storage-level durability/concurrency, not provider fallback/timeout, HTTP,
+remote billing recovery, cross-platform filesystem or power-loss/hardware audit.
+No Task 1/2 rerun was needed: no shared code/env changed. See
+[T4-003 contract](../docs/TASK4_REQUIREMENTS.md), ADR-018 and E022 for exact schema,
+transaction/error/recovery policy, actual commands, initial lint correction and risks.
+T4-003 is accepted with the qualification above; preserve implementation and stop
+after the authorized milestone commit. No T4-004 implementation or push authorized.

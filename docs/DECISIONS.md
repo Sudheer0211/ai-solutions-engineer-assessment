@@ -447,3 +447,49 @@
   approval: 169 tests, 12,000 differential checks and six invariants passed, no blocking
   defect. No new local tests/Ruff or architecture/logic changes. One foundation commit
   authorized; no T4-003, Task 3 or push. Preserve all pure-boundary limitations.
+
+## ADR-018 - SQLite durable admission and conservative attempt settlement
+
+- Date: 2026-11-04 (America/Los_Angeles); task T4-003; status ACCEPTED following
+  independent engineering review within Windows fixed-local-drive/supported SQLite
+  scope, confirmed by the user. Preserve accepted accounting/storage implementation.
+- Decision: three STRICT tenant-scoped tables, integer amounts, composite PK/FK,
+  terminal state/charge/source checks and tenant/time/deadline/block indexes. HMAC
+  transient API keys under a stable external secret; persist only digest/verifier,
+  UUIDs and accounting state. Check schema/policy/identity on every transaction.
+- Verify SQLite >=3.51.3 and Windows fixed local storage before enabling WAL.
+  Actual SQLite 3.53.1/S: DRIVE_FIXED=3; configure WAL/FULL/foreign_keys and explicit
+  busy timeout. Current detector fails closed on other OS/network volumes; a future
+  portable detector requires separate implementation/verification, not attestation.
+- Admission writer transaction covers clock sampling/watermark, lazy tenant recovery,
+  snapshot, existing pure assess_admission, both inserts and explicit SQL COMMIT.
+  Success is returned only after COMMIT. Read-like APIs also transact to persist
+  time/recovery. Global UTC regression fails; future/faulty clock assumptions remain.
+- Storage-only start intent, known/unknown settlement and unsent release are separate
+  short transactions. Identical finalization no-op; conflicting/stale updates fail.
+  Normal charges keep admission timestamps; overdue holds become full deadline-
+  anchored charges once. Unknown execution is never refunded or replayed. A bound
+  breach durably blocks tenant admission pending operator investigation.
+- Interface is synchronous with one private connection per operation/calling thread,
+  rather than adding a permanently running DB worker now. Future async service can
+  submit whole calls to its bounded worker/executor; close requires draining first.
+  No network inside transaction, no Python lock as cross-process correctness tool.
+- Alternatives: deferred SELECT then separate insert (race); shared thread-disabled
+  connection (transaction interleaving); per-process memory lock (no process safety);
+  guessed refunds/restart resets (quota bypass); unverified filesystem WAL (unsafe);
+  extra distributed recovery components (outside assessment scope).
+- Tradeoffs: SQLite single writer/connection overhead, strict global clock and
+  trusted local filesystem, no automatic retries/retention/remote billing recovery.
+  Store initialization is not restoration after deleted DB files. Provider execution,
+  actual cleanup/deadlines and fallback selection remain T4-004, not storage proofs.
+- Evidence E022: full 221 tests (169 accepted/52 new), Ruff pass; 15 spawned children
+  reaped normally, admission/duplicate/settlement races and restart persistence pass.
+  Transaction/commit fault tests are scoped storage tests, not final system audit.
+- Affected: storage.py/four new fixture/test files, Task 4 README/requirements and
+  governance records. No dependency/pure-code/accepted-test edits. One approved
+  T4-003 milestone commit authorized; no T4-004/provider/HTTP work or push.
+- Review provenance E023: 221 passes/15 normally reaped children and three further
+  scenarios reported in an isolated Linux copy using test-only platform/SQLite gate
+  shims. This is not native Linux support or native Windows gate evidence. E022's
+  native Windows/SQLite 3.53.1 execution remains authoritative. No source defect,
+  architecture/gate modification, local test/Ruff rerun or shipped shim.

@@ -663,3 +663,75 @@ investigations and material changes; Git remains the line-level code history.
   and retained archive hashes unchanged; Tasks 1/2 rows/history preserved. No
   targeted staged secret candidates or environment/cache/egg-info/ZIP artifacts.
   git diff --cached --check exits 0. Proceed with the single authorized commit.
+
+## 2026-11-04 - M035: T4-003 storage baseline
+
+- User authorizes durable SQLite storage and real concurrency tests, preserving
+  accepted 3d8d3e5 and 169 existing cases. Read current contract/governance, capture
+  64 tracked-file hashes; HEAD clean, ahead 1/behind 0 local origin/main.
+- Actual probe: Python 3.12.16/SQLite 3.53.1; Win32 GetVolumePathNameW/GetDriveTypeW
+  reports workspace S: fixed local drive (3). Review SQLite/Python transaction/WAL
+  references. No DB operation yet; record S1-S8 before implementation.
+- Plan: connection per synchronous operation, BEGIN IMMEDIATE and explicit SQL
+  COMMIT/ROLLBACK, tenant HMAC identifiers, strict three-table schema, storage-only
+  dispatch/settlement and lazy deadline recovery. No provider/HTTP/routing execution.
+- Next: implement/tests, full Task 4 suite/Ruff and documented actual evidence.
+
+## 2026-11-04 - M036: T4-003 SQLite storage and process verification
+
+- Implement storage.py: STRICT three-table schema, tenant-key HMAC/identity verifier,
+  persistent clock, WAL/FULL/foreign_keys, explicit busy policy and short private
+  connection transactions. Admit runs accepted pure math/combined inserts under
+  BEGIN IMMEDIATE and returns only after COMMIT. No network/provider operation.
+- Add storage-only start intent, known/unknown settlement, unused release and lazy
+  deadline recovery. Idempotence/conflict checks preserve original timestamps and
+  full unknown/deadline charges. Bound breach durably blocks further tenant admission.
+- New helper/non-autouse fixtures and SQLite/process cases; accepted five Python
+  files and all configuration/locks preserved. Initial Ruff check found 26 new-test
+  fixture-shadowing/import/unused-import issues; move fixture exports to conftest
+  and sort imports. No accepted-test/source edits or assertion weakening.
+- First complete run 214 passed in 2.47s. Add focused writer-lock observation,
+  failed settlement/late settlement/missing-file cases and real duplicate/settlement
+  races; final 221 passed in 3.46s, no failures/skips/warnings/xfails. Ruff lint and
+  formatting pass (10 files). E022 contains exact commands/runtime/results.
+- Six competing processes for final 2,000 tokens: one winner/five denials and durable
+  total 50,000. Three duplicate-ID processes: one insert/two rejections. Two identical
+  settlement processes: one charge/two acknowledgements; conflicting pair: one
+  winner/one rejection. Separate write/read children preserve known charge and hold.
+  All 15 children exit 0 and are reaped without forced cleanup or live processes.
+- ADR-018 records synchronous per-operation connections/future offload boundary and
+  Windows-only fixed-volume verifier. No provider/fallback/HTTP/recovery service,
+  dependencies or T4-004. Requirements/README/current gate/ledger updated.
+- Outcome: T4-003 locally verified, independent acceptance PENDING; TASK-4 IN_PROGRESS.
+  Next: protected-file/diff checks and stop for review. No Task 1/2/3 edits, commit/push.
+
+- Final constraint review added direct FK/duplicate-PK engine assertions. Same full
+  221-case suite rerun: 221 passed in 3.37s, no failures/skips/warnings/xfails; both
+  Ruff checks pass. Final-run process summary again 15 children/all exit 0/no forced
+  cleanup. No accepted code/test/pin changes; documentation only afterward.
+- Final integrity/docs checks pass: 57 original files byte-identical, seven intended
+  docs changed/five new Python files; accepted code/tests/pins/task rows and historical
+  record prefixes retained, links/whitespace valid, cache artifacts ignored. Final
+  15-child summary rechecked; HEAD 3d8d3e5/index unchanged. No commit/push/T4-004.
+
+## 2026-11-04 - M037: T4-003 qualified independent acceptance and Git checkpoint
+
+- User APPROVES storage within Windows fixed-local-drive/supported SQLite scope.
+  Reported Linux review copy uses test-only unsupported platform/runtime gate shims:
+  221 tests, 15 normal children/zero forced cleanup and three further scenarios
+  (ten-thread admission, tenant isolation, exact deadline recovery) pass. No source
+  defect. E022 native Windows/SQLite 3.53.1 remains authoritative; E023 labels review.
+- Update ledger/current gate/ADR-018/requirements/README to ACCEPTED, preserving
+  platform boundaries and implementation; no shim/gate/source/test/pin changes.
+  TASK-4 IN_PROGRESS; T4-004 NOT_STARTED and not authorized. No tests/Ruff rerun.
+- Initial HEAD 3d8d3e5, ahead 1/behind 0 local origin/main, empty index; seven tracked
+  docs, five new source/test files and review ZIP. Capture 70 file hashes and locally
+  exclude retained task4_t4003_review.zip. Stage only exact 12-file milestone scope.
+- Next: complete diff/index/preservation/secret/artifact/whitespace inspection,
+  one descriptive commit, then verify SHA/clean state/counts and stop. No push,
+  Tasks 1/2/3 changes or T4-004/provider/HTTP execution.
+- Staged checks complete: exact 12-file allowlist, no unexpected/unstaged/unignored
+  leftovers, index matches worktree after Git EOL normalization. Accepted source/
+  tests/pins/native gates/archive unchanged; original policies and E022 text retained.
+  No shim or targeted secret candidates; DB/WAL/environment/cache/archive paths
+  excluded. git diff --cached --check passes. Proceed with the one approved commit.

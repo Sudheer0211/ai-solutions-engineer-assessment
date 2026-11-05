@@ -87,6 +87,21 @@ Task 4 interpreters; no WAL/database/concurrency verification or provider integr
 After the authorized commit, verify SHA/clean status/ahead-behind and stop. Preserve
 the accepted pure API; future implementation/publication needs separate authorization.
 
+T4-003 is now expressly authorized: SQLite on-disk atomic admission, persistent
+identity/clock metadata, storage-only attempt transitions/settlement/release and
+finite-deadline conservative recovery, plus real multiprocess tests. Read the
+current requirements/ledger, ADR-018 and E022/E023. Preserve models.py/accounting.py and all
+accepted tests/configuration/locks. T4-003 is independently ACCEPTED, confirmed by
+user on 2026-11-04, within Windows fixed-local-drive/supported SQLite scope.
+E022 native Windows/SQLite 3.53.1 verification remains authoritative. E023 records
+reported review: isolated Linux copy with TEST-ONLY platform/runtime compatibility
+shim, 221 passes/15 normal children/three additional scenarios; no source defect.
+The shim run does not establish native Linux or Windows gate verification. Do not
+ship/remove gates or modify accepted implementation/tests. One descriptive T4-003
+commit is authorized for approved source/test/support/requirements/governance only.
+Exclude environments/DBs/WAL/caches/credentials/review archives. No tests/Ruff rerun,
+provider/fallback/HTTP execution, T4-004, Task 3 or push. Verify commit/status and stop.
+
 ## Task 1 engineering standards
 
 The following standards apply only to Task 1. Other tasks follow their supplied
@@ -144,3 +159,9 @@ tasks and their regression coverage.
   activity; do not reuse a fixed session date.
 - Never record API keys, bearer tokens, credentials, secrets or sensitive
   customer data in documentation, fixtures, logs or committed artifacts.
+
+T4-003 outcome: DONE and independently ACCEPTED with the environment qualification
+above. E022 actual local 221-pass/Ruff evidence is unchanged; no new local tests.
+TASK-4 remains IN_PROGRESS; T4-004 NOT_STARTED and not authorized. Preserve Tasks
+1/2 and the accounting/storage baseline. After the one Git checkpoint, stop; future
+implementation/publication requires separate authorization.

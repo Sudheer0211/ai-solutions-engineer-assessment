@@ -24,11 +24,11 @@ Last updated: 2026-11-04 (America/Los_Angeles).
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
 | TASK-3 | Reserved; requirements not supplied | Unspecified | NOT_STARTED | Not defined; do not infer or modify | Await separately supplied requirements and authorization |
-| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001/T4-002 independently accepted; E020/E021 | Foundation Git checkpoint only; no T4-003 authorization |
+| TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | IN_PROGRESS | T4-001/T4-002/T4-003 independently accepted; E022/E023 | T4-003 Git checkpoint only; no T4-004 authorization |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation; one commit, no T4-003 or push |
-| T4-003 | SQLite transactional accounting and concurrency | P0 | NOT_STARTED | Proposed milestone only | T4-002 accepted; explicit implementation authorization still required |
-| T4-004 | Primary/backup provider routing | P0 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
+| T4-003 | SQLite atomic admission, persistence and settlement | P0 | DONE | Independently ACCEPTED within supported Windows/SQLite scope; E022/E023 | One approved storage milestone commit; preserve source, no T4-004/push |
+| T4-004 | Primary/backup provider routing | P0 | NOT_STARTED | Proposed milestone only | T4-003 accepted; explicit implementation authorization still required |
 | T4-005 | HTTP and real-wire verification | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
 | T4-006 | Final Task 4 assessment audit | P1 | NOT_STARTED | Proposed milestone only | Await preceding checkpoint acceptance/authorization |
 
@@ -529,3 +529,62 @@ later checkpoints and authorize T4-003 separately. Resume from AGENTS/contract/E
   exclude environments, caches, bytecode, egg-info, credentials and review artifacts.
 - Next: one approved commit, verify SHA/clean tree/ahead-behind against existing
   origin/main and stop. No push, Task 3 work or T4-003 implementation authorized.
+
+## T4-003 acceptance baseline (2026-11-04)
+
+User authorizes storage only against accepted 3d8d3e5/169 tests. Earlier scope
+restrictions are historical. Preserve all accepted models/calculations/tests/pins.
+
+- [x] S1: Verified runtime/local disk, strict tenant-scoped schema/indexes/unique
+  constraints, persistent identity verifier and clock watermark, WAL/FULL/busy policy.
+- [x] S2: BEGIN IMMEDIATE encloses clock/snapshot/pure decision/combined insert;
+  return successful admission only after COMMIT; no process-local-lock shortcut.
+- [x] S3: Storage-only dispatch intent, known/unknown settlement and unused release;
+  strict transitions, idempotence, original timestamps, no double charge.
+- [x] S4: Reopen/restart preserves usage/holds/identity; reject mismatched identity,
+  clock regression and stale operations. No credentials/prompt/completion persisted.
+- [x] S5: Finite-deadline recovery converts unresolved bounds conservatively once,
+  never silently frees uncertain execution or replays providers.
+- [x] S6: Unit/SQLite and barrier-synchronized real-process tests cover quota/window,
+  tenant isolation, duplicate IDs, failed transactions, busy locks and durable results.
+- [x] S7: Full Task 4 suite plus Ruff lint/format executed; actual runtime/counts/
+  warnings/exits/process cleanup recorded, including failures.
+- [x] S8: Update docs/decisions/build/evidence and protected-file checks; no provider,
+  timeout/fallback execution, HTTP, final audit, T4-004, Tasks 1/2/3 edits, commit/push.
+
+### T4-003 checkpoint outcome
+
+T4-003 DONE for local implementation/verification, independent acceptance PENDING.
+TASK-4 remains IN_PROGRESS. E022: 221 passed in 3.37s, zero failures/skips/warnings/
+xfails; Ruff lint/format pass, 10 files. All original 169 tests/source/pins unchanged.
+15 child processes reaped normally with zero forced cleanup/live processes; six-way
+final-capacity race one winner/five denials/durable 50,000; duplicate-ID and settlement
+races plus independent writer/reader restart confirm persistence. No provider replay.
+
+No current test failures/blocker. Limits: Windows-fixed-drive verifier only, SQLite
+single writer/synchronous per-operation connections, trusted UTC/local storage/identity
+secret, no automatic retention/unblock, no provider-bound provenance or public API
+integration. Numeric reservation lifetime is explicit trusted caller configuration;
+future routing must enforce send deadline/cleanup. No T4-004, Task 3, commit/push.
+Next: independent engineering review of storage APIs/schema/recovery/evidence before
+any provider integration. Preserve uncommitted docs/source/test checkpoint.
+
+## T4-003 independent acceptance and Git checkpoint (2026-11-04)
+
+- User APPROVES storage within documented Windows fixed-local-drive/supported
+  SQLite environment. E022 native Windows/SQLite 3.53.1 run is authoritative.
+  Reported review: isolated Linux copy with test-only compatibility shim for
+  unsupported platform/runtime gates, 221 tests passed, 15 children exited normally
+  with zero forced cleanup; ten-thread admission, tenant isolation and exact
+  deadline-anchored recovery scenarios also passed. No blocking source defect.
+- These are reported independent results, not new local executions or evidence of
+  native Linux support/Windows filesystem gate validation. E023 records provenance;
+  no shim/gate changes included. T4-003 DONE/ACCEPTED; whole TASK-4 IN_PROGRESS.
+- Initial HEAD 3d8d3e5, empty index, seven tracked docs modified/five new Python
+  source/test files and review ZIP; ahead 1/behind 0 local origin/main. Capture 70
+  file hashes; retain/exclude archive locally. No accepted source/test/pin changes.
+- Stage exactly 12 approved storage/test/support/requirements/governance files,
+  exclude environments/SQLite DBs/WAL/cache/credentials/archives; inspect all content,
+  staged inventory and whitespace. One descriptive milestone commit authorized.
+- No tests/Ruff rerun, provider/HTTP work, Tasks 1/2/3 changes, T4-004 or push. Verify
+  resulting commit/clean tree/branch counts and stop; later work needs authorization.

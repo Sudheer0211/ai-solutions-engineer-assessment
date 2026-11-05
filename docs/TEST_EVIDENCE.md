@@ -1028,3 +1028,162 @@ independent execution. No pytest/Ruff/install/provider/DB commands run here.
   not test results or source edits. No tests/Ruff rerun. Create the one authorized
   foundation commit, then verify its parent/inventory/clean status/branch counts;
   identity is recorded in Git history and final report. No push/T4-003.
+
+## E022 - 2026-11-04: T4-003 atomic SQLite storage verification
+
+Timezone America/Los_Angeles; accepted HEAD 3d8d3e5. Initial clean working tree,
+ahead 1/behind 0 local origin/main. Captured SHA256 of 64 tracked files before
+edits. User authorizes SQLite storage/concurrency only, preserving 169 accepted
+tests/models/accounting and Tasks 1/2. No provider/HTTP or T4-004, commit/push.
+
+### Runtime/storage inspection (not tests)
+
+Root Python stdin probe of sys.version/sqlite3.sqlite_version and Win32
+GetVolumePathNameW/GetDriveTypeW exited 0: Python 3.12.16, SQLite 3.53.1, workspace
+volume S: type 3 (DRIVE_FIXED). Task 4 interpreter independently reports Python
+3.12.16 (MSC v.1944 AMD64)/SQLite 3.53.1/pytest 9.2.0/Ruff 0.17.3. Standard-library
+sqlite3 only; no dependency installation or pyproject/lock/environment change.
+Official SQLite transaction/WAL and Python 3.12 autocommit documentation inspected;
+source enforces runtime/local-volume checks before WAL and verifies connection
+PRAGMAs. Other operating systems/network volumes fail closed, not claimed supported.
+
+### Actual commands (cwd task4/)
+
+| Command / stage | Actual outcome | Exit |
+| --- | --- | --- |
+| `.\.venv\Scripts\python.exe -m ruff format src/task4_limiter/storage.py tests/storage_support.py tests/test_storage.py tests/test_storage_processes.py` | Four new files formatted | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` initial | 26 new-test fixture-shadowing/import/unused-import errors; no accepted-source changes | 1 |
+| `.\.venv\Scripts\python.exe -m ruff check --fix src/task4_limiter/storage.py tests/conftest.py tests/storage_support.py tests/test_storage.py tests/test_storage_processes.py` after explicit fixture correction | Two remaining import issues fixed, zero remaining | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format src/task4_limiter/storage.py tests/conftest.py tests/storage_support.py tests/test_storage.py tests/test_storage_processes.py` | Five files unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4003-01` | 214 passed in 2.47s; zero failures/skips/warnings/xfails | 0 |
+| Same scoped Ruff format command after adding transaction/race coverage | Three files formatted, two unchanged | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` after additional tests | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4003-02` expanded coverage | 221 passed in 3.46s, zero failures/skips/warnings/xfails | 0 |
+| `.\.venv\Scripts\python.exe -m ruff check src tests` final | All checks passed | 0 |
+| `.\.venv\Scripts\python.exe -m ruff format --check src tests` final | 10 files already formatted | 0 |
+| Same two Ruff check commands after direct FK/PK assertions | All lint checks pass; 10 files already formatted | 0 |
+| `.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t4003-03` final | **221 passed in 3.37s**, **zero failures/skips/warnings/xfails** | 0 |
+
+All three pytest invocations execute outside Windows sandbox for actual local SQLite
+WAL/temp-file locks and spawned-process operation. All DBs stay in dedicated ignored
+task4/.cache/t4003-01, t4003-02 or t4003-03 directories, never external services. Initial
+lint-only failure was corrected in new test setup/imports; no tests were weakened,
+skipped or warnings hidden. All actual pytest runs passed. Final total includes
+169 accepted cases plus 52 new storage/process cases; no code/test edits afterward.
+
+### Transaction, persistence and process evidence
+
+- Runtime unit guards reject old SQLite/local-storage verification failure before
+  file creation; actual connections show WAL, synchronous=2/FULL, foreign_keys=1,
+  busy_timeout=1000. Strict integer/terminal-null/FK/unique constraints and indexes
+  inspected/exercised; no raw tenant key or identity secret found in fixture DB/WAL
+  bytes. Only HMAC identities/verifier/internal UUIDs/accounting fields are persisted.
+- 49,999/50,000 admit and 50,001 rejects without inserted request/attempt rows;
+  primary+backup demand and separate tenant budgets verified. Weighted actual DB
+  expiration at 59,999/60,000/60,001 and later boundaries matches accepted pure math.
+  Unknown/old holds stay counted; late known settlement keeps original admission time.
+- Writer-lock observation from independent observer connections proves both injected
+  clock sample and accepted pure decision execute while BEGIN IMMEDIATE is held:
+  observer BEGIN IMMEDIATE returns SQLITE_BUSY, reads no uncommitted reservations;
+  after successful return observer sees one committed request/two attempts.
+- SQLite trigger abort on backup insert rolls back request/first attempt/watermark.
+  Public SQLite authorizer denial of COMMIT returns controlled failure and no rows.
+  Settlement abort preserves original started hold; later identical retry charges
+  once. Held writer lock gives controlled BUSY with 20 ms configured policy and no
+  timing-based assertion; after rollback the same UUID can be admitted safely.
+- Known/unknown settlement and unused-release idempotence/conflicts tested; repeated
+  starts/parallel-intent ordering/stale recovered rows rejected. Missing DB is not
+  recreated by an existing store. Bound breach persists a tenant block and retains
+  quota across reopen. Raw input never appears in generic StorageError strings.
+- Reopen preserves unresolved holds beyond original 60s window and does not clear
+  another owner's reservations. Identity/schema/policy verifier is checked before
+  work; wrong identity and clock rollback fail. Deadline recovery occurs once,
+  keeps full remaining bounds at deadline timestamp, preserves already settled
+  timestamps, rejects old workers and expires those explicit charges 60s later.
+- Five synchronized threads compete for final 2,000 tokens after 48,000: one win,
+  four denials; usage 50,000. No process-local lock guards admission.
+- Six real spawn processes (context Barrier, bounded 20/25s waits, one shared local
+  DB) compete for that final 2,000: **one win/five denials**, committed **two requests,
+  four attempts and 50,000 bound tokens** including seed. No successful admission
+  without committed rows. Duplicate-ID race: three processes, one insert/two
+  DUPLICATE results, one request/two attempts/2,000 reserved.
+- Two same-settlement processes both acknowledge 123 but charge once (1,123 including
+  backup hold). Two conflicting settlements yield one winning charge/one CONFLICT,
+  no second charge. Independent writer process commits primary 123/backup hold 1,000;
+  exits; separate reader process sees 1,123 and parent reopen sees same states.
+- Read sanitized .cache/sqlite_process_summary.json after the final run: **15 children, zero alive,
+  zero forced cleanup, every exit 0**. Processes are joined/closed in finally,
+  queue closed/joined; summary contains no keys/journals/customer data. No reliable-
+  sleep timing assertions or provider/network calls.
+
+### Scope and remaining verification boundaries
+
+Storage APIs only persist intent/accounting, not provider routing or cancellation.
+Clock/local storage/identity provisioning are trusted operational inputs. Windows
+fixed-local-volume detector only; single-writer overhead, initial bootstrap BUSY,
+no pruning/unblock API and ambiguous commit/remote billing limits are documented.
+Synchronous APIs require future async offload/drain. No public HTTP error behavior,
+actual model/tokenizer proof, provider/fallback/timeout, power-loss/hardware or final
+system fault-audit claim. Accepted Task 1/2/Task 4 pure source/tests/pins unchanged;
+Task 1/2 suites not rerun because shared code/environment were not affected.
+T4-003 independent acceptance PENDING, TASK-4 IN_PROGRESS. Stop before T4-004.
+
+Final constraint review added direct foreign-key and duplicate-primary-key rejection
+assertions to the existing schema test, then reran both Ruff checks/full suite above.
+No accepted file changed; no assertion was removed/weakened. Cached process summaries
+are regenerated per pytest invocation; the reported 15-child result is the final
+221-case run, not a sum across repeated runs. Final edits afterward are docs only.
+
+Final Python stdin SHA256/allowlist/ledger-row/history-prefix/link assertions exit 0:
+57 of 64 existing tracked files byte-identical; exactly seven intended docs modified
+and five new storage/test files. All accepted models/calculations/tests, Task 1/2
+source/tests/configuration/dependencies/locks and accepted-task ledger rows unchanged.
+Prior decisions/build/test records retained as exact prefixes. Local links valid,
+targeted new-file private-key/provider-token scan clear. git diff --check exits 0;
+test DB/process artifacts ignored. HEAD 3d8d3e5 unchanged, empty index, no commit/push.
+Final process summary rechecked: 15 children/all exit 0/zero alive or forced cleanup.
+No application/test edits after the final 221-pass run. Stop for independent review.
+
+## E023 - 2026-11-04: T4-003 qualified independent acceptance and Git checkpoint
+
+Reported independent evidence supplied by the user: T4-003 APPROVED within the
+documented Windows fixed-local-drive/supported SQLite runtime. All 221 tests passed
+in an isolated Linux review copy using a TEST-ONLY compatibility shim for unsupported
+platform/SQLite gates. All 15 spawned children exited normally, zero forced cleanup.
+Three additional scenarios passed: ten-thread admission, tenant isolation, exact
+deadline-anchored recovery boundaries. No blocking source defect identified.
+
+This is reported review, NOT new local execution or native Windows verification.
+Review commands, Python/SQLite versions, shim implementation and timings were not
+supplied and are not invented. No native Linux support/gate validation is claimed.
+E022 native Windows/SQLite 3.53.1 test/Ruff evidence remains authoritative for the
+supported platform. No compatibility shim, gate bypass or implementation change
+is introduced in this repository. No pytest/Ruff/install/DB/provider command run here.
+
+- Read governance/ledger/current contract/decisions/README; inspect status/diff/index/
+  log/counts. Initial HEAD 3d8d3e5, empty index, seven tracked docs/five new Python
+  source/test files and review ZIP; ahead 1/behind 0 existing local origin/main.
+- Capture SHA256 of 70 tracked/untracked files. Retain review ZIP byte-for-byte and
+  add local-only info/exclude entry; no deletion or global ignore/configuration edits.
+- Record qualified acceptance without replacing E022. T4-003 DONE/ACCEPTED, TASK-4
+  IN_PROGRESS; T4-004 not authorized. Preserve all accepted accounting/storage,
+  tests/dependencies/locks, original policies and Tasks 1/2. One descriptive storage
+  milestone commit authorized, no push. Actual staged inspection evidence follows.
+- Actual read-only SHA256/allowlist/link/prefix/ledger-policy checks pass: seven
+  acceptance docs changed this session, 63 baseline files including accepted source/
+  tests/pins/archive unchanged. Original P1-P4/requirements and prior task rows remain
+  intact; E022/build history prefix hashes preserved with EOL normalization. Source
+  runtime/Windows gates unchanged; no review compatibility shim added.
+- An initial optional cached-DB inventory probe raised StopIteration because no
+  cached .sqlite3 remained at that location. Corrected inventory checks ignore rules
+  for DB/WAL/SHM paths without creating/opening a database; final checks exit 0.
+  This was an inspection-helper issue, not a source/test failure or new execution.
+- Explicit staging contains exactly 12 approved paths: seven documentation files,
+  storage.py and four test/support files. Full content/diff/stat/name-status reviewed;
+  index matches worktree, no unexpected/unstaged/unignored leftovers. Targeted staged
+  private-key/provider-token/credential-URL scan finds zero candidates. check-ignore
+  verifies DB/WAL/SHM, environments, cache and retained archive exclusions.
+- git diff --cached --check exits 0. Git LF/CRLF advisories are not source changes
+  or test warnings. No test/Ruff/native/shim run performed. Create one descriptive
+  milestone commit; verify parent/manifest/clean tree/branch status. Git history and
+  final report record identity. No push, Tasks 1/2 changes or T4-004 implementation.

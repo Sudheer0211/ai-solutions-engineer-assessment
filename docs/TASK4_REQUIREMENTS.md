@@ -11,10 +11,16 @@ TASK-4 remains IN_PROGRESS. T4-002 is independently ACCEPTED (user confirmation
 2026-11-04): 169 tests, 12,000 differential checks and six targeted invariants passed;
 no blocking defect. E021 records reported acceptance; E020 retains actual local
 pytest/Ruff evidence. One T4-001/T4-002 foundation commit is authorized. No accepted
-logic changes, test reruns, SQLite/provider/HTTP/recovery execution, T4-003 or push.
+logic changes were permitted in that historical Git checkpoint. Current T4-003
+storage work is authorized below; provider/HTTP execution, T4-004 and push remain
+excluded. T4-003 is independently ACCEPTED within Windows fixed-local-drive and
+supported SQLite scope. Native E022 Windows/SQLite 3.53.1 verification remains
+its authoritative supported-platform evidence; qualified reported review is E023.
+One T4-003 storage milestone commit is authorized; no implementation/test changes,
+new executions, T4-004 or push.
 Tasks 1 and 2 remain DONE; their accepted implementations/tests/configuration stay
 unchanged. Task 3 remains NOT_STARTED. Historical Task 2 no-Task-4 restrictions are
-superseded only for this expressly authorized documentation/design checkpoint.
+superseded for the expressly authorized Task 4 checkpoints recorded below.
 
 ## Finalized engineering policies after conditional approval
 
@@ -309,7 +315,8 @@ or external LLM calls are required unless the assessment later explicitly asks.
 T4-001: independently APPROVED WITH CONDITIONS; P1-P4 finalized, DONE.
 T4-002: isolated project/typed records/pure tests implemented and independently
 ACCEPTED; actual local results E020, reported independent acceptance E021.
-T4-003: SQLite transactional admission/persistence/concurrency/recovery.
+T4-003: SQLite transactional admission/persistence/concurrency/recovery independently
+ACCEPTED in supported Windows/SQLite scope; E022 native results/E023 qualified review.
 T4-004: provider adapters and 3,000 ms/429 fallback state machine.
 T4-005: HTTP/real-wire integration and fault/tenant-isolation verification.
 T4-006: complete regression, traceability/security/reproducibility audit and acceptance.
@@ -319,7 +326,109 @@ Before future provider/HTTP checkpoints: supply provider/model/tokenizer/output-
 details, backup/overall deadlines, tenant credential transport/provisioning/rotation
 and exact HTTP schemas. These do not block pure arithmetic with trusted synthetic
 bound records; no such records are claimed to verify real model behavior.
-T4-003 is not authorized. One approved T4-001/T4-002 foundation commit only; no push.
+T4-003 acceptance and one milestone commit are recorded below. T4-004, push and
+provider/HTTP execution are not authorized by the current checkpoint.
+
+## T4-003 SQLite storage contract (2026-11-04)
+
+User authorizes storage.py, durable atomic admission/settlement/recovery and actual
+SQLite/process verification against accepted 3d8d3e5/169 tests. Preserve all accepted
+models/calculations/tests/configuration/dependencies/locks and Tasks 1/2. No provider
+calls, primary timeout/fallback execution, HTTP, final fault audit, Task 3/T4-004,
+commit or push. Earlier no-storage scope statements are historical.
+
+### Storage API and schema
+
+SQLiteStore(StorageSettings(absolute_path, external_identity_secret,
+busy_timeout_ms=1000), clock=injected_UTC_clock) initializes an empty, unowned on-disk
+store or verifies existing metadata. Current implementation validates Windows fixed
+local volumes with Win32 GetVolumePathNameW/GetDriveTypeW; other platforms/network
+volumes fail closed. Actual runtime is SQLite 3.53.1, with minimum 3.51.3 enforced
+before connecting/enabling WAL. Parent directory must exist and remain trusted.
+The implementation does not claim physically verified storage hardware or hostile
+filesystem/symlink-race protection. Runtime/storage assumptions must hold thereafter.
+
+Three STRICT tables: store_meta (version, identity verifier, DB-wide last UTC sample,
+50,000/60,000 constants); requests (tenant HMAC, internal UUID, admission/deadline,
+phase, durable bound-breach block); attempts (composite tenant/UUID/ordinal key,
+positive bound, state, charge/source/timestamp). Composite FK/unique/check constraints
+enforce tenant association and valid held versus finalized representations, including
+explicit NOT NULL terminal checks. Tenant/state/time, deadline and block indexes.
+Only integers, controlled states, HMAC-derived identifiers/verifier and internal UUIDs
+are persisted: no plaintext API keys, model/provider credentials, prompts/completions
+or raw exception text. Model aliases/counter strings are not persisted either.
+
+Identity secret is mandatory external bytes (32-1024 bytes; operator supplies strong
+random material). API keys are opaque nonempty bytes, HMACed transiently with a
+separate domain label; same key/secret remains stable across restarts. No key
+authentication/provisioning/rotation or default secret is added. Incorrect verifier,
+schema/application version or policy metadata fails safely, including rechecks on
+each operation. Never silently initialize a nonempty unrelated DB or reset metadata.
+
+- admit(key, UUID, plan, reservation_ms=positive_finite_integer): BEGIN IMMEDIATE;
+  verify identity/policy, sample UTC clock once AFTER writer acquisition, check/update
+  watermark, lazily recover this tenant's due holds, read its usage, call accepted
+  assess_admission and insert BOTH reservations iff allowed; explicit SQL COMMIT
+  precedes a returned result. Valid quota denial commits clock/recovery but no request.
+  Duplicate admitted UUIDs fail, including finalized historical UUIDs; distinct
+  tenant keys may use the same UUID. No successful idempotent replay of admission.
+- start_attempt(key, UUID, ordinal): persist one dispatch intent, not a provider
+  call/routing decision. Primary needs both reservations intact; backup needs primary
+  settled and its own reservation intact. Repeated starts/conflicting transitions
+  fail. Future routing MUST also confirm owned task termination/cleanup and deadline
+  immediately before actual send; DB state cannot prove remote cancellation.
+- settle(..., actual_tokens=int|None): started only; known value up to bound replaces
+  hold at original admission time; None conservatively charges the bound. Identical
+  repeat no-op; different value/source or invalid/stale state rejected. Over-bound
+  measurement durably blocks future tenant admissions and retains the unresolved
+  bound, then reports BOUND_EXCEEDED; no automatic unblock/admin endpoint is added.
+- release_unused(...): only never-started capacity, finalized as zero/unused at
+  original admission time; identical repeat no-op. A started/unknown attempt cannot
+  be released. This is not a provider cancellation mechanism.
+- usage(key), request(key, UUID), recover(key): short writer transactions to enforce
+  the persisted clock and lazy recovery, returning immutable snapshots or recovered
+  request count. Unresolved bounds survive window expiration and restart. At/after
+  explicit admission+reservation_ms deadline, remaining holds convert exactly once
+  to full deadline-anchored charges and request becomes abandoned. Known prior
+  charges retain their original timestamp; old workers cannot overwrite recovered
+  rows. Deadline charges leave the window exactly 60s later. No provider replay.
+
+No overall duration default is invented: the trusted future service must supply
+reservation_ms and coordinate it with primary/backup/cleanup budgets. It must not
+dispatch using expired/abandoned intent. Delayed recovery may find the deadline
+charge already aged out, but full historical charge/abandoned state remains stored;
+this is the accepted finite-deadline accounting policy, not proof of remote billing.
+
+### Transaction, error and deployment boundaries
+
+Each synchronous operation owns/closes a connection in its calling thread; future
+async owners must offload the WHOLE operation, optionally through their DB worker,
+and drain in-flight operations before close. No shared connection/asyncio-lock
+correctness shortcut; SQLite serializes writers across threads/processes. No network
+or provider work occurs inside a transaction. No permanent worker/thread pool was
+added in this storage-only checkpoint.
+
+Explicit Python 3.12 autocommit=True plus SQL BEGIN IMMEDIATE/COMMIT/ROLLBACK avoids
+implicit transaction ambiguity. Initial schema/identity transaction uses EXTRA,
+then enables/verifies WAL/FULL; operational connections recheck WAL/FULL/foreign_keys.
+busy_timeout is explicit, integer 1-10,000 ms (default 1,000); no whole-operation
+automatic retry. An existing store opens mode=rw, never silently recreating a missing
+file. Initial empty-store creation is trusted operator bootstrap, not backup recovery.
+Concurrent first initialization can report controlled BUSY; initialize before workers.
+
+SQLite errors map to generic StorageError with internal failure kind, no paths/keys/
+SQL diagnostics in its public string. Failed transactions roll back all tentative
+rows/watermark/recovery; a failed transition may leave holds for a later successful
+recovery transaction. Bound-breach blocking is the deliberate committed-error case.
+An ambiguous COMMIT failure returns failure, never success; do not automatically
+replay it. Filesystem/OS failures after a successful FULL commit and faulty hardware
+are not exhaustively audited. No rows are pruned automatically: retaining duplicate-ID
+history can grow the DB; later retention needs a reviewed policy.
+
+No real model bound provenance, public HTTP sanitization, provider fallback/timeout,
+Linux/macOS storage detector, distributed execution or final fault audit is verified.
+Pure entry records/policies remain unchanged; storage is their transactional owner.
+Actual commands/results, concurrency receipts and process cleanup: E022/ADR-018.
 
 ## T4-002 independent acceptance and foundation commit (2026-11-04)
 
@@ -331,3 +440,19 @@ superseding historical no-commit gates for this checkpoint only. Preserve accoun
 logic/tests/configuration/lock and Tasks 1/2. No new local tests/installations,
 SQLite/provider/HTTP/recovery implementation, T4-003, Task 3 or push. Whole Task 4
 is not complete; accepted pure arithmetic is not transactional admission.
+
+## T4-003 independent acceptance and commit authorization (2026-11-04)
+
+User APPROVES the storage implementation within documented Windows fixed-local-
+drive/supported SQLite scope. Reported independent evidence: isolated Linux review
+copy with test-only compatibility shim bypassing unsupported platform/SQLite gates;
+all 221 tests and 15 normal child exits/zero forced cleanup, plus ten-thread
+admission, tenant isolation and exact deadline-recovery scenarios passed; no source
+defect identified. Review commands/runtime details were not supplied. This does
+not establish native Linux support or native Windows gate correctness: E022's
+native Windows/SQLite 3.53.1 run remains authoritative. No shim/gate change is shipped.
+
+T4-003 DONE/ACCEPTED; whole TASK-4 IN_PROGRESS. One descriptive commit of approved
+SQLite source/tests/support/requirements/governance is authorized, superseding only
+this checkpoint's earlier no-commit gate. Preserve accounting/storage/tests/pins
+and Tasks 1/2. No local test/Ruff rerun, new features, T4-004, Task 3 or push.
