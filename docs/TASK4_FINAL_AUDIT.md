@@ -1,5 +1,17 @@
 # TASK-4 / T4-006 final assessment audit
 
+## Fresh evaluator-readiness addendum - 2026-11-06
+
+Historical acceptance/findings below are unchanged. E041/new
+[remediation report](TASK3_TASK4_EVALUATOR_REMEDIATION.md) reverify427 Task4
+cases and both Task4 Ruff checks within fresh four-project verification, supported
+Windows3.12.16/SQLite3.53.1; the new
+README one-command existing-fixture demo passed9 cases with18 children0/no forced
+cleanup. Quota/isolation/atomic persistence/concurrency/provider429/3000ms fallback/
+sanitization/default503/conservative accounting pass within accepted policies.
+No Task4 implementation/test/config/dependency/lock change. Live providers and
+real tokenization remain NOT VERIFIED/rubric-dependent; no new deployment guarantee.
+
 Date: 2026-11-04 (America/Los_Angeles). Baseline: `6eaccaf`.
 Final verdict: **APPROVED / assessment-ready within the documented assessment
 contract, supported Windows/SQLite environment and trusted-adapter policies**.

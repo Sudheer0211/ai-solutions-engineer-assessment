@@ -3022,3 +3022,276 @@ LF/CRLF notice for new audit is normalization only. Re-stage these final inspect
 records, repeat staged check, create one descriptive commit, then verify full SHA,
 parent/exact nine-file manifest/clean status/recorded-origin counts in Git/session
 report. No fetch/push/test/Ruff rerun or further work authorized.
+
+
+## E041 - 2026-11-06: T3-007 PAN remediation / Task4 evaluator-readiness verification
+
+America/Los_Angeles. Baseline8d7a3c7f3bbd87deec1d83058315a8d732164ca5. T3-007
+IN_PROGRESS / PENDING INDEPENDENT ACCEPTANCE. All results below actually executed
+in native Windows environments, no Linux compatibility shim/new dependency.
+Historical E039/E040/approvals are preserved, not relabeled as new evidence.
+
+### Provenance and baseline reproduction
+
+Read user attachment/current guidance/contracts/final audits/ADRs and relevant
+redactor/models/test interfaces, Task4 accounting/SQLite admission/settlement/
+service fallback/default provider source. Initial search did not find differently
+named gap input because it was in ignored .cache; user supplied exact path:
+.cache/evaluator_gap_audit_tasks_3_4.md. Entire text read, SHA256
+ e7d5e1185501f08f3972eda37308956f31d97bdce4f02fa6dc23729d97ab157f.
+Original full verbatim vendor brief/rubric still unavailable. Existing attachments
+and requirements searched; original pasted assessment is Task1-specific. Recovered
+email/SSN/card categories confirmed by user; separator/boundaries/tokenizer/vendor
+format expectations are not invented. Input remains ignored, not copied into Git.
+
+Before edits, from task3/, native .venv Python here-string imported Processor and
+tests.support stream/text_output, fed each requested synthetic PAN byte-by-byte,
+then finish. All3 contiguous/hyphen/spaced values emitted unmasked (counterexample,
+not a passing security test). Initial governance inventory command used wrong
+Task3 cwd and failed before documentation writes; corrected root113-file baseline
+captured before implementation. After edits, corresponding pure/ASGI/TCP tests
+require whole [REDACTED] replacements; no card prefixes/suffix digits/length output.
+
+### Intermediate tests and actual failures
+
+- Task3: python -m pytest -q -m 'not http_wire' --tb=short
+  --basetemp=.cache/t3007-initial:5 failed/575 passed/57 deselected,4.76s, exit1,
+  two cache-permission warnings in sandbox. Prototype applied256 cap to a combined
+  bridge; five existing adversarial-reference seeds reproduced the regression.
+- Same native command with --basetemp=.cache/t3007-core outside sandbox:
+  5 failed/575 passed/57 deselected,4.30s/exit1,no warnings. Production K-token cap
+  corrected, but old reference bridge rule still incorrectly joined prose.
+- Corrected independent manual oracle, same selector
+  --basetemp=.cache/t3007-core2:580 passed/57 deselected,5.17s/exit0,no warnings.
+- python -m pytest -q tests/test_pan.py tests/test_app.py -k pan --tb=short
+  --basetemp=.cache/t3007-pan:81 passed/94 deselected,2.18s/exit0. Ruff check exited1
+  (UP031 new test format-string), format --check exited1 (5 files). Fixed f-string
+  and formatted only authorized source/test files; no accepted transport/app rewrite.
+- python -m pytest -q tests/test_pan.py tests/test_app.py tests/test_http_wire.py
+  -k pan --tb=short --basetemp=.cache/t3007-adversarial:100 passed/151 deselected,
+  5.73s/exit0,no warnings.96 new PAN cases plus4 old lifespan-name matches.
+
+The three obsolete original negative PAN expectations are strengthened to require
+masking (two negative-param rows/one phone-boundary row). No case removed, skipped,
+xfail weakened or existing phone grammar enlarged. Independent reference uses
+manual scans, no production PAN helpers. New tests cover every byte/delta cut in
+21 length/format fixtures,24 random interleaved four-channel seeds, Unicode/escapes/
+line endings, bounded state/3000 events, overflows/EOF/abandonment, ASGI cancel/
+timeout/disconnect,17 native TCP cases and sensitive-output/diagnostic assertions.
+
+### Fresh complete regression and both Ruff checks
+
+Executed through ignored .cache/t3007_verify.py, using EACH project's own Python
+executable/cwd; command arguments below are exact (absolute executable in JSON
+receipt is represented by its cwd-relative path). Runs overlap; do not sum elapsed.
+
+task1 cwd: repository root
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3007-final
+.\.venv\Scripts\python.exe -m ruff check task1 tests
+.\.venv\Scripts\python.exe -m ruff format --check task1 tests
+```
+
+- .....                                                                    [100%] / 149 passed in 40.49s; exit0; measured command wall 41.506s.
+- All checks passed!; exit0; measured command wall 0.139s.
+- 17 files already formatted; exit0; measured command wall 0.115s.
+
+Python 3.12.16 (main, Oct 26 2026, 14:10:56) [MSC v.1944 64 bit (AMD64)]; SQLite 3.53.1; versions pytest=9.2.0, ruff=0.17.3, mcp=2.3.0, pydantic=2.12.5, starlette=1.10.0, uvicorn=0.54.0.
+
+task2 cwd: task2/
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3007-final
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+- ....................                                                     [100%] / 452 passed in 13.22s; exit0; measured command wall 13.944s.
+- All checks passed!; exit0; measured command wall 1.354s.
+- 16 files already formatted; exit0; measured command wall 0.11s.
+
+Python 3.12.16 (main, Oct 26 2026, 14:10:56) [MSC v.1944 64 bit (AMD64)]; SQLite 3.53.1; versions pytest=9.2.0, ruff=0.17.3, pydantic=2.14.2, httpx=0.28.1, httpcore=1.0.9, fastapi=0.162.0, starlette=1.10.0, uvicorn=0.54.0.
+
+task3 cwd: task3/
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3007-final
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+- .............                                                            [100%] / 733 passed in 58.18s; exit0; measured command wall 58.756s.
+- All checks passed!; exit0; measured command wall 0.159s.
+- 26 files already formatted; exit0; measured command wall 0.102s.
+
+Python 3.12.16 (main, Oct 26 2026, 14:10:56) [MSC v.1944 64 bit (AMD64)]; SQLite 3.53.1; versions pytest=9.2.0, ruff=0.17.3, pydantic=2.14.2, httpx=0.28.1, httpcore=1.0.9, fastapi=0.162.0, starlette=1.10.0, uvicorn=0.54.0.
+
+task4 cwd: task4/
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q --tb=short --basetemp=.cache/t3007-final
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+```
+
+- ...................................................................      [100%] / 427 passed in 40.08s; exit0; measured command wall 40.732s.
+- All checks passed!; exit0; measured command wall 1.478s.
+- 22 files already formatted; exit0; measured command wall 0.103s.
+
+Python 3.12.16 (main, Oct 26 2026, 14:10:56) [MSC v.1944 64 bit (AMD64)]; SQLite 3.53.1; versions pytest=9.2.0, ruff=0.17.3, pydantic=2.14.2, httpx=0.28.1, httpcore=1.0.9, fastapi=0.162.0, starlette=1.10.0, uvicorn=0.54.0.
+
+All1761 tests passed:Task1 149/40.49s,Task2 452/13.22s,Task3 733/58.18s,Task4
+427/40.08s. All8 Ruff commands0;17/16/26/22 format files. All four suites0 failures/
+errors/skips/warnings/xfails/xpasses. SQLite3.53.1 used for storage ONLY by Task4;
+other interpreters metadata-only. No code/config/test changes after these final
+commands, only documentation. Receipts are ignored .cache/t3007_task*_verification.json.
+
+### Process cleanup, diagnostic capture and Task4 demo
+
+Fresh Task3 full summary copied before further work:10 children9x0/one expected
+invalid-startup2,0 forced/killed/live reader threads/privacy violations. PAN tests
+extend existing private-marker capture before sending synthetic values; no harness
+rewrite. Exact reconstructed outputs asserted, failure streams have no end/raw tail.
+Gated progression observed0.078s, native first/read inactivity15.031/14.985s sampled
+by fixture; not precise wall-clock boundary certification. Deterministic ASGI tests
+verify exact10s sends/120s overall/1s cleanup. New four-channel numeric hold test
+retains1168 chars/peak K-token256; documented conservative auxiliary bound1176 total.
+Long native stream high-water line290/event304/decoder2/candidate256/held256/
+pending125/encoded169/raw304, sampled peak working-set68837376 bytes. Empirical,
+not formal RSS. Stable slow-send/read117 across3 barriers; no kernel10s guarantee.
+
+Task4 fresh full receipt:28 wire children27 normal0/one expected3,0 forced;
+15 storage children all0/no alive/forced.21 locally rejected requests show zero
+provider/reservation deltas. Primary429/timeout modes exactly1 primary/1 backup,
+charge25; unknown primary charge20, terminal backup failures charge40/no third call.
+Task2 unchanged full receipt12 reaped/no alive/forced/live readers. Expected negative
+child exits remain classified, not unexpected test failures. No new orphan claim
+outside explicit fixture receipts and accepted retained/quarantined owner policies.
+
+Task4 README one-command evaluator demo freshly executed from task4/:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py -k "content_length_chunked_and_success_privacy or routing_and_conservative_accounting or exact_quota_and_denial_never_dispatches" --tb=short
+```
+
+9 passed/20 deselected in18.89s,exit0,no warnings/skips/xfails.18 child processes
+all exit0/reaped/0 forced; full-suite summary copied BEFORE selector overwrote local
+summary. New demo summary ignored separately. Tests establish primary success,
+429/real3000ms fallback/exact one backup,quota exhaustion/zero additional calls and
+controlled failures using existing synthetic provider adapters. Stock default503
+verified by fresh full-suite test_database_failure_is_sanitized_and_unconfigured_provider_fails_closed.
+Real provider/model tokenization/billing NOT VERIFIED/rubric-dependent; no real
+credentials installed, no Task4 source/tests/config/dependency/lockfile change.
+
+### Documentation / source integrity handoff
+
+ADR-028 and TASK3_TASK4_EVALUATOR_REMEDIATION.md record recovered category,
+engineering choices, before/after evidence, safe-prefix proof and material limits.
+Cross-space PAN starts inside NONnumeric K-tokens are out of profile; 20+-digit
+continuous maximal runs not partially matched, bridged20th digit fails closed.
+This limited grammar and new auxiliary budget need independent approval; do not
+claim unavailable vendor/universal PII/TLS/formalRSS/real-provider compliance.
+Historical approvals/evidence and Linux split/stall qualifications preserved.
+No commit/push/staging; source/test/receipt/link/hash/diff inspection follows below.
+
+
+Additional manual after-reproduction: from task3/, native Python here-string feeds
+all three synthetic Card-prefix examples byte-by-byte to Processor; exact
+`Card: [REDACTED] ` reconstruction for each,exit0. Initial attempt from root
+resolved Task1's tests namespace and exited1 importing tests.support; rerun using
+documented task3 cwd succeeded, no source change. Documentation-only patch with
+incorrect Task4 heading also failed before writes, then corrected context used.
+These are tooling outcomes, not pytest failures or extra passing cases.
+
+
+### Final integrity inspection (not extra pytest executions)
+
+Native SHA/AST/path/link/status script exit0:96 of113 baseline tracked paths
+byte-identical; exactly17 allowed tracked modifications (12 docs/one production/
+four tests-reference files) and two new paths (PAN tests/remediation report).
+All Task1/2 implementation/tests/config/pins/locks and Task4 non-doc files unchanged.
+Task3 parser/payload/models/upstream/service/app/harness/dependencies/locks/config
+unchanged; one source patch, not wholesale replacement. All145 original Task3
+test function names remain; AST/decorator comparison changes ONLY the two
+explicitly documented obsolete-negative expectation functions. No removals/skips/
+xfail modifications.29 named report tests/44 local links resolve. Original AGENTS/
+BUILD_LOG/DECISIONS/TEST_EVIDENCE content preserved before appended records.
+
+Git diff --check returned0; Git LF/CRLF normalization notices are not test failures.
+Index empty; input gap MD ignored, receipts/temp verification scripts/cache/DBs/
+archives not in unignored inventory. HEAD unchanged8d7a3c7, no history rewrite,
+staging/commit/push. Final documentation-only edits follow verification; no further
+source or test changes after final733/native Ruff26. T3-007 stays IN_PROGRESS /
+PENDING INDEPENDENT ACCEPTANCE. No local blocking failure remains; material scoped
+PAN boundary/budget and missing-rubric/provider limitations require review.
+
+
+Final native inventory/key-pattern/Git check exit0:19 authorized paths only,
+targeted private/provider-key/credential-URL screen0 in changed content; generated
+artifacts/gap MD ignored. Both git diff --check and empty-index cached check0.
+HEAD8d7a3c7f3bbd87deec1d83058315a8d732164ca5, main0 ahead/0 behind recorded
+origin/main, no fetch/stage/commit/push. Documentation-only final record; T3-007
+remains IN_PROGRESS / PENDING INDEPENDENT ACCEPTANCE. No further work authorized.
+
+
+## E042 - 2026-11-06: T3-007 independent acceptance / Git checkpoint
+
+America/Los_Angeles. User APPROVES within documented13-19-digit synthetic PAN
+grammar; T3-007 DONE. These are REPORTED independent results, not executions here:
+
+- 659 non-wire tests passed.
+- All17 new PAN real-HTTP wire tests passed with a review-only Linux subprocess
+ import-path adjustment.
+- 1200 additional randomized PAN streams/8812 model-delta fragments passed.
+- Prefix withholding/fail-closed overflow/four-channel bounded-state probes passed.
+- No blocking production defect; accepted SSE parser/HTTPX service/FastAPI/transport
+ architecture unchanged.
+
+Qualification: E041 actual native Windows149/452/733/427 (1761) and eight Ruff
+successes were NOT independently rerun in full. Do not infer full733 Linux suite
+or native rerun from selections. Independent Python/pytest versions/commands/
+durations/full child receipts not supplied. No review shim or widened supported
+pin shipped. No new pytest/Ruff/compile/demo/install/history scan in acceptance.
+Preserve spaced-start scope,294/channel auxiliary policy, all historical approvals
+and production/RSS/TLS/socket/PII limits. Task4 real-provider interoperability stays
+NOT VERIFIED/rubric-dependent; no source/test/config/dependency/lock change.
+
+Actual initial Git/docs checks: Get-Content AGENTS/ledger/current docs/exclude,
+git status --short --branch, diff --cached --name-status, rev-parse HEAD,
+rev-list --left-right --count origin/main...HEAD. HEAD8d7a3c7f3bbd87deec1d83058315a8d732164ca5,
+main0 ahead/0 behind recorded origin, index empty. Exact approved17 tracked changes/
+two new remediation paths plus new reviewZIP, no unexpected functional change.
+Native SHA/inventory probe exit0 compared113 baseline hashes with E041 inventory:
+only intended17 differ, all Task1/2/Task4 non-doc intact. Captured current115-file
+tracked/new approved hash snapshot and retained ZIP hash; exclude ZIP via exact
+.git/info/exclude entry, no tracked ignore/config mutation. Accepted PAN source/
+tests/dependencies will remain identical; no need for test rerun.
+
+Authorized manifest: one Task3 source,five Task3 test/reference files,thirteen
+related documentation paths, as listed in remediation report (19 total). Review
+complete diff/294-character policy/index contents, explicitly stage only manifest,
+exclude cache/temp verification scripts/receipts/env/DB/WAL/SHM/credentials/ZIPs,
+run git diff --cached --check, commit once, verify SHA/parent/manifest/clean tree/
+recorded-origin counts. No fetch/push/new provider or additional feature.
+
+
+Actual final inspection/staging: complete tracked diff and both new files read,
+including safe-prefix/294-character auxiliary retention policy and scope exclusions.
+Native SHA/AST/link checks exit0:102 captured paths outside authorized acceptance
+MD edits unchanged; accepted PAN source/tests and Task1/2/Task4 non-doc intact.
+Historical Git text in AGENTS/build/decisions/evidence preserved after newline
+normalization.29 named report test references/44 local links resolve, targeted
+private/provider-key/credential-URL patterns0. An inspection-only scanner first
+mistook inventory filename test_redaction.py for a function; filename exclusion
+corrected, references validated. No test execution or production correction.
+
+Explicit git add staged exactly19 approved paths. Cached name-status/stat reviewed;
+index/working-byte check exit0 after Git newline normalization, no unstaged or
+unignored leftovers/excluded artifact path. Verify script/gap input/ZIP ignored;
+review ZIP hash unchanged. git diff --cached --check exit0, no active default or
+custom hooks. LF/CRLF notices are normalization, not implementation/test changes.
+Re-stage final inspection records, repeat staged check, commit once, then report
+fullSHA/parent/exact manifest/clean tree/recorded-origin counts from Git. No tests,
+install/features/fetch/push. E041 actual native evidence remains authoritative,
+not independently rerun in full; no shipped Linux import-path adjustment.

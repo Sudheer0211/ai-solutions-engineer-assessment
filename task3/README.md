@@ -1,5 +1,35 @@
 # Task 3: asynchronous synthetic SSE proxy with PII redaction
 
+## Current PAN remediation: independently accepted
+
+T3-007 is **DONE / independently APPROVED** (2026-11-06) within the documented
+13-19-digit synthetic PAN grammar, including its294/channel auxiliary policy.
+The recovered assessment category is email + SSN + credit cards; phone remains
+extra coverage. Historical approvals below apply to their earlier synthetic
+profile. [Current remediation contract/evidence](../docs/TASK3_TASK4_EVALUATOR_REMEDIATION.md)
+and E041 supersede historical card exclusions and aggregate buffer bounds.
+
+Implemented PAN profile:13-19 ASCII digits, contiguous or single-space/hyphen
+groups, including mixed single separators; no Luhn filter. `[REDACTED]` masks
+the entire classified compound. Numeric groups are held across events/chunks;
+ordinary prose spaces remain delimiters. Cross-space matching starts only at a
+wholly numeric K-token/span, so spaced values beginning inside `word4111` or
+initial K punctuation are outside the profile. Doubled separators, Unicode digits,
+obfuscations and continuous20+-digit maximal runs are outside PAN syntax. The20th
+bridged digit or K-token character257 aborts without raw release. See the report
+for overlaps, false positives, exact boundaries and294/channel auxiliary bound.
+Other input/parser/pending/output/channel/lifecycle limits are unchanged.
+
+Fresh native Windows full suite: **733 passed**, no failures/skips/warnings/xfails,
+Ruff lint/format26 files passed.96 added cases include73 pure,6 ASGI and17 actual
+TCP PAN cases. Focused adversarial run100 passed; four-task total1761. No new
+dependency, provider or parser/transport/app rewrite. E042 records independent
+659 non-wire passes/17 new PAN wire passes with a review-only Linux subprocess
+import-path adjustment,1200 random streams/8812 delta fragments and withholding/
+overflow/four-channel probes. No blocking defect; full native1761/eight Ruff were
+NOT independently rerun. No review shim ships or new tests run for acceptance.
+One acceptance commit authorized, no push. Scoped limits/no universal PII claim remain.
+
 ## Reproduce a successful synthetic assessor demo
 
 From `task3/`, install `uv sync --locked --extra dev --extra serve --python 3.12.16`.
@@ -56,7 +86,7 @@ clean-environment demo verified public Uvicorn factory import
 outcomes. Factory startup/graceful public-API shutdown was tested; literal shell
 console/signal behavior was not. See [final audit](../docs/TASK3_FINAL_AUDIT.md).
 
-## Current T3-006 final independent acceptance
+## Historical T3-006 final independent acceptance
 
 T3-001 through T3-006 are independently accepted. T3-006 and TASK-3 are **DONE**,
 independent APPROVAL confirmed 2026-11-05 within the accepted synthetic SSE/PII

@@ -1,5 +1,30 @@
 # Task 4: token accounting, SQLite storage and injectable LLM routing
 
+## Evaluator demo: synthetic success, fallback and quota rejection
+
+The stock factory deliberately returns sanitized **503** for authenticated
+generation when trusted provider/token-bound adapters are absent. It does not
+guess a tokenizer or connect to a real LLM. Real-provider integration is **NOT
+VERIFIED / rubric-dependent**, rather than an automatic failure or success.
+
+After the documented locked `dev`/`serve` setup, run this one command from `task4/`
+on the supported native Windows fixed-local-drive/SQLite environment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_http_wire.py -k "content_length_chunked_and_success_privacy or routing_and_conservative_accounting or exact_quota_and_denial_never_dispatches" --tb=short
+```
+
+The nine cases use existing deterministic trusted adapters and independent
+loopback provider/proxy processes: primary success; primary429 and real3000ms
+timeout with exactly one backup; terminal backup failure/429; transport failure;
+unknown-usage accounting; exactly50000 combined reservation; and50001 denial.
+The quota case also repeats a request to prove local429 causes zero extra provider
+calls. Fixtures generate ephemeral credentials/SQLite state, assert sanitized
+responses/accounting and reap children. No real credential/API/vendor/tokenizer is
+required, and no provider adapter is installed into production by this command.
+These are executable assessment demonstrations, not real-model certification.
+See E041 and [post-acceptance findings](../docs/TASK3_TASK4_EVALUATOR_REMEDIATION.md).
+
 ## Final independent acceptance
 
 **TASK-4 and T4-006 are DONE and independently APPROVED**, confirmed by the user

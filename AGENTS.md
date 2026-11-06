@@ -495,3 +495,44 @@ ledger/decisions/build/evidence/new TASK3_FINAL_AUDIT.md; exclude/retain local Z
 cache/env/diagnostics/temporary scripts/DB/WAL/SHM/credentials/generated artifacts.
 Run git diff --cached --check, commit once, verify full SHA/inventory/clean status/
 recorded-origin counts, then STOP. No push, new feature or future work authorized.
+
+
+## T3-007 evaluator correction authorization - 2026-11-06 America/Los_Angeles
+
+Latest user authorizes targeted PAN remediation plus Task4 read-only evaluator
+audit/docs and fresh native four-task regression/Ruff. Supersedes prior no-source-
+change/stop gates for this checkpoint only. Read supplied ignored gap audit at
+.cache/evaluator_gap_audit_tasks_3_4.md, requirements/ADR-028 and remediation report.
+Recovered high-level categories email/SSN/card; full vendor rubric still unavailable.
+No new vendor assumptions. Keep original approvals/evidence; correction IN_PROGRESS /
+PENDING INDEPENDENT ACCEPTANCE, not DONE. Preserve Tasks1/2 and ALL Task4 source/
+tests/config/dependencies/lock. Task4 README/governance corrections only.
+
+Task3 patch only redaction.py with numeric bridge/PII.PAN; tests/oracle extended.
+No generic whitespace alphabet, parser/HTTPX/service/app/harness rewrite or new
+runtime dependency. New exact PAN grammar/boundaries/294-per-channel auxiliary
+budget are explicit pending-review policies, not recovered evaluator wording.
+E041 actual733/427/149/452 (1761) passes/eight Ruff0, new96 PAN cases, focused100
+and Task4 existing-fixture demo9 pass. No source changes after final verification.
+Keep gap input/receipts/temp scripts/cache/DB/archive ignored. No staging/commit/
+push, independent acceptance claim or further feature work. Stop for review.
+
+
+## T3-007 independent acceptance / Git checkpoint - 2026-11-06 America/Los_Angeles
+
+Latest user APPROVES T3-007 within documented13-19-digit synthetic PAN grammar;
+DONE. Read E042/ADR-028 acceptance and remediation report. Reported review659
+non-wire/17 PAN wire with review-only Linux subprocess import-path adjustment,
+1200 random streams/8812 deltas and withholding/overflow/four-channel probes pass;
+no blocking defect. E041 native1761/eight Ruff NOT independently rerun in full.
+No shipped review shim or widened vendor/universal PII/RSS/TLS/socket claims.
+294/channel/1176 total auxiliary policy and scoped boundaries preserved. Task4
+real-provider interoperability stays NOT VERIFIED/rubric-dependent; no new adapter.
+
+Supersedes previous no-commit/pending gates only for ONE descriptive T3-007
+acceptance commit. Freeze accepted PAN source/tests/deps/config/lock, Tasks1/2 and
+Task4 non-doc files. No tests/install/features. Inspect entire diff, stage only19
+approved remediation source/test/doc paths, retain/exclude review ZIP/input MD/
+.cache scripts/receipts/env/DB/credentials/generated artifacts, run staged whitespace
+check, commit once, verify fullSHA/manifest/clean tree/recorded-origin counts, STOP.
+No push or further work authorized. Preserve historical approvals/evidence/limits.

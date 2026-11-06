@@ -59,9 +59,37 @@ def reference(text):
     def digits(value):
         return bool(value) and all("0" <= c <= "9" for c in value)
 
+    def numeric(value):
+        return (
+            bool(value)
+            and digits(value[0])
+            and digits(value[-1])
+            and all(
+                digits(c) or (c in " -" and digits(value[i - 1]) and digits(value[i + 1]))
+                for i, c in enumerate(value)
+            )
+        )
+
     def sensitive(token):
         if "@" in token:
             return True
+        cursor = 0
+        while cursor < len(token):
+            if not digits(token[cursor]):
+                cursor += 1
+                continue
+            end, count = cursor + 1, 1
+            while end < len(token):
+                if digits(token[end]):
+                    count += 1
+                    end += 1
+                elif token[end] in " -" and end + 1 < len(token) and digits(token[end + 1]):
+                    end += 1
+                else:
+                    break
+            if 13 <= count <= 19:
+                return True
+            cursor = end
         for start in range(len(token)):
             for size in [11, 12, *range(9, 17)]:
                 end = start + size
@@ -100,11 +128,26 @@ def reference(text):
             result.append(text[start])
             start += 1
             continue
-        while end < len(text) and text[end] in alphabet:
-            end += 1
+        while end < len(text):
+            if text[end] in alphabet:
+                end += 1
+            elif (
+                text[end] == " "
+                and end > start
+                and digits(text[end - 1])
+                and numeric(text[start:end])
+                and sum(digits(c) for c in text[start:end]) <= 19
+                and end + 1 < len(text)
+                and digits(text[end + 1])
+            ):
+                end += 1
+            else:
+                break
         token = text[start:end]
-        if len(token) > 256:
+        if any(len(part) > 256 for part in token.split(" ")):
             raise ValueError("reference candidate overflow")
+        if " " in token and numeric(token) and sum(digits(c) for c in token) > 19:
+            raise ValueError("reference numeric bridge overflow")
         result.append("[REDACTED]" if sensitive(token) else token)
         start = end
     return "".join(result)

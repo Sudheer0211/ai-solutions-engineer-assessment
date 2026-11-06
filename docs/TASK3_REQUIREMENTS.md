@@ -1,6 +1,43 @@
 # TASK-3 / T3-001: approved synthetic streaming contract and implementation gates
 
-## Current T3-006 independent acceptance - 2026-11-05
+## Current T3-007 corrective contract - 2026-11-06
+
+**DONE / independently APPROVED within the documented synthetic PAN grammar.**
+User confirmation2026-11-06/E042; original approvals preserved. User confirms the recovered
+original PII list includes email, SSN and credit cards; phone is additional
+coverage. The ignored supplied gap audit was read at the user's clarified path;
+full verbatim vendor brief/rubric remains unavailable. Historical T3-001..006
+approvals/evidence below remain historical and do not cover the omitted PAN category.
+
+T3-PII-PAN: implemented synthetic13-19 ASCII digit maximal numeric runs, optional
+single ASCII space/hyphen between nonempty groups, no Luhn/issuer check. Standalone
+contiguous/hyphen/spaced examples supported across every transport/delta boundary.
+Whole classified compound becomes `[REDACTED]` once. Exact engineering grammar,
+overlaps/false positives and exclusions are in the
+[corrective report](TASK3_TASK4_EVALUATOR_REMEDIATION.md). Cross-space bridging
+starts only after a wholly numeric K-token/span; a spaced value beginning inside
+`word4111` or initial K punctuation is outside the profile. Single spaces are
+held conditionally, never added unconditionally to K.20th bridged digit fails
+closed; continuous20+-digit maximal runs are outside PAN syntax, never suffix-matched.
+
+This supersedes historical P1 card exclusions/P3's all-PII-within-K proof/L5's
+1024 aggregate for the PAN path ONLY. K-token cap256 is unchanged; auxiliary
+numeric prefix<=37 + joining space + current K-token<=256 gives conservative
+294 raw held characters/channel,1176/four channels and4 known-space flags. Pending,
+encoded/input/parser/channel/deadline caps unchanged. New grammar/auxiliary budget
+are independently accepted engineering choices for this profile, not original rubric text.
+New proof withholds complete numeric possibilities until a nonextending boundary
+or valid done. Unsafe EOF/errors/cancellation never flush holds or space flags.
+
+E041 fresh native Task3 **733** (637 retained+96 new), Task1 149/Task2 452/Task4 427:
+**1761 passes**, all8 Ruff checks0. E042 records independent659 non-wire/17 new
+PAN wire passes with review-only Linux import-path adjustment,1200 random streams/
+8812 delta fragments and bounded-state/privacy probes. No blocking production
+defect. Full native results NOT independently rerun; no new tests/deps/features
+in acceptance. One Git checkpoint authorized, no push. Task4 remains implementation-
+identical, real-provider interoperability NOT VERIFIED/rubric-dependent.
+
+## Historical T3-006 independent acceptance - 2026-11-05
 
 America/Los_Angeles. Independently APPROVED within accepted synthetic SSE/PII
 contract; T3-006/TASK-3 DONE. E040 records reported review of eight requirements,

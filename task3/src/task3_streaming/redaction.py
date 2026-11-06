@@ -25,6 +25,21 @@ _LABEL = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?")
 _TLD = re.compile(r"[A-Za-z]{2,63}")
 _PHONE = re.compile(r"(?<![0-9])(?:\+[1-9][0-9]{7,14}|[0-9]{3}-[0-9]{3}-[0-9]{4})(?![0-9])")
 _SSN = re.compile(r"(?<![0-9])[0-9]{3}-[0-9]{2}-[0-9]{4}(?![0-9])")
+# Maximal numeric runs: never extract an in-range suffix from a >19-digit run.
+_PAN_RUN = re.compile(r"[0-9]+(?:[ -][0-9]+)*")
+
+
+def _contains_pan(candidate: str) -> bool:
+    return any(
+        13 <= sum("0" <= c <= "9" for c in match[0]) <= 19 for match in _PAN_RUN.finditer(candidate)
+    )
+
+
+def _bridgeable(candidate: str) -> bool:
+    # Spaced PANs begin with a complete numeric K-token, not a prose suffix.
+    return (
+        _PAN_RUN.fullmatch(candidate) is not None and sum("0" <= c <= "9" for c in candidate) <= 19
+    )
 
 
 class PII(StrEnum):
@@ -32,6 +47,7 @@ class PII(StrEnum):
     EMAIL_LIKE = "email_like"
     PHONE = "phone"
     SSN = "ssn"
+    PAN = "pan"
 
 
 def is_canonical_email(candidate: str) -> bool:
@@ -61,6 +77,8 @@ def classify_candidate(candidate: str) -> frozenset[PII]:
         kinds.add(PII.PHONE)
     if _SSN.search(candidate):
         kinds.add(PII.SSN)
+    if _contains_pan(candidate):
+        kinds.add(PII.PAN)
     return frozenset(kinds)
 
 
@@ -70,6 +88,9 @@ class Redactor:
     def __init__(self, limits: Limits = DEFAULT_LIMITS) -> None:
         self.limits = limits
         self._holds: dict[int, str] = {}
+        # A single pending ASCII space after a digit is a possible numeric bridge,
+        # not a generic candidate character. No digit/group prefix is released.
+        self._spaces: set[int] = set()
         self._closed: set[int] = set()
         self._pending = ""
         self._pending_bytes = 0
@@ -92,6 +113,7 @@ class Redactor:
 
     def abort(self) -> None:
         self._holds.clear()
+        self._spaces.clear()
         self._closed.clear()
         self._pending = ""
         self._pending_bytes = 0
@@ -126,9 +148,13 @@ class Redactor:
         candidate = self._holds[channel]
         self._holds[channel] = ""
         if candidate:
-            yield from self._safe(
-                channel, REPLACEMENT if classify_candidate(candidate) else candidate
+            sensitive = _contains_pan(candidate) or any(
+                classify_candidate(part) for part in candidate.split(" ")
             )
+            yield from self._safe(channel, REPLACEMENT if sensitive else candidate)
+        if channel in self._spaces:
+            self._spaces.remove(channel)
+            yield from self._safe(channel, " ")
 
     def process(self, event: Event) -> Iterator[Event]:
         if self._failed or self.terminal or self._busy or type(event) is not Event:
@@ -168,16 +194,31 @@ class Redactor:
                     for char in event.text:
                         if self._failed:
                             raise StreamError()
+                        if channel in self._spaces:
+                            if "0" <= char <= "9":
+                                # Numeric prefix <=37 chars plus this one separator;
+                                # the next K-token retains its independent 256 cap.
+                                self._holds[channel] += " "
+                                self._spaces.remove(channel)
+                            else:
+                                yield from self._classify(channel)
                         if char in CANDIDATE_ALPHABET:
-                            if len(self._holds[channel]) >= self.limits.candidate_chars:
+                            token = self._holds[channel].rsplit(" ", 1)[-1]
+                            if len(token) >= self.limits.candidate_chars:
                                 raise StreamError(ErrorCode.LIMIT)
                             self._holds[channel] += char
-                            self._peak_candidate = max(
-                                self._peak_candidate, len(self._holds[channel])
-                            )
+                            if (
+                                " " in self._holds[channel]
+                                and _PAN_RUN.fullmatch(self._holds[channel])
+                                and sum("0" <= c <= "9" for c in self._holds[channel]) > 19
+                            ):
+                                raise StreamError(ErrorCode.LIMIT)
+                            self._peak_candidate = max(self._peak_candidate, len(token) + 1)
                             self._peak_held = max(
                                 self._peak_held, sum(map(len, self._holds.values()))
                             )
+                        elif char == " " and _bridgeable(self._holds[channel]):
+                            self._spaces.add(channel)
                         else:
                             yield from self._classify(channel)
                             yield from self._safe(channel, char)

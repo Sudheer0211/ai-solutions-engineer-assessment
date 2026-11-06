@@ -917,3 +917,79 @@ def test_http_capacity_is_process_global_across_application_instances():
             assert module._HTTP_CAPACITY.active == 0
 
     exercise(scenario())
+
+
+@pytest.mark.parametrize("separator", ["", " ", "-"])
+def test_pan_asgi_gated_cross_delta_backpressure_and_safe_output(separator):
+    async def scenario():
+        value = separator.join(["4111"] + ["1111"] * 3)
+        gate = Gate(
+            wire("delta", {"channel": 0, "text": value[5:]})
+            + wire("done", {"channel": 0})
+            + wire("end", {})
+        )
+        body = Body([wire("delta", {"channel": 0, "text": "safe " + value[:5]}), gate])
+        async with running(Transport(body)) as app:
+            http = HTTP()
+            task = asyncio.create_task(http(app))
+            await checked(gate.entered.wait())
+            assert http.status == 200 and text_output(http.frames) == "safe "
+            gate.release.set()
+            await checked(task)
+            assert text_output(http.frames) == "safe [REDACTED]"
+            assert output(http.frames)[-1] == ("end", {})
+            assert body.closed and body.closes == 1
+
+    exercise(scenario())
+
+
+def test_pan_asgi_concurrent_channel_context_and_disconnect_withheld_numbers():
+    async def scenario():
+        def make_body(request):
+            return Body(
+                [
+                    wire("delta", {"channel": 0, "text": "4111 1111 "}),
+                    wire("delta", {"channel": 0, "text": "1111 1111"})
+                    + wire("done", {"channel": 0})
+                    + wire("end", {}),
+                ]
+            )
+
+        transport = Transport(factory=make_body)
+        async with running(transport) as app:
+            clients = [HTTP() for _ in range(8)]
+            await checked(asyncio.gather(*(client(app) for client in clients)))
+            assert all(text_output(client.frames) == "[REDACTED]" for client in clients)
+            assert all(body.closed for body in transport.bodies)
+        gate = Gate()
+        body = Body([wire("delta", {"channel": 0, "text": "4111 1111 "}), gate])
+        async with running(Transport(body)) as app:
+            http = HTTP()
+            task = asyncio.create_task(http(app))
+            await checked(gate.entered.wait())
+            http.disconnect()
+            await checked(task)
+            assert http.frames == [] and body.closed
+
+    exercise(scenario())
+
+
+@pytest.mark.parametrize("cause", ["cancel", "idle_timeout"])
+def test_pan_asgi_cancellation_and_timeout_discard_numeric_bridge(cause):
+    async def scenario():
+        clock, gate = ManualClock(), Gate()
+        body = Body([wire("delta", {"channel": 0, "text": "4111 1111 "}), gate])
+        async with running(Transport(body), clock=clock) as app:
+            http = HTTP()
+            task = asyncio.create_task(http(app))
+            await checked(gate.entered.wait())
+            if cause == "cancel":
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await checked(task)
+            else:
+                clock.advance(15)
+                await checked(task)
+            assert http.frames == [] and body.closed
+
+    exercise(scenario())

@@ -1097,3 +1097,64 @@ No architecture change. Preserve original decisions/limits/environment and E038
 Linux split/stall qualifications. One final documentation-only acceptance commit
 authorized; preserve source/tests/config/deps/locks. E040 records review and actual
 Git inspection. No new tests/features/push; stop after SHA/inventory/status check.
+
+
+## ADR-028 - T3-007 bounded numeric bridges for PANs - 2026-11-06
+
+America/Los_Angeles. Status: implemented/locally verified, PENDING INDEPENDENT
+ACCEPTANCE; not an amendment of historical approval provenance. User confirms
+recovered email/SSN/card category from supplied ignored evaluator-gap audit; full
+verbatim rubric/vendor format unavailable. Task4 remains unchanged except docs.
+Affected source:redaction.py only; tests/support oracle and pure/ASGI/wire tests;
+requirements/READMEs/final audit addenda/remediation report/ledger/build/E041.
+
+Decision: add13-19 ASCII digit maximal numeric runs, optional single spaces or
+hyphens, mixed groups, no Luhn gate. Preserve K alphabet and256 cap per K-token.
+Only wholly numeric completed spans <=19 digits may hold a pending-space flag
+and join a following digit. Otherwise classify before release. Spaced starts
+inside nonnumeric K-tokens are OUTSIDE profile, explicitly tested/documented.
+Whole compound replacement collapses overlaps/false positives without exposing
+digits/count/category. Bridged20th digit/K-token257 fails closed. Continuous20+
+maximal digit runs are outside PAN syntax, not partially matched as19-digit suffixes.
+
+Bound: numeric prefix<=37 + space + current K-token<=256 = conservative294/channel,
+1176/four,4 pending-space flags. Other representation/deadline/ownership limits
+unchanged. This explicitly supersedes historical aggregate1024/P3 K-only proof for
+PAN paths, subject to review. Whole-input reference uses manual scanning, no
+production PAN regex. Loop transitions independent of network/event chunking;
+valid done alone finalizes; abort clears raw holds/flags. Prototype erroneously
+applied256 to combined tokens, then fixed by retaining independent K-token cap.
+
+Alternatives rejected: regex on already-released groups (leak); adding all spaces
+to K (ordinary prose becomes unbounded candidate); Luhn-only (drops in-scope
+synthetics); suffix-at-retention release (future match can include emitted digits);
+new provider adapters/tokenizer/dependencies (not needed/no contract); production
+Task4 changes for stock503 (intentional safe default, no demonstrated defect).
+
+Tradeoffs: extra numeric withholding/overmasking of adjacent unrelated numbers,
+limited spaced-start boundary, fail-closed bridge overflow and modest bounded raw
+state increase. These material policies need independent acceptance; broader
+rubric could require later scope expansion. Not universal PII/RSS/TLS/provider
+certification. Task4 frozen code freshly427/Ruff and demo9 pass, provider integration
+NOT VERIFIED/rubric-dependent. E041 records actual failures/corrections/results.
+Next independent review; no commit/push or marking remediationDONE.
+
+
+### ADR-028 independent acceptance provenance - 2026-11-06
+
+America/Los_Angeles. User APPROVES T3-007/DONE within documented13-19-digit
+synthetic PAN grammar, preserving294/channel auxiliary retention policy,256 generic
+K-token limit and explicit scope/boundary/false-positive exclusions. Reported659
+non-wire tests/17 new PAN real-HTTP tests (review-only Linux subprocess import-
+path adjustment),1200 random streams/8812 delta fragments and prefix/overflow/
+four-channel bounded-state probes passed; no blocking production defect. Parser,
+HTTPX service/FastAPI/transport architecture unchanged. Full E041 Windows1761/
+eight Ruff NOT independently rerun; no new executions in acceptance. Independent
+runtime versions/commands/durations not supplied. Review adjustment not shipped.
+
+This acceptance supersedes earlier pending-review status, preserving its historical
+proposal/rationale/tradeoffs, not broadening unavailable vendor rubric/PII/RSS/TLS/
+socket or remote cancellation guarantees. Task4 real-provider interoperability
+NOT VERIFIED/rubric-dependent; stock503/trusted adapters unchanged. No new design
+or production change. One19-path acceptance Git checkpoint authorized; E042 local
+Git/content checks, no tests/dependencies/features/push. Stop after verification.

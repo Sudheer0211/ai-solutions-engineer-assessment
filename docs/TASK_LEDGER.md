@@ -1,14 +1,21 @@
 # Persistent task ledger
 
-Last updated: 2026-11-05 (America/Los_Angeles).
+Last updated: 2026-11-06 (America/Los_Angeles).
 
 ## Task registry
 
-Current T3-006 outcome: independently APPROVED within the accepted synthetic
+Current corrective checkpoint: T3-007 DONE / independently APPROVED within the
+documented13-19-digit synthetic PAN grammar, confirmed2026-11-06/E042. Historical
+approvals preserved. E041 native1761/eight Ruff NOT independently rerun in full;
+E042 distinguishes reported659 non-wire/17 PAN wire/randomized review from local
+Git inspection. One descriptive acceptance commit authorized; no push/features.
+Task4 non-documentation remains frozen; real-provider integration NOT VERIFIED.
+
+Historical T3-006 outcome: independently APPROVED within the accepted synthetic
 SSE/PII contract; T3-006/TASK-3 DONE, user confirmation 2026-11-05/E040. All four
 assessment tasks are DONE within their documented scopes. E039 actual native
-verification is unchanged; no tests rerun for acceptance. Latest acceptance below
-supersedes historical pending/no-commit gates for one documentation commit; no push.
+verification is unchanged; no tests rerun for that acceptance. Its documentation
+commit is complete; current T3-007 authority is acceptance documentation/Git only, no push.
 
 | ID | Description | Priority | Status | Acceptance / evidence | Blocker / next action |
 | --- | --- | --- | --- | --- | --- |
@@ -29,13 +36,14 @@ supersedes historical pending/no-commit gates for one documentation commit; no p
 | T2-004 | FastAPI HTTP endpoint | P0 | DONE | H1-H8/E013; independently accepted; be9ddd8 | Preserve approved implementation and existing 400 tests |
 | T2-005 | Real HTTP wire verification | P0 | DONE | W1-W8/E015; independently accepted; aa343b3 | Preserve accepted wire tests/production baseline |
 | T2-006 | Final Task 2 assessment audit | P0 | DONE | F1-F7/E017; independently APPROVED, user confirmation 2026-11-04/E018 | Accepted final documentation/Git checkpoint; implementation preserved |
-| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | DONE | T3-001 through T3-006 independently accepted; final APPROVED 2026-11-05/E040; E039 actual1665 repository passes/eight Ruff | Assessment-ready within accepted synthetic contract; preserve limitations/implementation, no push |
+| TASK-3 | Asynchronous SSE streaming proxy with PII redaction | P0 | DONE | T3-001..007 independently accepted; PAN correction APPROVED2026-11-06/E042; actual native733/E041 | Preserve scoped PAN/PII/resource/lifecycle limits; no vendor/universal-PII claim or push |
 | T3-001 | Requirements provenance, architecture and exact streaming contract | P0 | DONE | Independently APPROVED 2026-11-05 for documented synthetic profile; ADR-022 | Original vendor brief unavailable; preserve narrow approved scope |
 | T3-002 | Isolated project and pure SSE/redaction components | P0 | DONE | Independently APPROVED 2026-11-05; E031 native verification / qualified review E032; ADR-023 | Preserve accepted foundation 0a75587 |
 | T3-003 | Async upstream adapter, orchestration and lifecycle | P0 | DONE | Independently APPROVED 2026-11-05; native Q13-Q15/E033, qualified review E034; ADR-024 | Preserve accepted baseline e4bd001 |
 | T3-004 | FastAPI streaming HTTP integration | P0 | DONE | Independently APPROVED 2026-11-05; native Q16-Q18/E035, qualified review E036; ADR-025/T3-H policies | Preserve accepted baseline ecbd61c |
 | T3-005 | Independent-process real HTTP wire verification | P1 | DONE | Independently APPROVED 2026-11-05; native Q19-Q21/E037, qualified split-review E038; ADR-026 | Preserve accepted wire milestone 6b76878; T3-006 accepted; preserve all wire evidence and limitations, no push |
 | T3-006 | Final Task 3 assessment audit | P1 | DONE | Independently APPROVED 2026-11-05/E040; eight requirements/21 criteria/73 test refs/symbols/links/demo syntax reviewed; actual audit E039 | One final documentation-only acceptance commit authorized; no source/config changes or push |
+| T3-007 | Post-acceptance PAN compliance correction and Task4 evaluator-readiness audit | P0 | DONE | Independently APPROVED2026-11-06/E042 within documented13-19-digit PAN grammar; actual E041 native1761/eight Ruff unchanged | Preserve accepted PAN/294-char auxiliary policy, all limitations and protected projects; one acceptance commit, no push |
 | TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | DONE | T4-001 through T4-006 independently accepted; final APPROVED 2026-11-05/E029; actual audit E028 | Assessment-ready within supported Windows/SQLite/trusted-adapter scope; preserve implementation, no push |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
@@ -943,3 +951,43 @@ complete diff/index, run staged whitespace check, commit once, verify SHA/invent
 clean tree/branch counts and stop. No tests/install/compile/Ruff rerun, fetch or
 push. No remaining blocking assessment work; future publication/changes require
 separate authorization.
+
+
+## T3-007 post-acceptance evaluator remediation start - 2026-11-06
+
+America/Los_Angeles. User authorizes targeted streaming PAN correction, Task4
+read-only verification/documentation and fresh native four-task suites/Ruff.
+T3-007 IN_PROGRESS / PENDING INDEPENDENT ACCEPTANCE; preserve historical approvals.
+Criteria: reproduce unmasked PAN; bounded incremental13-19-digit contiguous/hyphen/
+space grammar and safe-prefix proof; pure/ASGI/real-wire adversarial tests/no raw
+supported PAN output/diagnostics; original lifecycle preserved; Task4 quota,
+persistence, concurrency,429/3000ms fallback, conservative accounting/default503
+verification; complete actual evidence/report. Tasks1/2 and Task4 implementation/
+tests/config/dependencies/lock frozen, no unrelated changes/dependencies/commit/push.
+Baseline8d7a3c7, clean initial tree,113 tracked hashes captured. Named gap-audit MD
+not found in attachment/repository/workspace searches, local path requested.
+Original vendor brief unavailable; user confirms recovered PAN category. Exact
+separator/boundary/false-positive grammar is an engineering policy, not inferred
+vendor wording. Explicit user requirements permit proceeding while awaiting gap MD.
+
+## T3-007 independent acceptance / Git checkpoint - 2026-11-06
+
+America/Los_Angeles. User independently APPROVES within documented13-19-digit
+synthetic PAN grammar; T3-007 DONE. Reported659 non-wire cases, all17 new PAN
+real-HTTP cases with review-only Linux subprocess import-path adjustment,1200
+random streams/8812 delta fragments and prefix-withholding/overflow/four-channel
+bounded-state probes pass. No blocking production defect. Accepted SSE parser,
+HTTPX service/FastAPI/transport architecture unchanged. E042 review provenance;
+E041 native149/452/733/427 (1761) and eight Ruff NOT independently rerun in full.
+No new local tests/dependencies/features in acceptance. Preserve294/channel
+auxiliary policy, scoped boundaries and all historical environment/PII/RSS/TLS/
+socket/provider qualifications. Task4 implementation/pins frozen; real providers
+NOT VERIFIED/rubric-dependent, no unspecified adapter added.
+
+One descriptive19-path remediation acceptance commit authorized. Initial HEAD8d7a3c7,
+main0 ahead/0 behind recorded origin, index empty. New local review ZIP hashed/
+retained/excluded via exact .git/info/exclude; no tracked config change. Review
+complete diff including auxiliary policy; explicitly stage only approved source/
+tests/docs, exclude ignored scripts/receipts/env/cache/credentials/archives. Run
+staged whitespace check, commit once, verify fullSHA/manifest/clean tree/branch
+counts and stop. No push/fetch or further implementation authorized.

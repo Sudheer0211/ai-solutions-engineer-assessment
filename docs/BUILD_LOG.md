@@ -1513,3 +1513,88 @@ or excluded artifacts, ZIP retained/hash unchanged. Staged whitespace exit0,
 no active hooks. Final inspection-record edits only; re-stage/recheck then commit
 once and verify full SHA/manifest/clean tree/main ahead-behind in Git/session.
 No new test/feature/publication work; stop after authorized checkpoint.
+
+
+## M062 - 2026-11-06 (America/Los_Angeles): T3-007 evaluator remediation begins
+
+User authorizes PAN correction/Task4 audit/fresh four-task suites. Read request,
+governance/contracts/ADRs/audits/source and fixture interfaces. Named gap MD and
+original vendor brief absent from bounded search, path requested. Freeze accepted
+113 tracked hashes. Baseline native Task3 Processor, one-byte feeds, emits all
+three requested synthetic contiguous/hyphen/space PANs unchanged. Reproduced
+privacy gap; no Task4 defect demonstrated. Initial governance script used Task3
+cwd and failed before doc writes; rerun from repository root. Plan minimal bounded
+numeric bridge in existing redactor, independent oracle/pure/ASGI/wire tests,
+Task4 fixtures and fresh regressions. No commit/push; T3-007 pending acceptance.
+
+
+## M063 - 2026-11-06 (America/Los_Angeles): T3-007 locally verified / review handoff
+
+Read clarified ignored gap audit, confirmed PAN requirement and Task4 source
+findings. Patched redaction.py only: PAN classifier and conditional numeric-space
+bridge; generic K-token256 retained, auxiliary294/channel/1176 total bounded.
+No parser/payload/model/HTTPX/service/app/harness/dependency rewrite. New73 pure/
+6 ASGI/17 TCP cases, manual reference extension, three obsolete negative expected
+PAN results changed to require masking. All other old cases remain. Initial five
+prototype failures/reference mismatch, sandbox cache warnings and Ruff findings
+recorded honestly in E041; corrected before final checks.
+
+Fresh native Windows3.12.16/SQLite3.53.1:Task1 149/40.49s,Task2 452/13.22s,
+Task3 733/58.18s,Task4 427/40.08s,1761 pass,zero failures/skips/warnings/xfails,
+all8 Ruff0. Targeted adversarial100/5.73s; Task4 README existing-fixture demo9/
+18.89s,18 children0/no force. Full Task3 10 children9 normal/one expected2/no
+force/diagnostic violation; Task4 28 wire/15 storage children all expected/no force.
+Full receipts copied before demo rewrote ignored summary; no generated file staged.
+
+Updated root/Task3/Task4 READMEs, requirements/final-audit corrective addenda,
+AGENTS/ledger/ADR-028/E041; created full remediation report. Historical approvals,
+source provenance and environment qualifications preserved. Task4 real providers
+NOT VERIFIED/rubric-dependent; default503 intentional; no defect reproduced.
+Task1/2 and Task4 non-documentation frozen; no source changes after final tests.
+T3-007 IN_PROGRESS / PENDING INDEPENDENT ACCEPTANCE. Material profile limits:
+spaced-start K-boundary, no doubled/Unicode separators, conservative overmasking,
+no formalRSS/TLS/kernel send/real-model proof. Review must accept grammar and
+auxiliary budget. Next final diff/hash/reference/receipt checks then independent
+ChatGPT review, no new feature/stage/commit/push or marking remediationDONE.
+
+
+Final handoff inspection:96/113 accepted tracked hashes unchanged, exact17 tracked
+changes/two new paths; Task1/2/Task4 non-doc and Task3 parser/transport/app/harness/
+pins unchanged.145 old test functions preserved; only two expectation functions
+updated for newly required PANs.29 report test references/44 local links valid,
+Git whitespace0/index empty/HEAD8d7a3c7 unchanged; ignored gap input/generated
+receipts not staged. No new tests/source edits after full verification. Full19-path
+inventory and all material boundaries are in the remediation report. Stop for
+independent review; no markingDONE/commit/push or additional implementation.
+
+
+## M064 - 2026-11-06 (America/Los_Angeles): T3-007 independent acceptance / Git checkpoint
+
+User APPROVES documented13-19-digit synthetic PAN grammar; T3-007 DONE. Reported
+659 non-wire/17 new PAN HTTP wire tests with review-only Linux subprocess import-
+path adjustment,1200 random streams/8812 deltas and withholding/overflow/four-channel
+bounds pass. No blocking defect. E041 Windows149/452/733/427 (1761)/eight Ruff NOT
+independently rerun in full; no fresh tests/install/dependency/feature work here.
+294/channel retention policy and all original scope/environment/PII/RSS/TLS/socket
+limitations kept. Task4 real-provider interoperability NOT VERIFIED/rubric-dependent.
+
+Initial HEAD8d7a3c7/main0 ahead0 behind recorded origin, empty index, expected19
+approved remediation paths plus local review ZIP. Hash comparison with E041
+inventory found no unexpected change/protected-project edit; captured115 tracked+
+new approved file hashes and retained ZIP hash, exclude ZIP via exact local rule.
+Updated acceptance docs only, source/tests remain byte-identical to review input.
+Preserve Tasks1/2/Task4 non-doc, historical evidence and reported Linux qualification.
+Review complete diff/auxiliary budget, explicitly stage19 approved files, staged
+whitespace check, one descriptive commit then fullSHA/manifest/clean-tree/branch
+verification; no fetch/push or further work. E042 records review and actual checks.
+
+
+Final acceptance inspection:102 captured non-acceptance-doc paths unchanged,
+including accepted PAN source/tests and protected Tasks1/2/Task4. Historical text/
+qualifications preserved;29 report test references/44 local links valid, targeted
+secret patterns0. All19 exact approved paths staged and content matches reviewed
+working bytes after newline normalization; no unstaged/unignored leftovers or
+excluded artifact. Review ZIP retained/hash unchanged, verify script/gap MD ignored.
+Staged whitespace0, no active hooks. Final record edits only; re-stage/recheck,
+commit once, verify fullSHA/manifest/clean tree/branch counts in Git/session and
+stop. No tests/dependency installation/feature/provider changes or push.

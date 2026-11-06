@@ -83,7 +83,12 @@ def test_canonical_email_grammar_and_exact_lengths(value, expected):
     ],
 )
 def test_out_of_scope_forms_and_unmatched_unicode_are_not_normalized(text):
-    assert text_output(run(stream(text))) == reference(text) == text
+    # T3-007: these two historical negatives are now supported synthetic PANs.
+    expected = {
+        "+1234567890123456": "[REDACTED]",
+        "card 0000000000000000": "card [REDACTED]",
+    }.get(text, text)
+    assert text_output(run(stream(text))) == reference(text) == expected
 
 
 @pytest.mark.parametrize("value", VALUES)
@@ -429,7 +434,7 @@ def test_terminal_encoder_failure_and_abandoned_terminal_cannot_claim_success():
         ("+12345678", True),
         ("+123456789012345", True),
         ("+1234567", False),
-        ("+1234567890123456", False),
+        ("+1234567890123456", True),  # T3-007 PAN, still not a supported phone.
         ("+02345678", False),
         ("000-000-0000", True),
         ("000-00-0000", True),

@@ -1,5 +1,23 @@
 # T3-006: final Task 3 engineering and submission audit
 
+## Post-acceptance corrective notice - 2026-11-06
+
+The independent T3-006 approval below is preserved for its historical synthetic
+contract. A subsequently recovered card-category requirement exposed a confirmed
+PAN omission; it is not evidence of card compliance. T3-007 implements the targeted
+correction and is **independently APPROVED / DONE** within the documented
+13-19-digit synthetic PAN grammar, confirmed2026-11-06/E042. The
+[remediation report](TASK3_TASK4_EVALUATOR_REMEDIATION.md), ADR-028 and E041 contain
+current grammar/safe-prefix/boundary/budget policies and fresh1761 repository
+passes/eight Ruff checks. Historical PII exclusions/1024 aggregate-held-byte proof
+are superseded for PAN only by that report's explicit294/channel auxiliary bound.
+Existing source architecture/environment/vendor/production/RSS/TLS/socket limits
+are retained. E042 records qualified review:659 non-wire/17 new PAN wire passes
+(review-only Linux import-path adjustment),1200 random streams/8812 fragments and
+privacy/boundary probes; no blocking defect. Full native1761/eight Ruff were NOT
+independently rerun. No broader PII/vendor-rubric claim or shipped shim; one
+acceptance commit authorized, no push.
+
 2026-11-05, America/Los_Angeles. Audited baseline:
 `6b768780ace49c984d105b5ce558f69904f1076a`.
 

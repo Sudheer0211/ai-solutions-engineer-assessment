@@ -567,3 +567,78 @@ def test_wire_fixture_exception_still_reaps_both_children(pair):
             raise RuntimeError("Synthetic fixture failure")
     assert len(saved.children) == 2
     assert all(c.process.returncode == 0 and not c.forced for c in saved.children)
+
+
+@pytest.mark.parametrize("separator", ["", " ", "-"])
+@pytest.mark.parametrize("length", [13, 15, 16, 19])
+def test_wire_pan_gated_cross_write_and_delta_redaction(lab, separator, length):
+    digits = "4111111111111111111"[:length]
+    value = separator.join(digits[i : i + 4] for i in range(0, length, 4))
+    # Register synthetic PAN markers with the EXISTING diagnostic capture before I/O.
+    for child in lab.children:
+        child._private.extend([value, digits])
+    first = wire("delta", {"channel": 0, "text": "safe " + value[:5]})
+    rest = b"".join(wire("delta", {"channel": 0, "text": c}) for c in value[5:])
+    rest += wire("done", {"channel": 0}) + wire("end", {})
+    cid = lab.plan([first, *[rest[i : i + 7] for i in range(0, len(rest), 7)]], gate_at=1)
+    client, _ = lab.open(cid)
+    lab.peer.event("held", cid)
+    initial = client.frame()
+    assert initial == ("delta", {"channel": 0, "text": "safe "})
+    lab.release(cid)
+    received = [initial, *client.all()]
+    assert logical(received) == "safe [REDACTED]" and received[-1] == ("end", {})
+    assert value not in logical(received) and digits not in logical(received)
+    lab.settled(cid)
+    assert all(child.privacy_violations == 0 for child in lab.children)
+
+
+def test_wire_pan_ambiguous_overflow_and_disconnect_never_flush(lab):
+    for text in ["1 " * 20, "1" * 257]:
+        cid = lab.plan([wire("delta", {"channel": 0, "text": text})])
+        client, _ = lab.open(cid)
+        frames = client.all()
+        assert logical(frames) == "" and not any(k == "end" for k, _ in frames)
+        lab.settled(cid)
+    cid = lab.plan(
+        [
+            wire("delta", {"channel": 0, "text": "4111 1111 "}),
+            wire("done", {"channel": 0}) + wire("end", {}),
+        ],
+        gate_at=1,
+    )
+    client, _ = lab.open(cid)
+    lab.peer.event("held", cid)
+    client.close()
+    lab.peer.event("provider_closed", cid)
+    lab.settled(cid)
+
+
+@pytest.mark.parametrize("suffix", [b"", b"event: end\ndata: {}\n\n", b"\xff"])
+def test_wire_pan_truncation_and_malformed_termination_drop_tail(lab, suffix):
+    cid = lab.plan([wire("delta", {"channel": 0, "text": "4111 1111 1111 "}), suffix])
+    client, _ = lab.open(cid)
+    frames = client.all()
+    assert logical(frames) == "" and not any(k == "end" for k, _ in frames)
+    lab.settled(cid)
+
+
+def test_wire_pan_concurrent_clients_and_interleaved_channels(lab):
+    clients = []
+    for _ in range(3):
+        first = b"".join(wire("delta", {"channel": c, "text": "4111 1111 "}) for c in range(4))
+        rest = b"".join(
+            wire("delta", {"channel": c, "text": "1111 1111"}) + wire("done", {"channel": c})
+            for c in reversed(range(4))
+        )
+        cid = lab.plan([first, rest + wire("end", {})], gate_at=1)
+        client, _ = lab.open(cid)
+        lab.peer.event("held", cid)
+        clients.append((cid, client))
+    for cid, _ in clients:
+        lab.release(cid)
+    for cid, client in clients:
+        frames = client.all()
+        assert [logical(frames, c) for c in range(4)] == ["[REDACTED]"] * 4
+        assert frames[-1] == ("end", {})
+        lab.settled(cid)

@@ -2,6 +2,23 @@
 
 This repository contains independently executable Python assessment projects:
 
+**Current corrective checkpoint (2026-11-06):** T3-007 PAN remediation is
+**independently APPROVED / DONE** within the documented13-19-digit synthetic PAN
+grammar. Earlier approvals below are preserved as
+historical evidence. The recovered credit-card category is now implemented under
+an explicit bounded synthetic profile; see
+[Task3/Task4 evaluator remediation](docs/TASK3_TASK4_EVALUATOR_REMEDIATION.md) for
+its material boundary/false-positive limitations and qualified review evidence.
+E042 records acceptance; E041 preserves actual native verification:
+Task1 **149**, Task2 **452**, Task3 **733**, Task4 **427** passes (**1761** total),
+all8 Ruff checks pass. Task4 implementation unchanged; live-model integration
+NOT VERIFIED/rubric-dependent, stock authenticated generation503 without trusted
+adapters. [One-command synthetic Task4 demo](task4/README.md#evaluator-demo-synthetic-success-fallback-and-quota-rejection).
+One T3-007 acceptance commit is authorized; no push or new feature. Independent
+review passed659 non-wire/17 new PAN wire cases (review-only Linux import-path
+adjustment) and1200 additional random streams. Full native1761/eight Ruff results
+were not independently rerun; no test reruns or new executions for this checkpoint.
+
 - **Task 1: DONE.** Official MCP STDIO customer/refund server; setup and architecture
   are documented below. Fresh T2-006 regression: 149 passing tests.
 - **Task 2: DONE; independently approved, assessment-ready within documented

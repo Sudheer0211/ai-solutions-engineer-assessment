@@ -1,5 +1,17 @@
 # TASK-4 / T4-001: Multi-Tenant LLM Rate Limiter contract and design
 
+## Post-acceptance evaluator readiness check - 2026-11-06
+
+E041 freshly verifies all427 Task4 cases/Ruff and a9-case real-TCP synthetic demo
+covering primary success/429/3000ms timeout/over-quota and controlled failures.
+Task4 source/tests/config/dependencies/lockfile are unchanged. R1-R7 and approved
+reservation/settlement/500ms-cleanup safety policies remain unchanged. Stock
+authenticated503 without trusted providers/bounds is confirmed by existing tests;
+real-model/tokenizer interoperability remains NOT VERIFIED / rubric-dependent,
+not automatically failed or certified. No live API is specified by the recovered
+description. See [current findings](TASK3_TASK4_EVALUATOR_REMEDIATION.md) and the
+prominent README demo. Historical acceptance/environment limits below preserved.
+
 Date: 2026-11-04 (America/Los_Angeles). Source: user-recovered original assessment
 requirements and explicit clarifications supplied in this session. No separate
 verbatim original Task 4 document/provider specification was attached. This record
