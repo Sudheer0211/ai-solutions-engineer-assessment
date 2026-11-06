@@ -1,19 +1,23 @@
 # Task 2 HTTP/JSON-RPC proxy
 
-This project integrates accepted T2-001/T2-002 guards and the T2-003 HTTPX adapter
-with a T2-004 FastAPI factory and POST /mcp endpoint.
-See [CONTRACT.md](CONTRACT.md) for exact requirements, choices and deferred work.
+## Current publication status
 
-Current verification (T2-006, 2026-11-04 America/Los_Angeles): **452 passed**,
-including 52 real loopback wire cases; Ruff lint/format pass. Task 1 independently
-reran with 149 passes and no implementation changes. See E017 in
-[TEST_EVIDENCE.md](../docs/TEST_EVIDENCE.md) and the
-[final audit / traceability matrix](../docs/TASK2_FINAL_AUDIT.md).
-T2-001 through T2-006 are independently accepted. **Task 2 is DONE**, with final
-ChatGPT engineering approval confirmed by the user on 2026-11-04: assessment-ready
-within the documented requirements. E018 records this reported review and the
-final documentation-only Git checkpoint; no tests were rerun for acceptance.
-One final documentation commit is authorized; no push or Tasks 3/4.
+**Task 2 is DONE, independently accepted within its documented requirements, and
+published.** Verified public baseline: `a3a2af2`; see the
+[repository publication status](../README.md). This separate Python project
+integrates the security guards, HTTPX adapter and FastAPI POST /mcp endpoint.
+See [CONTRACT.md](CONTRACT.md) for requirements, policies and exclusions.
+
+Latest documented verification is E041 (2026-11-06 America/Los_Angeles):
+**452 passed**, including 52 real loopback wire cases; both Ruff checks passed.
+The repository total is **1,761** across four independent environments. No tests
+were rerun for this publication documentation cleanup. See
+[test evidence](../docs/TEST_EVIDENCE.md) and
+[final audit / traceability](../docs/TASK2_FINAL_AUDIT.md).
+
+Historical T2-006 acceptance: user-confirmed 2026-11-04, with E017 execution and
+E018 independent acceptance/Git inspection. That checkpoint is complete; its
+historical restrictions on future tasks/publication are not current project status.
 
 From task2/ with uv installed:
 

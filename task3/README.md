@@ -1,6 +1,10 @@
 # Task 3: asynchronous synthetic SSE proxy with PII redaction
 
-## Current PAN remediation: independently accepted
+## Current publication status and accepted PAN remediation
+
+Task 3 and T3-007 are published in verified public baseline `a3a2af2`; see the
+[repository publication status](../README.md). The original full evaluator rubric
+is not fully available; acceptance is restricted to the documented synthetic profile.
 
 T3-007 is **DONE / independently APPROVED** (2026-11-06) within the documented
 13-19-digit synthetic PAN grammar, including its294/channel auxiliary policy.
@@ -20,7 +24,7 @@ bridged digit or K-token character257 aborts without raw release. See the report
 for overlaps, false positives, exact boundaries and294/channel auxiliary bound.
 Other input/parser/pending/output/channel/lifecycle limits are unchanged.
 
-Fresh native Windows full suite: **733 passed**, no failures/skips/warnings/xfails,
+Latest documented native Windows verification (E041, 2026-11-06): **733 passed**, no failures/skips/warnings/xfails,
 Ruff lint/format26 files passed.96 added cases include73 pure,6 ASGI and17 actual
 TCP PAN cases. Focused adversarial run100 passed; four-task total1761. No new
 dependency, provider or parser/transport/app rewrite. E042 records independent
@@ -28,7 +32,9 @@ dependency, provider or parser/transport/app rewrite. E042 records independent
 import-path adjustment,1200 random streams/8812 delta fragments and withholding/
 overflow/four-channel probes. No blocking defect; full native1761/eight Ruff were
 NOT independently rerun. No review shim ships or new tests run for acceptance.
-One acceptance commit authorized, no push. Scoped limits/no universal PII claim remain.
+Acceptance and publication are complete. Scoped limits and the absence of a
+universal PII guarantee remain. No tests were rerun for this documentation cleanup.
+Earlier checkpoint gates below are historical, not current publication restrictions.
 
 ## Reproduce a successful synthetic assessor demo
 
@@ -328,6 +334,8 @@ drained request ownership; no repeated request-grace renewal. Retain the app and
 supervise uncertain resources; GC, asyncio and local cancellation do not certify
 physical remote-provider termination/billing cancellation.
 
+### Historical T3-004 verification and handoff
+
 Executed direct-ASGI evidence: first sanitized safe prefix at raw read1; while its
 send is blocked, 20 scheduler turns leave reads1; release permits read2, whose
 separate upstream gate still blocks completion. Three 256/256/88-scalar sends use
@@ -450,7 +458,10 @@ Processor raises generic StreamError for malformed input without automatically
 inventing a postheader error response. A future transport must select the approved
 pre/postheader policy; known upstream error already yields one fixed error frame.
 
-## Redaction and bounds
+## Historical T3-002 redaction and bounds
+
+The current PAN extension and its auxiliary bound are documented at the top and
+in the remediation report. The following preserves the earlier pure-checkpoint profile.
 
 Candidate alphabet is EXACTLY ASCII letters/digits plus `._%+@-`. Retain every
 unfinished maximal candidate, <=256 characters per channel. A real delimiter or
@@ -482,7 +493,7 @@ Actual async backpressure, 16-stream concurrency admission, network deadlines an
 1000 ms cleanup execution remain T3-003/004 work. Pure generator tests are not real
 HTTP latency/memory/cancellation or uncooperative-provider termination evidence.
 
-## Verification coverage and limitations
+## Historical T3-002 verification coverage and limitations
 
 Tests exercise all four representative PII values across every raw-stream byte cut
 and every model-delta cut, every partition of a short candidate, two Unicode wire

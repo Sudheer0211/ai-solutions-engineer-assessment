@@ -1,77 +1,60 @@
 # AI Solutions Engineer assessment
 
-This repository contains independently executable Python assessment projects:
+All four assessment tasks and T3-007 are **DONE, independently accepted within
+their documented scopes, and published**. The user-verified public GitHub main
+baseline on 2026-11-06 (America/Los_Angeles) is
+`a3a2af2308e1ba1c4fe0ce67cdaabbe108dcbe5d`.
 
-**Current corrective checkpoint (2026-11-06):** T3-007 PAN remediation is
-**independently APPROVED / DONE** within the documented13-19-digit synthetic PAN
-grammar. Earlier approvals below are preserved as
-historical evidence. The recovered credit-card category is now implemented under
-an explicit bounded synthetic profile; see
-[Task3/Task4 evaluator remediation](docs/TASK3_TASK4_EVALUATOR_REMEDIATION.md) for
-its material boundary/false-positive limitations and qualified review evidence.
-E042 records acceptance; E041 preserves actual native verification:
-Task1 **149**, Task2 **452**, Task3 **733**, Task4 **427** passes (**1761** total),
-all8 Ruff checks pass. Task4 implementation unchanged; live-model integration
-NOT VERIFIED/rubric-dependent, stock authenticated generation503 without trusted
-adapters. [One-command synthetic Task4 demo](task4/README.md#evaluator-demo-synthetic-success-fallback-and-quota-rejection).
-One T3-007 acceptance commit is authorized; no push or new feature. Independent
-review passed659 non-wire/17 new PAN wire cases (review-only Linux import-path
-adjustment) and1200 additional random streams. Full native1761/eight Ruff results
-were not independently rerun; no test reruns or new executions for this checkpoint.
+These are independently executable Python projects with separate environments:
 
-- **Task 1: DONE.** Official MCP STDIO customer/refund server; setup and architecture
-  are documented below. Fresh T2-006 regression: 149 passing tests.
-- **Task 2: DONE; independently approved, assessment-ready within documented
-  requirements.** Secure HTTP/JSON-RPC
-  reverse proxy with FastAPI and HTTPX; isolated environment and lockfile. Start with
-  [Task 2 setup and examples](task2/README.md), [contract](task2/CONTRACT.md), and
-  [final audit / requirements traceability](docs/TASK2_FINAL_AUDIT.md).
-  T2-006 evidence: 452 passing tests, including 52 real HTTP wire cases; final
-  independent approval confirmed 2026-11-04. No tests rerun for the acceptance commit.
-- **Task 3: DONE; independently approved within the accepted synthetic SSE/PII
-  contract.** T3-001 through T3-006 independently accepted, user
-  confirmation 2026-11-05; Linux split-run/stall qualifications retained in
-  [E038](docs/TEST_EVIDENCE.md). Native Windows verification remains authoritative:
-  637 passing tests/Ruff, including 57 wire cases ([E037](docs/TEST_EVIDENCE.md)). See
-  [Task 3 setup and synthetic HTTP contract](task3/README.md). T3-006 final audit
-  is independently **APPROVED**, confirmed 2026-11-05; T3-006/TASK-3 are DONE.
-  E040 records the qualified documentation review; E039 preserves actual fresh
-  native verification. No tests were rerun for acceptance. See
-  [final audit](docs/TASK3_FINAL_AUDIT.md). One documentation-only acceptance commit
-  is authorized; no push. Original vendor
-  brief unavailable; loopback/RSS observations are qualified, no formal memory,
-  real-vendor or deployment certification claimed.
-- **Task 4: DONE; independently approved, assessment-ready within its documented
-  requirements, supported Windows/SQLite environment and trusted-adapter policies.**
-  Native Windows full-suite evidence remains authoritative; Linux review used
-  split runs/compatibility substitutions, with a combined wire teardown stall
-  explicitly recorded. See [Task 4 setup/contract](task4/README.md).
-  T4-006 independent approval confirmed 2026-11-05 (America/Los_Angeles).
-  See [final audit / requirements traceability](docs/TASK4_FINAL_AUDIT.md).
-  E028 native audit suites (2026-11-04): Task 1 **149**, Task 2 **452**, Task 4 **427** passing
-  tests; all Ruff lint/format checks pass ([E028](docs/TEST_EVIDENCE.md)).
-  Clean locked Task 4 setup and deterministic primary/fallback fixtures verified.
-  Stock Task 4 intentionally returns 503 without trusted provider/bounds adapters;
-  no real LLM/tokenizer or production deployment is certified.
-  E029 records independent acceptance and the documentation-only Git checkpoint;
-  tests were not rerun for acceptance. No GitHub push is authorized.
+- **Task 1:** official MCP STDIO customer/refund server; setup and architecture below.
+- **Task 2:** secure HTTP/JSON-RPC reverse proxy with FastAPI/HTTPX.
+  [Setup/examples](task2/README.md), [contract](task2/CONTRACT.md),
+  [accepted final audit](docs/TASK2_FINAL_AUDIT.md).
+- **Task 3:** asynchronous synthetic SSE proxy with bounded PII/PAN redaction.
+  T3-001 through T3-007 are accepted, including the documented 13-19-digit PAN
+  grammar and 294-character per-channel compound bound.
+  [Setup and assessor demo](task3/README.md),
+  [final audit](docs/TASK3_FINAL_AUDIT.md),
+  [PAN remediation and review qualifications](docs/TASK3_TASK4_EVALUATOR_REMEDIATION.md).
+- **Task 4:** multi-tenant token limiter with persistent SQLite and controlled
+  primary/backup routing, accepted in its supported Windows/SQLite environment
+  and trusted-adapter policies. [Setup and synthetic evaluator demo](task4/README.md),
+  [accepted final audit](docs/TASK4_FINAL_AUDIT.md).
 
-Tasks 1 and 2 passed Ruff lint and formatting checks on 2026-11-04
-(America/Los_Angeles). [E017](docs/TEST_EVIDENCE.md) records actual commands/results.
-Use each task's own environment; Task 2 does not run through Task 1's STDIO server.
+## Latest documented regression
 
-## Latest complete repository verification
+E041 (2026-11-06, America/Los_Angeles) records complete native Windows/Python
+3.12.16 suites in each project's own environment:
 
-E039,2026-11-05 America/Los_Angeles: fresh native Windows/Python3.12.16 suites in
-four separate environments: Task1 **149**, Task2 **452**, Task4 **427**, Task3
-**637** passes (**1665 total**), zero failures/errors/skips/warnings/xfails/xpasses.
-All eight Ruff lint/format checks exit0. Accepted source/tests/configuration/pins
-and locks are unchanged. SQLite3.53.1 is the supported Task4 runtime; metadata
-only for the other tasks. A clean locked Task3 install and deterministic real-TCP
-progressive-redaction demo passed; [copyable assessor recipe](task3/README.md#reproduce-a-successful-synthetic-assessor-demo).
-[Final audit](docs/TASK3_FINAL_AUDIT.md) separates synthetic requirements, actual
-socket observations, deterministic deadlines and remaining limits. Original Task3
-vendor brief unavailable; no universal PII/real-vendor/deployment certification.
+| Project | Passing tests |
+| --- | ---: |
+| Task 1 | 149 |
+| Task 2 | 452 |
+| Task 3 | 733 |
+| Task 4 | 427 |
+| **Total** | **1,761** |
+
+All eight Ruff lint/format checks passed, with zero pytest failures, errors, skips,
+warnings, xfails or xpasses. These are documented executions, not new runs for
+this publication documentation cleanup. E042 records T3-007 independent review:
+659 non-wire cases, 17 new PAN wire cases with a review-only Linux import-path
+adjustment, and 1,200 additional randomized streams. The full native 1,761 tests
+and eight Ruff checks were **not independently rerun in full**. Prior review
+qualifications and historical counts remain in [test evidence](docs/TEST_EVIDENCE.md).
+
+The original full evaluator rubric/vendor specification is not fully available.
+Task 3 supports its bounded synthetic SSE/PII profile, not universal PII detection:
+space-separated PANs must start at a numeric token boundary; documented separator,
+normalization and overflow exclusions remain. Task 4 real-provider/tokenizer
+interoperability is **NOT VERIFIED / rubric-dependent**; stock authenticated
+generation intentionally returns 503 without trusted provider/bounds adapters.
+No real-model, formal RSS ceiling, kernel send-stall, production TLS or deployment
+certification is implied. SQLite 3.53.1 is the verified Task 4 runtime; other tasks
+use separate environments and Task 3 does not access SQLite.
+
+Older checkpoint instructions in task READMEs are explicitly historical. They do
+not describe current publication status or authorize new implementation work.
 
 ## Task 1 — Customer/refund MCP server
 

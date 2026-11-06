@@ -1598,3 +1598,31 @@ excluded artifact. Review ZIP retained/hash unchanged, verify script/gap MD igno
 Staged whitespace0, no active hooks. Final record edits only; re-stage/recheck,
 commit once, verify fullSHA/manifest/clean tree/branch counts in Git/session and
 stop. No tests/dependency installation/feature/provider changes or push.
+
+
+## M065 - 2026-11-06 (America/Los_Angeles): PUB-001 publication documentation cleanup
+
+User verifies public main a3a2af2308e1ba1c4fe0ce67cdaabbe108dcbe5d, all four tasks/
+T3-007 completed and independently accepted in documented scopes. Local HEAD
+matches; initial working tree/index clean, main0 ahead/0 behind recorded origin.
+Captured all tracked hashes. Criteria: root/task README current published status,
+E041 latest149/452/733/427 (1761) counts, clearly historical old checkpoint gates,
+original-rubric/PAN/provider/environment qualifications preserved. Documentation
+only; no source/tests/config/deps/locks or historical TEST_EVIDENCE modification.
+Update READMEs plus ledger/build session record, inspect/stage exact paths,
+staged whitespace check and one descriptive documentation commit; no automatic
+push. No tests run/needed. PUB-001 IN_PROGRESS before edits.
+
+
+PUB-001 outcome DONE: corrected four README publication/current verification
+sections,149/452/733/427 (1761) and historical checkpoint labels; retained full
+rubric/PAN/294-character/provider-NOT-VERIFIED/environment qualifications. No
+architecture change or test execution; E041/E042 referenced without editing them.
+Initial Unicode header lookup failed before README writes; ASCII section anchor
+used, no production issue.29 local links validate, all README code blocks/root
+Task1 body unchanged.109 protected tracked files byte-identical, including entire
+TEST_EVIDENCE and all source/tests/config/deps/locks. Complete six-doc diff read,
+explicit staging/index-content comparison passed, no unstaged/unignored leftovers,
+staged whitespace0. Final record changes only; re-stage/recheck, commit once,
+verify fullSHA/manifest/clean tree/recorded-origin status then stop for review.
+No dependencies/tests/features/fetch/push; user-verified public baseline remainsa3a2af2.

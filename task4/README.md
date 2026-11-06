@@ -1,5 +1,21 @@
 # Task 4: token accounting, SQLite storage and injectable LLM routing
 
+## Current publication status
+
+**Task 4 is DONE, independently accepted within its documented requirements,
+supported Windows/SQLite environment and trusted-adapter policies, and published.**
+Verified public baseline: `a3a2af2`; see [repository publication status](../README.md).
+Latest documented E041 verification (2026-11-06 America/Los_Angeles): **427 passed**,
+both Ruff checks passed; repository total **1,761**. The existing synthetic evaluator
+demo also passed nine cases. No tests were rerun for this documentation cleanup.
+
+The original full evaluator rubric/vendor specification is not fully available.
+Real-provider/tokenizer interoperability remains **NOT VERIFIED / rubric-dependent**;
+stock authenticated generation returns 503 without trusted adapters. The synthetic
+demo below is reproducible evidence, not a real-model or production certification.
+Earlier checkpoint records below are explicitly historical; their pending-work and
+publication instructions no longer describe the completed, published project.
+
 ## Evaluator demo: synthetic success, fallback and quota rejection
 
 The stock factory deliberately returns sanitized **503** for authenticated
@@ -25,7 +41,7 @@ required, and no provider adapter is installed into production by this command.
 These are executable assessment demonstrations, not real-model certification.
 See E041 and [post-acceptance findings](../docs/TASK3_TASK4_EVALUATOR_REMEDIATION.md).
 
-## Final independent acceptance
+## Historical T4-006 independent acceptance
 
 **TASK-4 and T4-006 are DONE and independently APPROVED**, confirmed by the user
 2026-11-05 (America/Los_Angeles), within documented requirements, supported
@@ -43,6 +59,8 @@ This acceptance supersedes historical pending-review/no-T4-006 gates below; all
 historical evidence/environment qualifications remain intact. One final docs-only
 acceptance commit is authorized, no test rerun absent unexpected code/config changes.
 Preserve source/tests/dependencies/configuration/lock; no Task 3 or push.
+
+### Historical T4-005 verification and handoff
 
 **T4-005 is independently ACCEPTED**, confirmed by the user 2026-11-04.
 E026: **427 passed in 40.81s** (324 accepted + 74 ASGI/config/lifecycle + 29 wire),
@@ -64,7 +82,7 @@ teardown; it was NOT a completed all-at-once pass. No review substitutions ship,
 no blocking production defect found; E026 native Windows full-suite result remains
 authoritative. Historical limits below are superseded only by this checkpoint.
 
-## Accepted T4-001/T4-002 foundation
+## Historical T4-001/T4-002 foundation
 
 Isolated Python 3.12 project with standard-library-only runtime. Task 1/2 source,
 tests, environments and dependency configurations are separate and unchanged.
@@ -92,7 +110,7 @@ command outside the sandbox resolved it. No tests/markers/warning filters change
 Runtime Python 3.12.16, pytest 9.2.0, Ruff 0.17.3; setuptools 82.0.1 isolated build.
 The lock selects eight installed packages including this editable project.
 
-## Interface and trust boundary
+## Historical T4-002 interface and trust boundary
 
 - models.ModelTokenBounds: model alias, input/output bounds and counting-policy
   identifier. Requires exact nonnegative integers, positive total and signed-64-bit
@@ -121,7 +139,7 @@ its attempt rows into these records once. Settlement replaces an outstanding ent
 at its original admission timestamp; it must not supply that ID in both collections.
 T4-002 receives snapshots; it does not perform settlement, refunds or recovery.
 
-## Important limits
+## Historical T4-002 checkpoint limits
 
 Pure decisions do not reserve tokens or mutate a store. Repeating an allowed
 calculation can return allowed again: atomic concurrent admission belongs to
@@ -175,6 +193,8 @@ transactions retain original state. Over-bound actual usage durably blocks furth
 tenant admission. Generic StorageError exposes only an internal failure kind, not
 SQLite diagnostics/paths/credentials. No automatic retry, pruning or unblock API.
 
+### Historical T4-003 verification and handoff
+
 Six barrier-synchronized processes competed for the final 2,000 tokens: one winner,
 five denials, durable total 50,000. Duplicate-ID and identical/conflicting settlement
 races and two independent writer/reader processes pass. Full run reaped 15 children,
@@ -189,7 +209,7 @@ transaction/error/recovery policy, actual commands, initial lint correction and 
 T4-003 is accepted with the qualification above; preserve implementation and stop
 after the authorized milestone commit. No T4-004 implementation or push authorized.
 
-## T4-004 provider/service API (independently accepted)
+## Historical T4-004 provider/service checkpoint (API retained)
 
 `providers.Provider` is an injectable trusted adapter. Its pure `prepare(text)`
 returns a request-scoped `PreparedAttempt` with model-specific `bounds`,
@@ -379,6 +399,8 @@ cannot silently discard workers/cleanup. Unconfirmed cleanup produces a generic
 unclean-shutdown failure while retaining resource ownership. Arbitrary broken
 adapters/blocked OS I/O cannot be forcibly killed by asyncio; supervisor recovery
 may be necessary. Real remote execution/billing after cancellation is uncertain.
+
+### Historical T4-005 wire verification and handoff
 
 Run all tests (including wire) with the isolated dev AND serve extras installed.
 Wire harness starts separate proxy and synthetic upstream processes on 127.0.0.1,

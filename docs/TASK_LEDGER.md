@@ -4,21 +4,24 @@ Last updated: 2026-11-06 (America/Los_Angeles).
 
 ## Task registry
 
-Current corrective checkpoint: T3-007 DONE / independently APPROVED within the
-documented13-19-digit synthetic PAN grammar, confirmed2026-11-06/E042. Historical
-approvals preserved. E041 native1761/eight Ruff NOT independently rerun in full;
-E042 distinguishes reported659 non-wire/17 PAN wire/randomized review from local
-Git inspection. One descriptive acceptance commit authorized; no push/features.
-Task4 non-documentation remains frozen; real-provider integration NOT VERIFIED.
+Current publication status: all four assessment tasks and T3-007 are DONE,
+independently accepted within documented scopes, and published. User-verified
+public main is a3a2af2308e1ba1c4fe0ce67cdaabbe108dcbe5d (2026-11-06).
+Latest documented E041 regression: Task1 149/Task2 452/Task3 733/Task4 427,
+total1761/eight Ruff passes. E042 review qualifications remain; full native results
+were not independently rerun. Task3 bounded PAN scope and Task4 real-provider
+NOT VERIFIED/rubric-dependent status are unchanged. PUB-001 is documentation-only;
+prior acceptance-commit/publication gates below are historical, not current status.
 
 Historical T3-006 outcome: independently APPROVED within the accepted synthetic
 SSE/PII contract; T3-006/TASK-3 DONE, user confirmation 2026-11-05/E040. All four
 assessment tasks are DONE within their documented scopes. E039 actual native
 verification is unchanged; no tests rerun for that acceptance. Its documentation
-commit is complete; current T3-007 authority is acceptance documentation/Git only, no push.
+commit and subsequent T3-007 acceptance/publication are complete.
 
 | ID | Description | Priority | Status | Acceptance / evidence | Blocker / next action |
 | --- | --- | --- | --- | --- | --- |
+| PUB-001 | Final publication documentation cleanup | P1 | DONE | Four README publication sections/counts corrected; historical labels/scopes preserved;29 local links, frozen109-path hashes, staged whitespace pass | Documentation-only checkpoint; historical test evidence unchanged; no automatic push |
 | GOV-001 | Establish persistent engineering governance before implementation | P0 | DONE | G1-G5 verified in E002 | Maintain records at every milestone |
 | TASK-1 | Strict MCP server assessment | P0 | DONE | A1-A15/E007; fresh 149 passes/Ruff E028 | Approach C preserved; no implementation/test/dependency changes |
 | T1-001 | Confirm runtime, SDK/public APIs, dependency versions | P0 | DONE | Python 3.12.16/MCP 2.3.0/Pydantic 2.12.5; E003/E004; uv.lock | Maintain verified pins |
@@ -43,7 +46,7 @@ commit is complete; current T3-007 authority is acceptance documentation/Git onl
 | T3-004 | FastAPI streaming HTTP integration | P0 | DONE | Independently APPROVED 2026-11-05; native Q16-Q18/E035, qualified review E036; ADR-025/T3-H policies | Preserve accepted baseline ecbd61c |
 | T3-005 | Independent-process real HTTP wire verification | P1 | DONE | Independently APPROVED 2026-11-05; native Q19-Q21/E037, qualified split-review E038; ADR-026 | Preserve accepted wire milestone 6b76878; T3-006 accepted; preserve all wire evidence and limitations, no push |
 | T3-006 | Final Task 3 assessment audit | P1 | DONE | Independently APPROVED 2026-11-05/E040; eight requirements/21 criteria/73 test refs/symbols/links/demo syntax reviewed; actual audit E039 | One final documentation-only acceptance commit authorized; no source/config changes or push |
-| T3-007 | Post-acceptance PAN compliance correction and Task4 evaluator-readiness audit | P0 | DONE | Independently APPROVED2026-11-06/E042 within documented13-19-digit PAN grammar; actual E041 native1761/eight Ruff unchanged | Preserve accepted PAN/294-char auxiliary policy, all limitations and protected projects; one acceptance commit, no push |
+| T3-007 | Post-acceptance PAN compliance correction and Task4 evaluator-readiness audit | P0 | DONE | Independently APPROVED2026-11-06/E042 within documented13-19-digit PAN grammar; actual E041 native1761/eight Ruff unchanged | Published at a3a2af2; preserve accepted PAN/294-char auxiliary policy and all limitations |
 | TASK-4 | Multi-Tenant LLM Rate Limiter | P0 | DONE | T4-001 through T4-006 independently accepted; final APPROVED 2026-11-05/E029; actual audit E028 | Assessment-ready within supported Windows/SQLite/trusted-adapter scope; preserve implementation, no push |
 | T4-001 | Recovered contract and revised architecture | P0 | DONE | Independent APPROVED WITH CONDITIONS; P1-P4 finalized; ADR-016 | Preserve approved assumptions; provider/HTTP specifics deferred |
 | T4-002 | Isolated project and pure sliding-window accounting | P0 | DONE | Independently ACCEPTED; 169 tests/12,000 differential checks/6 invariants reported; E021 | Preserve accepted foundation 3d8d3e5 |
@@ -991,3 +994,19 @@ complete diff including auxiliary policy; explicitly stage only approved source/
 tests/docs, exclude ignored scripts/receipts/env/cache/credentials/archives. Run
 staged whitespace check, commit once, verify fullSHA/manifest/clean tree/branch
 counts and stop. No push/fetch or further implementation authorized.
+
+
+## PUB-001 documentation cleanup outcome - 2026-11-06 America/Los_Angeles
+
+DONE: root README/current task README sections reflect accepted/published tasks
+and user-verified a3a2af2 public baseline. Latest documented E041 counts149/452/
+733/427,total1761/eight Ruff; no tests rerun or historical evidence changes.
+Original rubric availability/PAN scope/Task4 live-provider NOT VERIFIED and native
+review qualifications retained. Old instructions remain clearly historical.
+Six-file doc-only manifest: root/task2/task3/task4 READMEs, this ledger and build
+log.29 links valid; README code examples/root Task1 body unchanged;109 other
+tracked paths byte-identical including all production/tests/config/deps/locks/
+TEST_EVIDENCE. Exact staged inventory/content/whitespace passed; final records
+re-staged before one doc commit, then fullSHA/clean tree/branch verification.
+No new architecture decision, blocker, feature or automatic push. Stop for review
+of committed documentation; publishing this cleanup needs separate authorization.
